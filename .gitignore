@@ -1,6 +1,7 @@
 # JUCE system-specific folders
 Builds/
 JuceLibraryCode/
+out/
 ._*
 *.mode1v3
 *.pbxuser
