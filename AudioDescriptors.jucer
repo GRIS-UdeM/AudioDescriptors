@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildAU,buildVST3" pluginVST3Category="Analyzer"
               defines="JUCE_DISPLAY_SPLASH_SCREEN=0&#10;_USE_MATH_DEFINES=1"
-              version="0.0.1">
+              version="0.0.1" companyName="GRIS - UdeM">
   <MAINGROUP id="sk7ynA" name="AudioDescriptors">
     <GROUP id="{80AC6283-17AE-07BF-E117-3AC4EE993EA9}" name="Descriptors">
       <FILE id="DFgvK2" name="BandsD.hpp" compile="0" resource="0" file="Source/Descriptors/BandsD.hpp"/>
@@ -99,12 +99,12 @@
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="flucoma_VERSION_LIB.lib&#10;fmt.lib&#10;foonathan_memory-0.7.3.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="AudioDescriptors" enablePluginBinaryCopyStep="1"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="AudioDescriptors" enablePluginBinaryCopyStep="0"
                        headerPath="..\..\Source\libs\include&#10;..\..\Source\libs\include\flucoma&#10;..\..\Source\libs\include\Eigen&#10;..\..\Source\libs\include\hisstools&#10;..\..\Source\libs\include\Spectra&#10;..\..\Source\libs\include\tl&#10;..\..\Source\libs\include\nlohmann&#10;..\..\Source\libs\include\fmt&#10;..\..\Source\libs\include\foonathan"
                        libraryPath="..\..\Source\libs\lib\flucoma\windows\Debug" usePrecompiledHeaderFile="1"
                        precompiledHeaderFile="Source\PCH.h"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="AudioDescriptors" headerPath="..\..\Source\libs\include&#10;..\..\Source\libs\include\flucoma&#10;..\..\Source\libs\include\Eigen&#10;..\..\Source\libs\include\hisstools&#10;..\..\Source\libs\include\Spectra&#10;..\..\Source\libs\include\tl&#10;..\..\Source\libs\include\nlohmann&#10;..\..\Source\libs\include\fmt&#10;..\..\Source\libs\include\foonathan"
-                       libraryPath="..\..\Source\libs\lib\flucoma\windows\Release" enablePluginBinaryCopyStep="1"
+                       libraryPath="..\..\Source\libs\lib\flucoma\windows\Release" enablePluginBinaryCopyStep="0"
                        usePrecompiledHeaderFile="1" precompiledHeaderFile="Source\PCH.h"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
