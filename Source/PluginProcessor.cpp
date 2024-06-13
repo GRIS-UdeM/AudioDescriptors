@@ -39,7 +39,6 @@ AudioDescriptorsAudioProcessor::AudioDescriptorsAudioProcessor()
 #endif
 	)
 #endif
-	, mPluginEditor{ nullptr }
 {
 	//startTimerHz(50);
 }
@@ -674,9 +673,9 @@ juce::AudioProcessorEditor* AudioDescriptorsAudioProcessor::createEditor()
 {
 	//pluginEditor.reset(new AudioDescriptorsAudioProcessorEditor(*this));
 
-	mPluginEditor = new AudioDescriptorsAudioProcessorEditor(*this);
-	//return new AudioDescriptorsAudioProcessorEditor (*this);
-	return mPluginEditor;
+	//mPluginEditor = new AudioDescriptorsAudioProcessorEditor(*this);
+	return new AudioDescriptorsAudioProcessorEditor (*this);
+	//return mPluginEditor;
 }
 
 //==============================================================================
@@ -781,12 +780,10 @@ void AudioDescriptorsAudioProcessor::sendOscMessage()
 		return;
 	}
 
-	if (mPluginEditor == nullptr) {
+	auto* editor{ dynamic_cast<AudioDescriptorsAudioProcessorEditor*>(getActiveEditor()) };
+	if (editor == nullptr) {
 		return;
 	}
-
-	//juce::OSCAddressPattern const oscPattern("/controlgris/");
-	//juce::OSCMessage message(oscPattern);
 
 	juce::OSCMessage message(juce::OSCAddressPattern("/tmp"));
 	auto const pluginInstance = juce::String{ "/controlgris/" } + juce::String{ mControlGrisId };
@@ -811,11 +808,6 @@ void AudioDescriptorsAudioProcessor::sendOscMessage()
 		mOscSender.send(message);
 		message.clear();
 	}
-}
-
-void AudioDescriptorsAudioProcessor::resetEditor()
-{
-	mPluginEditor = nullptr;
 }
 
 //==============================================================================

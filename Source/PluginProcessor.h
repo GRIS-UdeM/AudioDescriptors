@@ -106,7 +106,6 @@ public:
     void sendOscMessage();
 
     //==============================================================================
-    void resetEditor();
     void resetFunction();
     void initFunction();
 
@@ -138,7 +137,6 @@ public:
 
 private:
     //==============================================================================
-    AudioDescriptorsAudioProcessorEditor* mPluginEditor;
     double mSampleRate{};
     int mBlockSize{};
     juce::AudioBuffer<float> mDescriptorsBuffer;
