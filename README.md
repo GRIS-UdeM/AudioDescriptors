@@ -25,7 +25,7 @@ Note that it is possible to use AudioDescriptors' Dome mode to control ControlGr
 ## Building
 #### 1. Install dependencies
 
-Download and extract [Juce 7.0.12](https://github.com/juce-framework/JUCE/releases/tag/7.0.12).
+Download and extract [Juce 8.0.0](https://github.com/juce-framework/JUCE/releases/tag/8.0.0).
 
 All necessary libraries are included in the project. See the Distribution_licenses.md file at the root of this project for details.
 
