@@ -27,15 +27,15 @@
       <FILE id="Jt00Cl" name="StftD.hpp" compile="0" resource="0" file="Source/Descriptors/StftD.hpp"/>
     </GROUP>
     <GROUP id="{9A9777FC-9875-8829-230D-A5E1F4D1C1C7}" name="Parameters">
+      <FILE id="dDQVpx" name="ParameterFunctions.h" compile="0" resource="0"
+            file="Source/ParameterFunctions.h"/>
       <FILE id="DJQ2ky" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
       <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
       <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
       <GROUP id="{688B671C-E3DE-2F6F-52A4-0EC5A70926D1}" name="Cube">
+        <FILE id="sU9KQR" name="CubeSettings.hpp" compile="0" resource="0"
+              file="Source/Parameters/Cube/src/CubeSettings.hpp"/>
         <GROUP id="{C29E186A-6AEF-69C1-36E4-0149F955BA88}" name="src">
-          <FILE id="i3LrVW" name="CubeParameters.hpp" compile="0" resource="0"
-                file="Source/Parameters/Cube/src/CubeParameters.hpp"/>
-          <FILE id="sU9KQR" name="CubeSettings.hpp" compile="0" resource="0"
-                file="Source/Parameters/Cube/src/CubeSettings.hpp"/>
           <FILE id="rtvPPI" name="HspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/HspanCube.hpp"/>
           <FILE id="MwvUUb" name="VspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/VspanCube.hpp"/>
           <FILE id="nYxZrO" name="XCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/XCube.hpp"/>
@@ -48,12 +48,10 @@
         </GROUP>
       </GROUP>
       <GROUP id="{DCD79291-6E57-746B-81A9-4A2941D32978}" name="Dome">
+        <FILE id="GDasW1" name="DomeSettings.hpp" compile="0" resource="0"
+              file="Source/Parameters/Dome/src/DomeSettings.hpp"/>
         <GROUP id="{6F36A96E-0787-AD56-D0DE-862D8D0DCE7D}" name="src">
           <FILE id="Gr1Hab" name="AzimuthDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/AzimuthDome.hpp"/>
-          <FILE id="nJhWeq" name="DomeParameters.hpp" compile="0" resource="0"
-                file="Source/Parameters/Dome/src/DomeParameters.hpp"/>
-          <FILE id="GDasW1" name="DomeSettings.hpp" compile="0" resource="0"
-                file="Source/Parameters/Dome/src/DomeSettings.hpp"/>
           <FILE id="OEtMNf" name="ElevationDome.hpp" compile="0" resource="0"
                 file="Source/Parameters/Dome/src/ElevationDome.hpp"/>
           <FILE id="ruDykT" name="HspanDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/HspanDome.hpp"/>
