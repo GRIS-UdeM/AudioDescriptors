@@ -49,7 +49,7 @@ AudioDescriptorsAudioProcessorEditor::AudioDescriptorsAudioProcessorEditor(Audio
     // Configuration de CGOscIdSlider
     addAndMakeVisible(CGOscIdSlider);
     CGOscIdSlider.setRange(1, 128, 1); // valeurs min, max, et intervalle
-    CGOscIdSlider.setValue(mAudioProcessor.getControlGrisId(), juce::dontSendNotification());
+    CGOscIdSlider.setValue(mAudioProcessor.getControlGrisId());
     CGOscIdSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     CGOscIdSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 50, 20);
     CGOscIdSlider.onValueChange = [this] {
