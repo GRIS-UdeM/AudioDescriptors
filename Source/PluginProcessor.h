@@ -38,8 +38,7 @@
 #include "Descriptors/OnsetDetectionD.hpp"
 #include "Descriptors/OperationsD.hpp"
 
-#include "Parameters/Dome/src/DomeParameters.hpp"
-#include "Parameters/Cube/src/CubeParameters.hpp"
+#include "ParameterFunctions.h"
 #include "Parameters/Dome/src/DomeSettings.hpp"
 #include "Parameters/Cube/src/CubeSettings.hpp"
 
@@ -190,8 +189,7 @@ private:
     OnsetDetectionD mOnsetDetectionY;
     OnsetDetectionD mOnsetDetectionZ;
 
-    DomeParameters domeParameters;
-    CubeParameters cubeParameters;
+    ParameterFunctions mParamFunctions;
    
     // Variable genstion de l'interface
     bool interfaceOpened = false;

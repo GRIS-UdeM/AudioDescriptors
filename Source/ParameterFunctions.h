@@ -1,7 +1,7 @@
 /*
  This file is part of AudioDescriptors.
 
- Developers: Hicheme BEN GAIED, GaÃ«l LANE LÃ‰PINE
+ Developers: Hicheme BEN GAIED, Gaël LANE LÉPINE
 
  AudioDescriptors is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <JuceHeader.h>
 #include <cmath>
 
-class CubeParameters
+class ParameterFunctions
 {
 public:
 
@@ -49,7 +50,7 @@ public:
 	}
 
 	double zmap(double value, double inputMin, double inputMax) {
-		// Assurez-vous que la valeur est comprise dans la plage d'entrÃ©e
+		// Assurez-vous que la valeur est comprise dans la plage d'entrée
 		if (value < inputMin) {
 			value = inputMin;
 		}
@@ -57,7 +58,7 @@ public:
 			value = inputMax;
 		}
 
-		// Mappez la valeur d'entrÃ©e vers la plage de sortie [-1, 1]
+		// Mappez la valeur d'entrée vers la plage de sortie [-1, 1]
 		// Formule : (valeur - minIn) / (maxIn - minIn) * (maxOut - minOut) + minOut
 		return (value - inputMin) / (inputMax - inputMin) * (1.0 - 0.0) + 0.0;
 	}

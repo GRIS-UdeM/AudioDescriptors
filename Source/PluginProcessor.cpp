@@ -281,7 +281,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			mLoudness.calculate(loudnessMat, *mStats.getStats());
 			double loudnessValue = mLoudness.getDescLoudness();
 			if (getModeState() == SpatMode::dome) {
-				loudnessValue = domeParameters.DbToGain(loudnessValue);
+				loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 				if (domeSettings.checkConditionLoudnessAzimuth()) {
 					DBG("--------------Azimuth Loudness -------------------");
 					processDomeParameter(domeSettings.getAzimuthDome(), 2, loudnessValue, true, false);
@@ -304,7 +304,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 			}
 			else {
-				loudnessValue = cubeParameters.DbToGain(loudnessValue);
+				loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 				if (cubeSettings.checkConditionLoudnessX()) {
 					DBG("--------------X Loudness -------------------");
 					processCubeParameter(cubeSettings.getXCube(), 2, loudnessValue, false);
@@ -350,7 +350,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			mPitch.calculate(pitchMat, *mStats.getStats());
 			double pitchValue = mPitch.getDescPitch();
 			if (getModeState() == SpatMode::dome) {
-				pitchValue = domeParameters.frequencyToMidiNoteNumber(pitchValue);
+				pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 				if (domeSettings.checkConditionPitchAzimuth()) {
 					DBG("--------------Azimuth Pitch -------------------");
 					processDomeParameter(domeSettings.getAzimuthDome(), 3, pitchValue, true, false);
@@ -373,7 +373,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 			}
 			else {
-				pitchValue = cubeParameters.frequencyToMidiNoteNumber(pitchValue);
+				pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 				if (cubeSettings.checkConditionPitchX()) {
 					DBG("--------------X Pitch -------------------");
 					processCubeParameter(cubeSettings.getXCube(), 3, pitchValue, false);
@@ -428,7 +428,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (bufferMagnitude == 0.0f) {
 				spreadValue = 0.0;
 			}
-			double zmap = domeParameters.zmap(spreadValue, 0.0, 16.0);
+			double zmap = mParamFunctions.zmap(spreadValue, 0.0, 16.0);
 
 			mFlatness.calculate(shapeStats);
 			double flatnessValue = mFlatness.getDescFlatness(); // flatnessValue when silence = -6.9624443085150120e-13
@@ -437,9 +437,9 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 
 			if (getModeState() == SpatMode::dome) {
-				flatnessValue = domeParameters.DbToGain(flatnessValue);
-				flatnessValue = domeParameters.zmap(flatnessValue, 0.0, 0.5);
-				flatnessValue = domeParameters.power(flatnessValue);
+				flatnessValue = mParamFunctions.DbToGain(flatnessValue);
+				flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
+				flatnessValue = mParamFunctions.power(flatnessValue);
 				if (domeSettings.checkConditionForCentroidAnalyse()) {
 					if (domeSettings.checkConditionCentroidAzimuth()) {
 						DBG("--------------Azimuth Centroid -------------------");
@@ -508,9 +508,9 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 			}
 			else {
-				flatnessValue = cubeParameters.DbToGain(flatnessValue);
-				flatnessValue = cubeParameters.zmap(flatnessValue, 0.0, 0.5);
-				flatnessValue = cubeParameters.power(flatnessValue);
+				flatnessValue = mParamFunctions.DbToGain(flatnessValue);
+				flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
+				flatnessValue = mParamFunctions.power(flatnessValue);
 				if (cubeSettings.checkConditionForCentroidAnalyse()) {
 					if (cubeSettings.checkConditionCentroidX()) {
 						DBG("--------------X Centroid -------------------");
@@ -1007,7 +1007,7 @@ void AudioDescriptorsAudioProcessor::setInterfaceState() {
 void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter, int index, double value, bool isAzimuth, bool isOffset)
 {
 	if (index == 2) {
-		value = domeParameters.PourcentageConversion(value, parameter.getParamFactorLoudness());
+		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamSmoothLoudness(),
 			parameter.getParamSmoothCoefLoudness());
 		if (isAzimuth) {
@@ -1023,9 +1023,9 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		}
 	}
 	else if (index == 3) {
-		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
-		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
-		double zmap = domeParameters.zmap(value, minFreq, maxFreq);
+		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
+		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
+		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamSmoothPitch(),
 			parameter.getParamSmoothCoefPitch());
 		if (isAzimuth) {
@@ -1041,9 +1041,9 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		}
 	}
 	else if (index == 4) {
-		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
-		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
-		double zmap = domeParameters.zmap(value, minFreq, maxFreq);
+		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
+		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
+		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamSmoothCentroid(),
 			parameter.getParamSmoothCoefCentroid());
 		if (isAzimuth) {
@@ -1060,13 +1060,13 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 	}
 	else if (index == 5) {
 		double ScaleOne = parameter.getParamFactorSpread();
-		ScaleOne = domeParameters.zmap(ScaleOne, 100.0, 500.0);
-		ScaleOne = domeParameters.subtractFromOne(ScaleOne);
-		double power = domeParameters.calculatePower(value, ScaleOne);
-		double mExpr = domeParameters.expr(power);
+		ScaleOne = mParamFunctions.zmap(ScaleOne, 100.0, 500.0);
+		ScaleOne = mParamFunctions.subtractFromOne(ScaleOne);
+		double power = mParamFunctions.calculatePower(value, ScaleOne);
+		double mExpr = mParamFunctions.expr(power);
 		double ScaleTwo = parameter.getParamFactorSpread();
-		ScaleTwo = domeParameters.ClipMyValue(ScaleTwo);
-		double mValueToSmooth = domeParameters.valueToSmooth(mExpr, ScaleTwo);
+		ScaleTwo = mParamFunctions.ClipMyValue(ScaleTwo);
+		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamSmoothSpread(),
 			parameter.getParamSmoothCoefSpread());
 		if (isAzimuth) {
@@ -1117,7 +1117,7 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter, int index, double value, bool isOffset)
 {
 	if (index == 2) {
-		value = cubeParameters.PourcentageConversion(value, parameter.getParamFactorLoudness());
+		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamSmoothLoudness(),
 			parameter.getParamSmoothCoefLoudness());
 		if (isOffset) {
@@ -1129,9 +1129,9 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		}
 	}
 	else if (index == 3) {
-		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
-		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
-		double zmap = cubeParameters.zmap(value, minFreq, maxFreq);
+		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
+		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
+		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamSmoothPitch(),
 			parameter.getParamSmoothCoefPitch());
 		if (isOffset) {
@@ -1143,9 +1143,9 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		}
 	}
 	else if (index == 4) {
-		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
-		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
-		double zmap = cubeParameters.zmap(value, minFreq, maxFreq);
+		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
+		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
+		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamSmoothCentroid(),
 			parameter.getParamSmoothCoefCentroid());
 		if (isOffset) {
@@ -1158,13 +1158,13 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 	}
 	else if (index == 5) {
 		double ScaleOne = parameter.getParamFactorSpread();
-		ScaleOne = cubeParameters.zmap(ScaleOne, 100.0, 500.0);
-		ScaleOne = cubeParameters.subtractFromOne(ScaleOne);
-		double power = cubeParameters.calculatePower(value, ScaleOne);
-		double mExpr = cubeParameters.expr(power);
+		ScaleOne = mParamFunctions.zmap(ScaleOne, 100.0, 500.0);
+		ScaleOne = mParamFunctions.subtractFromOne(ScaleOne);
+		double power = mParamFunctions.calculatePower(value, ScaleOne);
+		double mExpr = mParamFunctions.expr(power);
 		double ScaleTwo = parameter.getParamFactorSpread();
-		ScaleTwo = cubeParameters.ClipMyValue(ScaleTwo);
-		double mValueToSmooth = cubeParameters.valueToSmooth(mExpr, ScaleTwo);
+		ScaleTwo = mParamFunctions.ClipMyValue(ScaleTwo);
+		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamSmoothSpread(),
 			parameter.getParamSmoothCoefSpread());
 		if (isOffset) {
