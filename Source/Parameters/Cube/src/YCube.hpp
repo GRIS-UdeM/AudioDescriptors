@@ -35,7 +35,7 @@ public:
 		paramID = ParameterID::y;
 		setParametersState();
 	}
-	void parameters(double range, double smooth, double lap, double offset) {
+	void parameters(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
 		double clipMax = 0.999999;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
