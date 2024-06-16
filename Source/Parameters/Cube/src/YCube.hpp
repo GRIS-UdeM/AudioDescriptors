@@ -28,10 +28,12 @@
 class YCube : public Parameters
 {
 public:
-	YCube()
+	YCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+		: Parameters(audioProcessorValueTreeState)
 	{
 		parameterName = juce::String("Y");
 		paramID = ParameterID::y;
+		setParametersState();
 	}
 	void parameters(double range, double smooth, double lap, double offset) {
 		double clipMax = 0.999999;

@@ -29,10 +29,12 @@
 class HspanCube : public Parameters
 {
 public:
-	HspanCube()
+	HspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+		: Parameters(audioProcessorValueTreeState)
 	{
 		parameterName = juce::String("X-Y Span");
 		paramID = ParameterID::azimuthspan;
+		setParametersState();
 	}
 
 	void parameters(double range, double smooth, double lap, double offset) {

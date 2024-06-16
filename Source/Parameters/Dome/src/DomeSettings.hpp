@@ -32,44 +32,51 @@
 class DomeSettings
 {
 public:
+    DomeSettings() = delete;
+    explicit DomeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+        : mAzimuthDome(audioProcessorValueTreeState)
+        , mElevationDome(audioProcessorValueTreeState)
+        , mHSpanDome(audioProcessorValueTreeState)
+        , mVSpanDome(audioProcessorValueTreeState)
+    {};
 
     bool checkConditionNeedSpectralAnalyse() {
-        if (mAzimuthDome.getParameterComboBoxIndex() > 3 || mElevationDome.getParameterComboBoxIndex() > 3 || mHSpanDome.getParameterComboBoxIndex() > 3 || mVSpanDome.getParameterComboBoxIndex() > 3) {
-            if ((mAzimuthDome.getParameterComboBoxIndex() > 3 && mAzimuthDome.getParameterComboBoxIndex() < 7) &&
+        if (mAzimuthDome.getParamDescriptorComboBoxIndex() > 3 || mElevationDome.getParamDescriptorComboBoxIndex() > 3 || mHSpanDome.getParamDescriptorComboBoxIndex() > 3 || mVSpanDome.getParamDescriptorComboBoxIndex() > 3) {
+            if ((mAzimuthDome.getParamDescriptorComboBoxIndex() > 3 && mAzimuthDome.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                ((mAzimuthDome.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mAzimuthDome.getParamMaxFreqArray()[indexMaxFreqCentroid] > mAzimuthDome.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mAzimuthDome.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mAzimuthDome.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mAzimuthDome.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mAzimuthDome.getParamFactorArray()[indexFactorNoise] > 0))
+                (mAzimuthDome.getParamRangeCentroid() != 0 && mAzimuthDome.getParamMaxFreqCentroid() > mAzimuthDome.getParamMinFreqCentroid()) ||
+                (mAzimuthDome.getParamRangeSpread() != 0 && mAzimuthDome.getParamFactorSpread() > 0) ||
+                (mAzimuthDome.getParamRangeNoise() != 0 && mAzimuthDome.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mElevationDome.getParameterComboBoxIndex() > 3 && mElevationDome.getParameterComboBoxIndex() < 7) &&
+            if ((mElevationDome.getParamDescriptorComboBoxIndex() > 3 && mElevationDome.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mElevationDome.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mElevationDome.getParamMaxFreqArray()[indexMaxFreqCentroid] > mElevationDome.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mElevationDome.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mElevationDome.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mElevationDome.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mElevationDome.getParamFactorArray()[indexFactorNoise] > 0)
+                (mElevationDome.getParamRangeCentroid() != 0 && mElevationDome.getParamMaxFreqCentroid() > mElevationDome.getParamMinFreqCentroid()) ||
+                (mElevationDome.getParamRangeSpread() != 0 && mElevationDome.getParamFactorSpread() > 0) ||
+                (mElevationDome.getParamRangeNoise() != 0 && mElevationDome.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mHSpanDome.getParameterComboBoxIndex() > 3 && mHSpanDome.getParameterComboBoxIndex() < 7) &&
+            if ((mHSpanDome.getParamDescriptorComboBoxIndex() > 3 && mHSpanDome.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mHSpanDome.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mHSpanDome.getParamMaxFreqArray()[indexMaxFreqCentroid] > mHSpanDome.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mHSpanDome.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mHSpanDome.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mHSpanDome.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mHSpanDome.getParamFactorArray()[indexFactorNoise] > 0)
+                (mHSpanDome.getParamRangeCentroid() != 0 && mHSpanDome.getParamMaxFreqCentroid() > mHSpanDome.getParamMinFreqCentroid()) ||
+                (mHSpanDome.getParamRangeSpread() != 0 && mHSpanDome.getParamFactorSpread() > 0) ||
+                (mHSpanDome.getParamRangeNoise() != 0 && mHSpanDome.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mVSpanDome.getParameterComboBoxIndex() > 3 && mVSpanDome.getParameterComboBoxIndex() < 7) &&
+            if ((mVSpanDome.getParamDescriptorComboBoxIndex() > 3 && mVSpanDome.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mVSpanDome.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mVSpanDome.getParamMaxFreqArray()[indexMaxFreqCentroid] > mVSpanDome.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mVSpanDome.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mVSpanDome.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mVSpanDome.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mVSpanDome.getParamFactorArray()[indexFactorNoise] > 0)
+                (mVSpanDome.getParamRangeCentroid() != 0 && mVSpanDome.getParamMaxFreqCentroid() > mVSpanDome.getParamMinFreqCentroid()) ||
+                (mVSpanDome.getParamRangeSpread() != 0 && mVSpanDome.getParamFactorSpread() > 0) ||
+                (mVSpanDome.getParamRangeNoise() != 0 && mVSpanDome.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
@@ -79,24 +86,28 @@ public:
     }
 
     bool checkConditionLoudnessAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 2 && mAzimuthDome.getParamArrayValue(indexFactorLoudness, mAzimuthDome.getParamFactorArray()) > 0 &&
-            mAzimuthDome.getParamArrayValue(indexSmoothAndRangeLoudness, mAzimuthDome.getParamRangeArray()) != 0) {
+        if (
+            mAzimuthDome.getParamDescriptorComboBoxIndex() == 2 &&
+            mAzimuthDome.getParamFactorLoudness() > 0 &&
+            mAzimuthDome.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 2 && mElevationDome.getParamArrayValue(indexFactorLoudness, mElevationDome.getParamFactorArray()) > 0 &&
-            mElevationDome.getParamArrayValue(indexSmoothAndRangeLoudness, mElevationDome.getParamRangeArray()) != 0) {
+        if (
+            mElevationDome.getParamDescriptorComboBoxIndex() == 2 &&
+            mElevationDome.getParamFactorLoudness() > 0 &&
+            mElevationDome.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessHSpan() {
         if (
-            mHSpanDome.getParameterComboBoxIndex() == 2 &&
-            mHSpanDome.getParamArrayValue(indexFactorLoudness, mHSpanDome.getParamFactorArray()) > 0 &&
-            mHSpanDome.getParamArrayValue(indexSmoothAndRangeLoudness, mHSpanDome.getParamRangeArray()) != 0
+            mHSpanDome.getParamDescriptorComboBoxIndex() == 2 &&
+            mHSpanDome.getParamFactorLoudness() > 0 &&
+            mHSpanDome.getParamRangeLoudness() != 0
             ) {
             return true;
         }
@@ -104,9 +115,9 @@ public:
     }
     bool checkConditionLoudnessVSpan() {
         if (
-            mVSpanDome.getParameterComboBoxIndex() == 2 &&
-            mVSpanDome.getParamArrayValue(indexFactorLoudness, mVSpanDome.getParamFactorArray()) > 0 &&
-            mVSpanDome.getParamArrayValue(indexSmoothAndRangeLoudness, mVSpanDome.getParamRangeArray()) != 0
+            mVSpanDome.getParamDescriptorComboBoxIndex() == 2 &&
+            mVSpanDome.getParamFactorLoudness() > 0 &&
+            mVSpanDome.getParamRangeLoudness() != 0
             ) {
             return true;
         }
@@ -124,9 +135,9 @@ public:
     }
 
     bool checkConditionPitchAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 3 &&
-            mAzimuthDome.getParamArrayValue(indexMinFreqPitch, mAzimuthDome.getParamMinFreqArray()) < mAzimuthDome.getParamArrayValue(indexMaxFreqPitch, mAzimuthDome.getParamMaxFreqArray()) &&
-            mAzimuthDome.getParamArrayValue(indexSmoothAndRangePitch, mAzimuthDome.getParamRangeArray()) != 0
+        if (mAzimuthDome.getParamDescriptorComboBoxIndex() == 3 &&
+            mAzimuthDome.getParamMinFreqPitch() < mAzimuthDome.getParamMaxFreqPitch() &&
+            mAzimuthDome.getParamRangePitch() != 0
             ) {
             return true;
         }
@@ -134,43 +145,43 @@ public:
     }
 
     bool checkConditionOnsetDetectionAnalyse() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 7 || mElevationDome.getParameterComboBoxIndex() == 7 || mHSpanDome.getParameterComboBoxIndex() == 7 || mVSpanDome.getParameterComboBoxIndex() == 7) {
+        if (mAzimuthDome.getParamDescriptorComboBoxIndex() == 7 || mElevationDome.getParamDescriptorComboBoxIndex() == 7 || mHSpanDome.getParamDescriptorComboBoxIndex() == 7 || mVSpanDome.getParamDescriptorComboBoxIndex() == 7) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 7 && mAzimuthDome.getParameterMinTime() < mAzimuthDome.getParameterMaxTime()) {
+        if (mAzimuthDome.getParamDescriptorComboBoxIndex() == 7 && mAzimuthDome.getParamMinTime() < mAzimuthDome.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 7 && mElevationDome.getParameterMinTime() < mElevationDome.getParameterMaxTime()) {
+        if (mElevationDome.getParamDescriptorComboBoxIndex() == 7 && mElevationDome.getParamMinTime() < mElevationDome.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionHSpan() {
-        if (mHSpanDome.getParameterComboBoxIndex() == 7 && mHSpanDome.getParameterMinTime() < mHSpanDome.getParameterMaxTime()) {
+        if (mHSpanDome.getParamDescriptorComboBoxIndex() == 7 && mHSpanDome.getParamMinTime() < mHSpanDome.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionVSpan() {
-        if (mVSpanDome.getParameterComboBoxIndex() == 7 && mVSpanDome.getParameterMinTime() < mVSpanDome.getParameterMaxTime()) {
+        if (mVSpanDome.getParamDescriptorComboBoxIndex() == 7 && mVSpanDome.getParamMinTime() < mVSpanDome.getParamMaxTime()) {
             return true;
         }
         return false;
     }
     bool checkConditionPitchElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 3 &&
-            mElevationDome.getParamArrayValue(indexMinFreqPitch, mElevationDome.getParamMinFreqArray()) < mElevationDome.getParamArrayValue(indexMaxFreqPitch, mElevationDome.getParamMaxFreqArray()) &&
-            mElevationDome.getParamArrayValue(indexSmoothAndRangePitch, mElevationDome.getParamRangeArray()) != 0
+        if (mElevationDome.getParamDescriptorComboBoxIndex() == 3 &&
+            mElevationDome.getParamMinFreqPitch() < mElevationDome.getParamMaxFreqPitch() &&
+            mElevationDome.getParamRangePitch() != 0
             ) {
             return true;
         }
@@ -178,9 +189,9 @@ public:
     }
     bool checkConditionPitchHSpan() {
         if (
-            mHSpanDome.getParameterComboBoxIndex() == 3 &&
-            mHSpanDome.getParamArrayValue(indexMinFreqPitch, mHSpanDome.getParamMinFreqArray()) < mHSpanDome.getParamArrayValue(indexMaxFreqPitch, mHSpanDome.getParamMaxFreqArray()) &&
-            mHSpanDome.getParamArrayValue(indexSmoothAndRangePitch, mHSpanDome.getParamRangeArray()) != 0
+            mHSpanDome.getParamDescriptorComboBoxIndex() == 3 &&
+            mHSpanDome.getParamMinFreqPitch() < mHSpanDome.getParamMaxFreqPitch() &&
+            mHSpanDome.getParamRangePitch() != 0
             ) {
             return true;
         }
@@ -188,9 +199,9 @@ public:
     }
     bool checkConditionPitchVSpan() {
         if (
-            mVSpanDome.getParameterComboBoxIndex() == 3 &&
-            mVSpanDome.getParamArrayValue(indexMinFreqPitch, mVSpanDome.getParamMinFreqArray()) < mVSpanDome.getParamArrayValue(indexMaxFreqPitch, mVSpanDome.getParamMaxFreqArray()) &&
-            mVSpanDome.getParamArrayValue(indexSmoothAndRangePitch, mVSpanDome.getParamRangeArray()) != 0
+            mVSpanDome.getParamDescriptorComboBoxIndex() == 3 &&
+            mVSpanDome.getParamMinFreqPitch() < mVSpanDome.getParamMaxFreqPitch() &&
+            mVSpanDome.getParamRangePitch() != 0
             ) {
             return true;
         }
@@ -204,25 +215,27 @@ public:
     }
 
     bool checkConditionNoiseAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 6 && mAzimuthDome.getParamArrayValue(indexFactorNoise, mAzimuthDome.getParamFactorArray()) > 0 &&
-            mAzimuthDome.getParamArrayValue(indexSmoothAndRangeNoise, mAzimuthDome.getParamRangeArray()) != 0) {
+        if (
+            mAzimuthDome.getParamDescriptorComboBoxIndex() == 6 &&
+            mAzimuthDome.getParamFactorNoise() > 0 &&
+            mAzimuthDome.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 6 &&
-            mElevationDome.getParamArrayValue(indexFactorNoise, mElevationDome.getParamFactorArray()) > 0 &&
-            mElevationDome.getParamArrayValue(indexSmoothAndRangeNoise, mElevationDome.getParamRangeArray()) != 0) {
+        if (mElevationDome.getParamDescriptorComboBoxIndex() == 6 &&
+            mElevationDome.getParamFactorNoise() > 0 &&
+            mElevationDome.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseHSpan() {
         if (
-            mHSpanDome.getParameterComboBoxIndex() == 6 &&
-            mHSpanDome.getParamArrayValue(indexFactorNoise, mHSpanDome.getParamFactorArray()) > 0 &&
-            mHSpanDome.getParamArrayValue(indexSmoothAndRangeNoise, mHSpanDome.getParamRangeArray()) != 0
+            mHSpanDome.getParamDescriptorComboBoxIndex() == 6 &&
+            mHSpanDome.getParamFactorNoise() > 0 &&
+            mHSpanDome.getParamRangeNoise() != 0
             ) {
             return true;
         }
@@ -230,9 +243,9 @@ public:
     }
     bool checkConditionNoiseVSpan() {
         if (
-            mVSpanDome.getParameterComboBoxIndex() == 6 &&
-            mVSpanDome.getParamArrayValue(indexFactorNoise, mVSpanDome.getParamFactorArray()) > 0 &&
-            mVSpanDome.getParamArrayValue(indexSmoothAndRangeNoise, mVSpanDome.getParamRangeArray()) != 0
+            mVSpanDome.getParamDescriptorComboBoxIndex() == 6 &&
+            mVSpanDome.getParamFactorNoise() > 0 &&
+            mVSpanDome.getParamRangeNoise() != 0
             ) {
             return true;
         }
@@ -250,25 +263,27 @@ public:
     }
 
     bool checkConditionSpreadAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 5 && mAzimuthDome.getParamArrayValue(indexFactorSpread, mAzimuthDome.getParamFactorArray()) > 0 &&
-            mAzimuthDome.getParamArrayValue(indexSmoothAndRangeSpread, mAzimuthDome.getParamRangeArray()) != 0) {
+        if (
+            mAzimuthDome.getParamDescriptorComboBoxIndex() == 5 &&
+            mAzimuthDome.getParamFactorSpread() > 0 &&
+            mAzimuthDome.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 5 &&
-            mElevationDome.getParamArrayValue(indexFactorSpread, mElevationDome.getParamFactorArray()) > 0 &&
-            mElevationDome.getParamArrayValue(indexSmoothAndRangeSpread, mElevationDome.getParamRangeArray()) != 0) {
+        if (mElevationDome.getParamDescriptorComboBoxIndex() == 5 &&
+            mElevationDome.getParamFactorSpread() > 0 &&
+            mElevationDome.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadHSpan() {
         if (
-            mHSpanDome.getParameterComboBoxIndex() == 5 &&
-            mHSpanDome.getParamArrayValue(indexFactorSpread, mHSpanDome.getParamFactorArray()) > 0 &&
-            mHSpanDome.getParamArrayValue(indexSmoothAndRangeSpread, mHSpanDome.getParamRangeArray()) != 0
+            mHSpanDome.getParamDescriptorComboBoxIndex() == 5 &&
+            mHSpanDome.getParamFactorSpread() > 0 &&
+            mHSpanDome.getParamRangeSpread() != 0
             ) {
             return true;
         }
@@ -276,9 +291,9 @@ public:
     }
     bool checkConditionSpreadVSpan() {
         if (
-            mVSpanDome.getParameterComboBoxIndex() == 5 &&
-            mVSpanDome.getParamArrayValue(indexFactorSpread, mVSpanDome.getParamFactorArray()) > 0 &&
-            mVSpanDome.getParamArrayValue(indexSmoothAndRangeSpread, mVSpanDome.getParamRangeArray()) != 0
+            mVSpanDome.getParamDescriptorComboBoxIndex() == 5 &&
+            mVSpanDome.getParamFactorSpread() > 0 &&
+            mVSpanDome.getParamRangeSpread() != 0
             ) {
             return true;
         }
@@ -296,18 +311,18 @@ public:
     }
 
     bool checkConditionCentroidAzimuth() {
-        if (mAzimuthDome.getParameterComboBoxIndex() == 4 &&
-            mAzimuthDome.getParamArrayValue(indexMinFreqCentroid, mAzimuthDome.getParamMinFreqArray()) < mAzimuthDome.getParamArrayValue(indexMaxFreqCentroid, mAzimuthDome.getParamMaxFreqArray()) &&
-            mAzimuthDome.getParamArrayValue(indexSmoothAndRangeCentroid, mAzimuthDome.getParamRangeArray()) != 0
+        if (mAzimuthDome.getParamDescriptorComboBoxIndex() == 4 &&
+            mAzimuthDome.getParamMinFreqCentroid() < mAzimuthDome.getParamMaxFreqCentroid() &&
+            mAzimuthDome.getParamRangeCentroid() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionCentroidElevation() {
-        if (mElevationDome.getParameterComboBoxIndex() == 4 &&
-            mElevationDome.getParamArrayValue(indexMinFreqCentroid, mElevationDome.getParamMinFreqArray()) < mElevationDome.getParamArrayValue(indexMaxFreqCentroid, mElevationDome.getParamMaxFreqArray()) &&
-            mElevationDome.getParamArrayValue(indexSmoothAndRangeCentroid, mElevationDome.getParamRangeArray()) != 0
+        if (mElevationDome.getParamDescriptorComboBoxIndex() == 4 &&
+            mElevationDome.getParamMinFreqCentroid() < mElevationDome.getParamMaxFreqCentroid() &&
+            mElevationDome.getParamRangeCentroid() != 0
             ) {
             return true;
         }
@@ -315,9 +330,9 @@ public:
     }
     bool checkConditionCentroidHSpan() {
         if (
-            mHSpanDome.getParameterComboBoxIndex() == 4 &&
-            mHSpanDome.getParamArrayValue(indexMinFreqCentroid, mHSpanDome.getParamMinFreqArray()) < mHSpanDome.getParamArrayValue(indexMaxFreqCentroid, mHSpanDome.getParamMaxFreqArray()) &&
-            mHSpanDome.getParamArrayValue(indexSmoothAndRangeCentroid, mHSpanDome.getParamRangeArray()) != 0
+            mHSpanDome.getParamDescriptorComboBoxIndex() == 4 &&
+            mHSpanDome.getParamMinFreqCentroid() < mHSpanDome.getParamMaxFreqCentroid() &&
+            mHSpanDome.getParamRangeCentroid() != 0
             ) {
             return true;
         }
@@ -325,9 +340,9 @@ public:
     }
     bool checkConditionCentroidVSpan() {
         if (
-            mVSpanDome.getParameterComboBoxIndex() == 4 &&
-            mVSpanDome.getParamArrayValue(indexMinFreqCentroid, mVSpanDome.getParamMinFreqArray()) < mVSpanDome.getParamArrayValue(indexMaxFreqCentroid, mVSpanDome.getParamMaxFreqArray()) &&
-            mVSpanDome.getParamArrayValue(indexSmoothAndRangeCentroid, mVSpanDome.getParamRangeArray()) != 0
+            mVSpanDome.getParamDescriptorComboBoxIndex() == 4 &&
+            mVSpanDome.getParamMinFreqCentroid() < mVSpanDome.getParamMaxFreqCentroid() &&
+            mVSpanDome.getParamRangeCentroid() != 0
             ) {
             return true;
         }
@@ -340,7 +355,15 @@ public:
         return false;
     }
 
-//=================================================================================
+    //=================================================================================
+    void updateDomeParametersState() {
+        mAzimuthDome.updateParameterState();
+        mElevationDome.updateParameterState();
+        mHSpanDome.updateParameterState();
+        mVSpanDome.updateParameterState();
+    }
+
+    //=================================================================================
     AzimuthDome& getAzimuthDome() {
         return mAzimuthDome;
     }

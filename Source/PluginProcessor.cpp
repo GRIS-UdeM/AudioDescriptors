@@ -39,6 +39,9 @@ AudioDescriptorsAudioProcessor::AudioDescriptorsAudioProcessor()
 #endif
 	)
 #endif
+	, mAudioProcessorValueTreeState(*this, nullptr, juce::Identifier(JucePlugin_Name), {})
+	, domeSettings(mAudioProcessorValueTreeState)
+	, cubeSettings(mAudioProcessorValueTreeState)
 {
 	//startTimerHz(50);
 }
@@ -398,7 +401,8 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 			}
 		}
-		if (domeSettings.checkConditionNeedSpectralAnalyse() || cubeSettings.checkConditionNeedSpectralAnalyse()) {
+		if ((mSpatMode == SpatMode::dome && domeSettings.checkConditionNeedSpectralAnalyse()) ||
+			(mSpatMode == SpatMode::cube && cubeSettings.checkConditionNeedSpectralAnalyse())) {
 			ComplexVector  frameSpectral;
 			RealVector     magnitudeSpectral;
 			for (int y = 0; y < nFramesSpectral; y++) {
@@ -671,25 +675,67 @@ bool AudioDescriptorsAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* AudioDescriptorsAudioProcessor::createEditor()
 {
-	//pluginEditor.reset(new AudioDescriptorsAudioProcessorEditor(*this));
-
-	//mPluginEditor = new AudioDescriptorsAudioProcessorEditor(*this);
 	return new AudioDescriptorsAudioProcessorEditor (*this);
-	//return mPluginEditor;
 }
 
 //==============================================================================
-void AudioDescriptorsAudioProcessor::getStateInformation(juce::MemoryBlock& /*destData*/)
+void AudioDescriptorsAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
 	// You should use this method to store your parameters in the memory block.
 	// You could do that either as raw data, or use the XML or ValueTree classes
 	// as intermediaries to make it easy to save and load complex data.
+
+	// global properties
+	juce::String spatMode{};
+
+	if (mSpatMode == SpatMode::dome) {
+		spatMode = juce::String("Dome");
+	}
+	else {
+		spatMode = juce::String("Cube");
+	}
+	mAudioProcessorValueTreeState.state.setProperty({ juce::String("SpatMode") }, spatMode, nullptr);
+	mAudioProcessorValueTreeState.state.setProperty({ juce::String("CG_Id") }, mControlGrisId, nullptr);
+	mAudioProcessorValueTreeState.state.setProperty({ juce::String("OSCAddress") }, mCurrentOscAddress, nullptr);
+	mAudioProcessorValueTreeState.state.setProperty({ juce::String("OSCPort") }, mCurrentOscOutputPort, nullptr);
+
+	auto const state{ mAudioProcessorValueTreeState.copyState() };
+	auto xmlState{ state.createXml() };
+
+	if (xmlState != nullptr) {
+		copyXmlToBinary(*xmlState, destData);
+	}
 }
 
-void AudioDescriptorsAudioProcessor::setStateInformation(const void* /*data*/, int /*sizeInBytes*/)
+void AudioDescriptorsAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
 	// You should use this method to restore your parameters from this memory block,
 	// whose contents will have been created by the getStateInformation() call.
+
+	auto xmlState = getXmlFromBinary(data, sizeInBytes);
+
+	if (xmlState.get() != nullptr)
+		if (xmlState->hasTagName(mAudioProcessorValueTreeState.state.getType())) {
+			mAudioProcessorValueTreeState.replaceState(juce::ValueTree::fromXml(*xmlState));
+			domeSettings.updateDomeParametersState();
+			cubeSettings.updateCubeParametersState();
+
+			// global properties
+			juce::String spatMode{};
+			spatMode = mAudioProcessorValueTreeState.state.getProperty({ juce::String("SpatMode") }).toString();
+			if (spatMode.compare(juce::String("Cube")) == 0) {
+				mSpatMode = SpatMode::cube;
+			}
+			else {
+				mSpatMode = SpatMode::dome;
+			}
+			mControlGrisId = mAudioProcessorValueTreeState.state.getProperty({ juce::String("CG_Id") }).toString().getIntValue();
+			mCurrentOscAddress = mAudioProcessorValueTreeState.state.getProperty({ juce::String("OSCAddress") }).toString();
+			mCurrentOscOutputPort = mAudioProcessorValueTreeState.state.getProperty({ juce::String("OSCPort") }).toString().getIntValue();
+		}
+
+	auto const state{ mAudioProcessorValueTreeState.copyState() };
+	state;
 }
 
 void AudioDescriptorsAudioProcessor::timerCallback()
@@ -704,7 +750,6 @@ bool AudioDescriptorsAudioProcessor::createOscConnection(juce::String const& add
 	
 	mOscConnected = mOscSender.connect(address, oscPort);
 	if (!mOscConnected) {
-		//std::cout << "Error: could not connect to UDP port " << oscPort << " at address " << address << std::endl;
 		DBG("OSC can't establish connection");
 		return false;
 	}
@@ -792,7 +837,6 @@ void AudioDescriptorsAudioProcessor::sendOscMessage()
 		message.setAddressPattern(juce::OSCAddressPattern(pluginInstance + "/desc/1/domeparams"));
 		message.addFloat32(static_cast<float>(mAzimuthDomeValue));
 		message.addFloat32(static_cast<float>(mElevationDomeValue));
-		//DBG("mElevationDomeValue: " << mElevationDomeValue);
 		message.addFloat32(static_cast<float>(mHspanDomeValue));
 		message.addFloat32(static_cast<float>(mVspanDomeValue));
 		mOscSender.send(message);
@@ -963,108 +1007,106 @@ void AudioDescriptorsAudioProcessor::setInterfaceState() {
 void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter, int index, double value, bool isAzimuth, bool isOffset)
 {
 	if (index == 2) {
-		value = domeParameters.PourcentageConversion(value, parameter.getParamArrayValue(indexFactorLoudness, parameter.getParamFactorArray()));
-		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamMoreSmoothArray()));
+		value = domeParameters.PourcentageConversion(value, parameter.getParamFactorLoudness());
+		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamSmoothLoudness(),
+			parameter.getParamSmoothCoefLoudness());
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamRangeArray()), smoothedValue,
-				parameter.getParamArrayValue(indexLapLoudness, parameter.getParamLapArray()));
+			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue,
+				parameter.getParamLapLoudness());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamRangeArray()), smoothedValue,1.0,
-				parameter.getParamArrayValue(indexOffsetLoudness, parameter.getParamOffsetArray()));
-			DBG("valeur que je donne " << parameter.getParamArrayValue(indexOffsetLoudness, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
+				parameter.getParamOffsetLoudness());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamRangeArray()), smoothedValue);
+			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
 	else if (index == 3) {
-		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMinFreqPitch, parameter.getParamMinFreqArray()));
-		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMaxFreqPitch, parameter.getParamMaxFreqArray()));
+		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
+		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
 		double zmap = domeParameters.zmap(value, minFreq, maxFreq);
-		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamMoreSmoothArray()));
+		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamSmoothPitch(),
+			parameter.getParamSmoothCoefPitch());
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamRangeArray()), smoothedValuePitch,
-				parameter.getParamArrayValue(indexLapPitch, parameter.getParamLapArray()));
+			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch,
+				parameter.getParamLapPitch());
 
-		}else if(isOffset){
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamRangeArray()), smoothedValuePitch, 1.0,
-				parameter.getParamArrayValue(indexOffsetPitch, parameter.getParamOffsetArray()));
+		} else if(isOffset){
+			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
+				parameter.getParamOffsetPitch());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamRangeArray()), smoothedValuePitch);
+			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
 	else if (index == 4) {
-		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMinFreqCentroid, parameter.getParamMinFreqArray()));
-		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMaxFreqCentroid, parameter.getParamMaxFreqArray()));
+		double minFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
+		double maxFreq = domeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
 		double zmap = domeParameters.zmap(value, minFreq, maxFreq);
-		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamMoreSmoothArray()));
+		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamSmoothCentroid(),
+			parameter.getParamSmoothCoefCentroid());
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamRangeArray()), smoothedValueCentroid,
-				parameter.getParamArrayValue(indexLapCentroid, parameter.getParamLapArray()));
+			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid,
+				parameter.getParamLapCentroid());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamRangeArray()), smoothedValueCentroid, 1.0,
-				parameter.getParamArrayValue(indexOffsetCentroid, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
+				parameter.getParamOffsetCentroid());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamRangeArray()), smoothedValueCentroid);
+			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
 	else if (index == 5) {
-		double ScaleOne = parameter.getParamArrayValue(indexFactorSpread, parameter.getParamFactorArray());
+		double ScaleOne = parameter.getParamFactorSpread();
 		ScaleOne = domeParameters.zmap(ScaleOne, 100.0, 500.0);
 		ScaleOne = domeParameters.subtractFromOne(ScaleOne);
 		double power = domeParameters.calculatePower(value, ScaleOne);
 		double mExpr = domeParameters.expr(power);
-		double ScaleTwo = parameter.getParamArrayValue(indexFactorSpread, parameter.getParamFactorArray());
+		double ScaleTwo = parameter.getParamFactorSpread();
 		ScaleTwo = domeParameters.ClipMyValue(ScaleTwo);
 		double mValueToSmooth = domeParameters.valueToSmooth(mExpr, ScaleTwo);
-		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamMoreSmoothArray()));
+		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamSmoothSpread(),
+			parameter.getParamSmoothCoefSpread());
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamRangeArray()), mSmoothedValue,
-				parameter.getParamArrayValue(indexLapSpread, parameter.getParamLapArray()));
-
+			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue,
+				parameter.getParamLapSpread());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamRangeArray()), mSmoothedValue, 1.0,
-				parameter.getParamArrayValue(indexOffsetSpread, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
+				parameter.getParamOffsetSpread());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamRangeArray()), mSmoothedValue);
+			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
 	else if (index == 6) {
-		value = value * (parameter.getParamArrayValue(indexFactorNoise, parameter.getParamFactorArray()) * 0.01);
-		value = parameter.getSmoothNoise().DoSmooth(value, parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamMoreSmoothArray()));
+		value = value * (parameter.getParamFactorNoise() * 0.01);
+		value = parameter.getSmoothNoise().DoSmooth(value, parameter.getParamSmoothNoise(),
+			parameter.getParamSmoothCoefNoise());
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamRangeArray()), value,
-				parameter.getParamArrayValue(indexLapNoise, parameter.getParamLapArray()));
+			parameter.parameters(parameter.getParamRangeNoise(), value,
+				parameter.getParamLapNoise());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamRangeArray()), value, 1.0,
-				parameter.getParamArrayValue(indexOffsetNoise, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeNoise(), value, 1.0,
+				parameter.getParamOffsetNoise());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamRangeArray()), value);
+			parameter.parameters(parameter.getParamRangeNoise(), value);
 		}
 	}
 	else if (index == 7) {
 		auto& smoothOnsetDetection{ parameter.getSmoothOnsetDetection() };
-		auto smoothValue = parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamSmoothArray());
-		auto smooth = smoothOnsetDetection.DoSmooth(value, smoothValue, parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamMoreSmoothArray()));
-		auto range = parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamRangeArray());
+		auto smoothValue = parameter.getParamSmoothOnsetDetection();
+		auto smooth = smoothOnsetDetection.DoSmooth(value, smoothValue, parameter.getParamSmoothCoefOnsetDetection());
+		auto range = parameter.getParamRangeOnsetDetection();
 		if (isAzimuth) {
-			parameter.parameters(range, smooth, parameter.getParamArrayValue(indexLapOnsetDetection, parameter.getParamLapArray()));
+			parameter.parameters(range, smooth, parameter.getParamLapOnsetDetection());
 		}
 		else if (isOffset) {
-			parameter.parameters(range, smooth, 1.0, parameter.getParamArrayValue(indexOffsetOnsetDetection, parameter.getParamOffsetArray()));
+			parameter.parameters(range, smooth, 1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {
 			parameter.parameters(range, smooth);
@@ -1075,84 +1117,83 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter, int index, double value, bool isOffset)
 {
 	if (index == 2) {
-		value = cubeParameters.PourcentageConversion(value, parameter.getParamArrayValue(indexFactorLoudness, parameter.getParamFactorArray()));
-		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamMoreSmoothArray()));
+		value = cubeParameters.PourcentageConversion(value, parameter.getParamFactorLoudness());
+		double smoothedValue = parameter.getSmoothLoudness().DoSmooth(value, parameter.getParamSmoothLoudness(),
+			parameter.getParamSmoothCoefLoudness());
 		if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamRangeArray()), smoothedValue,1.0,
-				parameter.getParamArrayValue(indexOffsetLoudness, parameter.getParamOffsetArray()));
-			DBG("valeur que je donne " << parameter.getParamArrayValue(indexOffsetLoudness, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
+				parameter.getParamOffsetLoudness());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeLoudness, parameter.getParamRangeArray()), smoothedValue);
+			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
 	else if (index == 3) {
-		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMinFreqPitch, parameter.getParamMinFreqArray()));
-		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMaxFreqPitch, parameter.getParamMaxFreqArray()));
+		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
+		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
 		double zmap = cubeParameters.zmap(value, minFreq, maxFreq);
-		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamMoreSmoothArray()));
+		double smoothedValuePitch = parameter.getSmoothPitch().DoSmooth(zmap, parameter.getParamSmoothPitch(),
+			parameter.getParamSmoothCoefPitch());
 		if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamRangeArray()), smoothedValuePitch,1.0,
-				parameter.getParamArrayValue(indexOffsetPitch, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
+				parameter.getParamOffsetPitch());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangePitch, parameter.getParamRangeArray()), smoothedValuePitch);
+			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
 	else if (index == 4) {
-		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMinFreqCentroid, parameter.getParamMinFreqArray()));
-		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamArrayValue(indexMaxFreqCentroid, parameter.getParamMaxFreqArray()));
+		double minFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
+		double maxFreq = cubeParameters.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
 		double zmap = cubeParameters.zmap(value, minFreq, maxFreq);
-		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamMoreSmoothArray()));
+		double smoothedValueCentroid = parameter.getSmoothCentroid().DoSmooth(zmap, parameter.getParamSmoothCentroid(),
+			parameter.getParamSmoothCoefCentroid());
 		if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamRangeArray()), smoothedValueCentroid,1.0,
-				parameter.getParamArrayValue(indexOffsetCentroid, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
+				parameter.getParamOffsetCentroid());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeCentroid, parameter.getParamRangeArray()), smoothedValueCentroid);
+			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
 	else if (index == 5) {
-		double ScaleOne = parameter.getParamArrayValue(indexFactorSpread, parameter.getParamFactorArray());
+		double ScaleOne = parameter.getParamFactorSpread();
 		ScaleOne = cubeParameters.zmap(ScaleOne, 100.0, 500.0);
 		ScaleOne = cubeParameters.subtractFromOne(ScaleOne);
 		double power = cubeParameters.calculatePower(value, ScaleOne);
 		double mExpr = cubeParameters.expr(power);
-		double ScaleTwo = parameter.getParamArrayValue(indexFactorSpread, parameter.getParamFactorArray());
+		double ScaleTwo = parameter.getParamFactorSpread();
 		ScaleTwo = cubeParameters.ClipMyValue(ScaleTwo);
 		double mValueToSmooth = cubeParameters.valueToSmooth(mExpr, ScaleTwo);
-		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamMoreSmoothArray()));
+		double mSmoothedValue = parameter.getSmoothSpread().DoSmooth(mValueToSmooth, parameter.getParamSmoothSpread(),
+			parameter.getParamSmoothCoefSpread());
 		if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamRangeArray()), mSmoothedValue,1.0,
-				parameter.getParamArrayValue(indexOffsetSpread, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
+				parameter.getParamOffsetSpread());
 		}
 		else {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeSpread, parameter.getParamRangeArray()), mSmoothedValue);
+			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
 	else if (index == 6) {
-		value = value * (parameter.getParamArrayValue(indexFactorNoise, parameter.getParamFactorArray()) * 0.01);
-		value = parameter.getSmoothNoise().DoSmooth(value, parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamSmoothArray()),
-			parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamMoreSmoothArray()));
+		value = value * (parameter.getParamFactorNoise() * 0.01);
+		value = parameter.getSmoothNoise().DoSmooth(value, parameter.getParamSmoothNoise(),
+			parameter.getParamSmoothCoefNoise());
 		if (isOffset) {
-			parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamRangeArray()), value,1.0,
-				parameter.getParamArrayValue(indexOffsetNoise, parameter.getParamOffsetArray()));
+			parameter.parameters(parameter.getParamRangeNoise(), value, 1.0,
+				parameter.getParamOffsetNoise());
 		}
 		else {
-		parameter.parameters(parameter.getParamArrayValue(indexSmoothAndRangeNoise, parameter.getParamRangeArray()), value);
+		parameter.parameters(parameter.getParamRangeNoise(), value);
 		}
 	}
 	else if (index == 7) {
 		auto& smoothOnsetDetection{ parameter.getSmoothOnsetDetection() };
-		auto smoothValue = parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamSmoothArray());
-		auto smooth = smoothOnsetDetection.DoSmooth(value, smoothValue, parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamMoreSmoothArray()));
-		auto range = parameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, parameter.getParamRangeArray());
+		auto smoothValue = parameter.getParamSmoothOnsetDetection();
+		auto smooth = smoothOnsetDetection.DoSmooth(value, smoothValue, parameter.getParamSmoothCoefOnsetDetection());
+		auto range = parameter.getParamRangeOnsetDetection();
 		if (isOffset) {
-			parameter.parameters(range, smooth,1.0, parameter.getParamArrayValue(indexOffsetOnsetDetection, parameter.getParamOffsetArray()));
+			parameter.parameters(range, smooth,1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {
 			parameter.parameters(range, smooth);
@@ -1187,6 +1228,11 @@ int AudioDescriptorsAudioProcessor::getCurrentOscPort()
 void AudioDescriptorsAudioProcessor::setCurrentOscPort(int const port)
 {
 	mCurrentOscOutputPort = port;
+}
+
+int AudioDescriptorsAudioProcessor::getControlGrisId()
+{
+	return mControlGrisId;
 }
 
 void AudioDescriptorsAudioProcessor::setControlGrisId(int const id)

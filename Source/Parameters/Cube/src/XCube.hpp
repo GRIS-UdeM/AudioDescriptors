@@ -28,10 +28,12 @@
 class XCube : public Parameters
 {
 public:
-	XCube()
+	XCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+		: Parameters(audioProcessorValueTreeState)
 	{
 		parameterName = juce::String("X");
 		paramID = ParameterID::x;
+		setParametersState();
 	}
 
 	void parameters(double range, double smooth, double lap, double offset) {

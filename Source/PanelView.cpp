@@ -28,13 +28,27 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
 {
     setSize(1000, 1000);
 
+    // default values
+    mDescriptorFactorSlider.setDoubleClickReturnValue(true, 100.0);
+    mDescriptorSmoothSlider.setDoubleClickReturnValue(true, 5.0);
+    mDescriptorSmoothCoefSlider.setDoubleClickReturnValue(true, 0.0);
+    mDescriptorRangeSlider.setDoubleClickReturnValue(true, 100.0);
+    mDescriptorMinFreqSlider.setDoubleClickReturnValue(true, 20.0);
+    mDescriptorMaxFreqSlider.setDoubleClickReturnValue(true, 10000.0);
+    mDescriptorThresholdSlider.setDoubleClickReturnValue(true, 0.1);
+    mDescriptorMinTimeSlider.setDoubleClickReturnValue(true, 0.1);
+    mDescriptorMaxTimeSlider.setDoubleClickReturnValue(true, 10.0);
+    mDescriptorLapSlider.setDoubleClickReturnValue(true, 1.0);
+    mDescriptorOffsetSlider.setDoubleClickReturnValue(true, 0.0);
+
+
     if (parameter.getParameterID() == ParameterID::azimuth) {
         addAndMakeVisible(mDescriptorLapLabel);
         mDescriptorLapLabel.setText("Lap", juce::dontSendNotification);
-        mDescriptorLap.setRange(1, 4, 1);
-        mDescriptorLap.setSliderStyle(juce::Slider::LinearHorizontal);
-        mDescriptorLap.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-        addAndMakeVisible(mDescriptorLap);
+        mDescriptorLapSlider.setRange(1, 4, 1);
+        mDescriptorLapSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+        mDescriptorLapSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+        addAndMakeVisible(mDescriptorLapSlider);
         isAzimuth = true;
     }
 
@@ -44,14 +58,14 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
         addAndMakeVisible(mDescriptorOffsetLabel);
         mDescriptorOffsetLabel.setText("Offset", juce::dontSendNotification);
         if (parameter.getParameterID() == ParameterID::elevation) {
-            mDescriptorOffset.setRange(0, 90);
+            mDescriptorOffsetSlider.setRange(0, 90);
         }
         else {
-            mDescriptorOffset.setRange(0, 1);
+            mDescriptorOffsetSlider.setRange(0, 1);
         }
-        mDescriptorOffset.setSliderStyle(juce::Slider::LinearHorizontal);
-        mDescriptorOffset.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-        addAndMakeVisible(mDescriptorOffset);
+        mDescriptorOffsetSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+        mDescriptorOffsetSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+        addAndMakeVisible(mDescriptorOffsetSlider);
         isOffset = true;
     }
     addAndMakeVisible(mDescriptorLabel);
@@ -86,318 +100,316 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
 
     addAndMakeVisible(mDescriptorMetricComboBox);
     mDescriptorMetricComboBox.addItemList(metricBoxItems, 1);
-    mDescriptorMetricComboBox.setSelectedId(parameter.getParameterMetricComboBoxIndex());
+    mDescriptorMetricComboBox.setSelectedId(parameter.getParamMetricComboBoxIndex());
 
     mDescriptorMetricComboBox.addListener(this);
     mDescriptorMetricComboBox.onChange = [this, &parameter] {
-        parameter.setParameterMetricComboBoxIndex(mDescriptorMetricComboBox.getSelectedId());
+        parameter.setParamMetricComboboxIndex(mDescriptorMetricComboBox.getSelectedId());
         mAudioProcessor.setOnsetDetectionMetric(mParameter.getParameterID(), mDescriptorMetricComboBox.getSelectedId());
         };
 
     mDescriptorComboBox.addItemList(boxItems, 1);
     addAndMakeVisible(mDescriptorComboBox);
-    mDescriptorComboBox.setSelectedId(mParameter.getParameterComboBoxIndex());
+    mDescriptorComboBox.setSelectedId(mParameter.getParamDescriptorComboBoxIndex());
     mDescriptorComboBox.addListener(this);
     mDescriptorComboBox.onChange = [this] {
-        mParameter.setParameterComboBoxIndex(mDescriptorComboBox.getSelectedId());
+        mParameter.setParamDescriptorComboBoxIndex(mDescriptorComboBox.getSelectedId());
         if (mDescriptorComboBox.getSelectedId() == 2) {
-            mDescriptorFactor.setValue(mParameter.getParamArrayValue(indexFactorLoudness, mParameter.getParamFactorArray()));
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeLoudness, mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeLoudness, mParameter.getParamRangeArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeLoudness, mParameter.getParamMoreSmoothArray()));
+            mDescriptorFactorSlider.setValue(mParameter.getParamFactorLoudness());
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothLoudness());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangeLoudness());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefLoudness());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapLoudness, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapLoudness());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetLoudness, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetLoudness());
             }
         }
         else if (mDescriptorComboBox.getSelectedId() == 3) {
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangePitch,mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangePitch,mParameter.getParamRangeArray()));
-            mDescriptorMinFreq.setValue(mParameter.getParamArrayValue(indexMinFreqPitch,mParameter.getParamMinFreqArray()));
-            mDescriptorMaxFreq.setValue(mParameter.getParamArrayValue(indexMaxFreqPitch,mParameter.getParamMaxFreqArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangePitch, mParameter.getParamMoreSmoothArray()));
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothPitch());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangePitch());
+            mDescriptorMinFreqSlider.setValue(mParameter.getParamMinFreqPitch());
+            mDescriptorMaxFreqSlider.setValue(mParameter.getParamMaxFreqPitch());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefPitch());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapPitch, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapPitch());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetPitch, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetPitch());
             }
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeCentroid, mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeCentroid, mParameter.getParamRangeArray()));
-            mDescriptorMinFreq.setValue(mParameter.getParamArrayValue(indexMinFreqCentroid, mParameter.getParamMinFreqArray()));
-            mDescriptorMaxFreq.setValue(mParameter.getParamArrayValue(indexMaxFreqCentroid, mParameter.getParamMaxFreqArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeCentroid, mParameter.getParamMoreSmoothArray()));
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothCentroid());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangeCentroid());
+            mDescriptorMinFreqSlider.setValue(mParameter.getParamMinFreqCentroid());
+            mDescriptorMaxFreqSlider.setValue(mParameter.getParamMaxFreqCentroid());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefCentroid());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapCentroid, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapCentroid());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetCentroid, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetCentroid());
             }
         }
         else if (mDescriptorComboBox.getSelectedId() == 5) {
-            mDescriptorFactor.setValue(mParameter.getParamArrayValue(indexFactorSpread, mParameter.getParamFactorArray()));
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeSpread, mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeSpread, mParameter.getParamRangeArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeSpread, mParameter.getParamMoreSmoothArray()));
+            mDescriptorFactorSlider.setValue(mParameter.getParamFactorSpread());
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothSpread());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangeSpread());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefSpread());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapSpread, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapSpread());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetSpread, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetSpread());
             }
         }
         else if (mDescriptorComboBox.getSelectedId() == 6) {
-            mDescriptorFactor.setValue(mParameter.getParamArrayValue(indexFactorNoise, mParameter.getParamFactorArray()));
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeNoise, mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeNoise, mParameter.getParamRangeArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeNoise, mParameter.getParamMoreSmoothArray()));
+            mDescriptorFactorSlider.setValue(mParameter.getParamFactorNoise());
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothNoise());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangeNoise());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefNoise());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapNoise, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapNoise());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetNoise, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetNoise());
             }
         }
         else if (mDescriptorComboBox.getSelectedId() == 7) {
-            mDescriptorMetricComboBox.setSelectedId(mParameter.getParameterMetricComboBoxIndex());
-            mDescriptorThreshold.setValue(mParameter.getParameterThreshold());
-            mDescriptorMinTime.setValue(mParameter.getParameterMinTime());
-            mDescriptorMaxTime.setValue(mParameter.getParameterMaxTime());
-            mDescriptorSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, mParameter.getParamSmoothArray()));
-            mDescriptorRange.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, mParameter.getParamRangeArray()));
-            mDescriptorMoreSmooth.setValue(mParameter.getParamArrayValue(indexSmoothAndRangeOnsetDetection, mParameter.getParamMoreSmoothArray()));
+            mDescriptorMetricComboBox.setSelectedId(mParameter.getParamMetricComboBoxIndex());
+            mDescriptorThresholdSlider.setValue(mParameter.getParamThreshold());
+            mDescriptorMinTimeSlider.setValue(mParameter.getParamMinTime());
+            mDescriptorMaxTimeSlider.setValue(mParameter.getParamMaxTime());
+            mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothOnsetDetection());
+            mDescriptorRangeSlider.setValue(mParameter.getParamRangeOnsetDetection());
+            mDescriptorSmoothCoefSlider.setValue(mParameter.getParamSmoothCoefOnsetDetection());
             if (isAzimuth) {
-                mDescriptorLap.setValue(mParameter.getParamArrayValue(indexLapOnsetDetection, mParameter.getParamLapArray()));
+                mDescriptorLapSlider.setValue(mParameter.getParamLapOnsetDetection());
             }
             if (isOffset) {
-                mDescriptorOffset.setValue(mParameter.getParamArrayValue(indexOffsetOnsetDetection, mParameter.getParamOffsetArray()));
+                mDescriptorOffsetSlider.setValue(mParameter.getParamOffsetOnsetDetection());
             }
         }
         };
 
-    mDescriptorFactor.setRange(0, 500);
-    mDescriptorFactor.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorFactor.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorFactor);
-    mDescriptorFactor.onValueChange = [this] {
+    mDescriptorFactorSlider.setRange(0, 500);
+    mDescriptorFactorSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorFactorSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorFactorSlider);
+    mDescriptorFactorSlider.onValueChange = [this] {
         if (mDescriptorComboBox.getSelectedId() == 2) {
-            mParameter.setParamArrayValue(mDescriptorFactor.getValue(), indexFactorLoudness, mParameter.getParamFactorArray());
+            mParameter.setParamFactorLoudness(mDescriptorFactorSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 5) {
-            mParameter.setParamArrayValue(mDescriptorFactor.getValue(), indexFactorSpread, mParameter.getParamFactorArray());
+            mParameter.setParamFactorSpread(mDescriptorFactorSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 6) {
-            mParameter.setParamArrayValue(mDescriptorFactor.getValue(), indexFactorNoise, mParameter.getParamFactorArray());
+            mParameter.setParamFactorNoise(mDescriptorFactorSlider.getValue());
         }
         };
 
     if (isAzimuth) {
-        mDescriptorLap.onValueChange = [this] {
+        mDescriptorLapSlider.onValueChange = [this] {
             if (mDescriptorComboBox.getSelectedId() == 2) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapLoudness, mParameter.getParamLapArray());
+                mParameter.setParamLapLoudness(mDescriptorLapSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 3) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapPitch, mParameter.getParamLapArray());
+                mParameter.setParamLapPitch(mDescriptorLapSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 4) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapCentroid, mParameter.getParamLapArray());
+                mParameter.setParamLapCentroid(mDescriptorLapSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 5) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapSpread, mParameter.getParamLapArray());
+                mParameter.setParamLapSpread(mDescriptorLapSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 6) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapNoise, mParameter.getParamLapArray());
+                mParameter.setParamLapNoise(mDescriptorLapSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 7) {
-                mParameter.setParamArrayValue(mDescriptorLap.getValue(), indexLapOnsetDetection, mParameter.getParamLapArray());
+                mParameter.setParamLapOnsetDetection(mDescriptorLapSlider.getValue());
             }
         };
     }
 
     if (isOffset) {
-        mDescriptorOffset.onValueChange = [this] {
+        mDescriptorOffsetSlider.onValueChange = [this] {
             if (mDescriptorComboBox.getSelectedId() == 2) {
-                DBG("VALEUR ! " << mDescriptorOffset.getValue());
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetLoudness, mParameter.getParamOffsetArray());
-                DBG("VALEYR APRES " << mParameter.getParamArrayValue(indexOffsetLoudness, mParameter.getParamOffsetArray()));
+                mParameter.setParamOffsetLoudness(mDescriptorOffsetSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 3) {
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetPitch, mParameter.getParamOffsetArray());
+                mParameter.setParamOffsetPitch(mDescriptorOffsetSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 4) {
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetCentroid, mParameter.getParamOffsetArray());
+                mParameter.setParamOffsetCentroid(mDescriptorOffsetSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 5) {
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetSpread, mParameter.getParamOffsetArray());
+                mParameter.setParamOffsetSpread(mDescriptorOffsetSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 6) {
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetNoise, mParameter.getParamOffsetArray());
+                mParameter.setParamOffsetNoise(mDescriptorOffsetSlider.getValue());
             }
             else if (mDescriptorComboBox.getSelectedId() == 7) {
-                mParameter.setParamArrayValue(mDescriptorOffset.getValue(), indexOffsetOnsetDetection, mParameter.getParamOffsetArray());
+                mParameter.setParamOffsetOnsetDetection(mDescriptorOffsetSlider.getValue());
             }
         };
     }
 
-    mDescriptorSmooth.setRange(0, 100);
-    mDescriptorSmooth.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorSmooth.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorSmooth);
-    mDescriptorSmooth.onValueChange = [this] {
+    mDescriptorSmoothSlider.setRange(0, 100);
+    mDescriptorSmoothSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorSmoothSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorSmoothSlider);
+    mDescriptorSmoothSlider.onValueChange = [this] {
         if (mDescriptorComboBox.getSelectedId() == 2) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangeLoudness, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothLoudness(mDescriptorSmoothSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 3) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangePitch, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothPitch(mDescriptorSmoothSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangeCentroid, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothCentroid(mDescriptorSmoothSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 5) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangeSpread, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothSpread(mDescriptorSmoothSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 6) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangeNoise, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothNoise(mDescriptorSmoothSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 7) {
-            mParameter.setParamArrayValue(mDescriptorSmooth.getValue(), indexSmoothAndRangeOnsetDetection, mParameter.getParamSmoothArray());
+            mParameter.setParamSmoothOnsetDetection(mDescriptorSmoothSlider.getValue());
         }
         };
 
-    mDescriptorMoreSmooth.setRange(0, 100);
-    mDescriptorMoreSmooth.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorMoreSmooth.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorMoreSmooth);
-    mDescriptorMoreSmooth.onValueChange = [this] {
+    mDescriptorSmoothCoefSlider.setRange(0, 100);
+    mDescriptorSmoothCoefSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorSmoothCoefSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorSmoothCoefSlider);
+    mDescriptorSmoothCoefSlider.onValueChange = [this] {
         if (mDescriptorComboBox.getSelectedId() == 2) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangeLoudness, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefLoudness(mDescriptorSmoothCoefSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 3) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangePitch, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefPitch(mDescriptorSmoothCoefSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangeCentroid, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefCentroid(mDescriptorSmoothCoefSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 5) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangeSpread, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefSpread(mDescriptorSmoothCoefSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 6) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangeNoise, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefNoise(mDescriptorSmoothCoefSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 7) {
-            mParameter.setParamArrayValue(mDescriptorMoreSmooth.getValue(), indexSmoothAndRangeOnsetDetection, mParameter.getParamMoreSmoothArray());
+            mParameter.setParamSmoothCoefOnsetDetection(mDescriptorSmoothCoefSlider.getValue());
         }
     };
 
-    mDescriptorRange.setRange(-100, 100);
-    mDescriptorRange.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorRange.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorRange);
-    mDescriptorRange.onValueChange = [this] {
+    mDescriptorRangeSlider.setRange(-100, 100);
+    mDescriptorRangeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorRangeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorRangeSlider);
+    mDescriptorRangeSlider.onValueChange = [this] {
         if (mDescriptorComboBox.getSelectedId() == 2) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangeLoudness, mParameter.getParamRangeArray());
+            mParameter.setParamRangeLoudness(mDescriptorRangeSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 3) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangePitch, mParameter.getParamRangeArray());
+            mParameter.setParamRangePitch(mDescriptorRangeSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangeCentroid, mParameter.getParamRangeArray());
+            mParameter.setParamRangeCentroid(mDescriptorRangeSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 5) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangeSpread, mParameter.getParamRangeArray());
+            mParameter.setParamRangeSpread(mDescriptorRangeSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 6) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangeNoise, mParameter.getParamRangeArray());
+            mParameter.setParamRangeNoise(mDescriptorRangeSlider.getValue());
         }
         else if (mDescriptorComboBox.getSelectedId() == 7) {
-            mParameter.setParamArrayValue(mDescriptorRange.getValue(), indexSmoothAndRangeOnsetDetection, mParameter.getParamRangeArray());
+            mParameter.setParamRangeOnsetDetection(mDescriptorRangeSlider.getValue());
         }
         };
 
-    mDescriptorMinFreq.setRange(20, 20000);
-    mDescriptorMinFreq.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorMinFreq.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorMinFreq);
-    mDescriptorMinFreq.onValueChange = [this] {
-        auto minVal{ mDescriptorMinFreq.getValue() };
-        auto maxVal{ mDescriptorMaxFreq.getValue() };
+    mDescriptorMinFreqSlider.setRange(20, 20000);
+    mDescriptorMinFreqSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorMinFreqSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorMinFreqSlider);
+    mDescriptorMinFreqSlider.onValueChange = [this] {
+        auto minVal{ mDescriptorMinFreqSlider.getValue() };
+        auto maxVal{ mDescriptorMaxFreqSlider.getValue() };
         if (minVal > maxVal) {
             minVal = maxVal;
-            mDescriptorMinFreq.setValue(minVal);
+            mDescriptorMinFreqSlider.setValue(minVal);
         }
         if (mDescriptorComboBox.getSelectedId() == 3) {
-            mParameter.setParamArrayValue(minVal, indexMinFreqPitch, mParameter.getParamMinFreqArray());
+            mParameter.setParamMinFreqPitch(minVal);
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mParameter.setParamArrayValue(minVal, indexMinFreqCentroid, mParameter.getParamMinFreqArray());
+            mParameter.setParamMinFreqCentroid(minVal);
         }
         };
 
-    mDescriptorMaxFreq.setRange(20, 20000);
-    mDescriptorMaxFreq.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorMaxFreq.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorMaxFreq);
-    mDescriptorMaxFreq.onValueChange = [this] {
-        auto minVal{ mDescriptorMinFreq.getValue() };
-        auto maxVal{ mDescriptorMaxFreq.getValue() };
+    mDescriptorMaxFreqSlider.setRange(20, 20000);
+    mDescriptorMaxFreqSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorMaxFreqSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorMaxFreqSlider);
+    mDescriptorMaxFreqSlider.onValueChange = [this] {
+        auto minVal{ mDescriptorMinFreqSlider.getValue() };
+        auto maxVal{ mDescriptorMaxFreqSlider.getValue() };
         if (maxVal < minVal) {
             maxVal = minVal;
-            mDescriptorMaxFreq.setValue(maxVal);
+            mDescriptorMaxFreqSlider.setValue(maxVal);
         }
         if (mDescriptorComboBox.getSelectedId() == 3) {
-            mParameter.setParamArrayValue(maxVal, indexMaxFreqPitch, mParameter.getParamMaxFreqArray());
+            mParameter.setParamMaxFreqPitch(maxVal);
         }
         else if (mDescriptorComboBox.getSelectedId() == 4) {
-            mParameter.setParamArrayValue(maxVal, indexMaxFreqCentroid, mParameter.getParamMaxFreqArray());
+            mParameter.setParamMaxFreqCentroid(maxVal);
         }
         };
 
-    mDescriptorThreshold.setRange(0.0, 1.0);
-    mDescriptorThreshold.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorThreshold.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorThreshold);
-    mDescriptorThreshold.onValueChange = [this] {
+    mDescriptorThresholdSlider.setRange(0.0, 1.0);
+    mDescriptorThresholdSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorThresholdSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorThresholdSlider);
+    mDescriptorThresholdSlider.onValueChange = [this] {
         if (mDescriptorComboBox.getSelectedId() == 7) {
-            auto newVal{ mDescriptorThreshold.getValue() };
-            mParameter.setParameterThreshold(newVal);
+            auto newVal{ mDescriptorThresholdSlider.getValue() };
+            mParameter.setParamThreshold(newVal);
             mAudioProcessor.setOnsetDetectionThreshold(mParameter.getParameterID(), static_cast<float>(newVal));
         }
         };
 
-    mDescriptorMinTime.setRange(0.0, 30.0 + ALMOST_ZERO);
-    mDescriptorMinTime.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorMinTime.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorMinTime);
-    mDescriptorMinTime.onValueChange = [this] {
-        auto minVal{ mDescriptorMinTime.getValue() };
-        auto maxVal{ mDescriptorMaxTime.getValue() };
+    mDescriptorMinTimeSlider.setRange(0.0, 30.0 + ALMOST_ZERO);
+    mDescriptorMinTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorMinTimeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorMinTimeSlider);
+    mDescriptorMinTimeSlider.onValueChange = [this] {
+        auto minVal{ mDescriptorMinTimeSlider.getValue() };
+        auto maxVal{ mDescriptorMaxTimeSlider.getValue() };
         if (minVal > maxVal) {
             minVal = maxVal - ALMOST_ZERO;
-            mDescriptorMinTime.setValue(minVal);
+            mDescriptorMinTimeSlider.setValue(minVal);
         }
         if (mDescriptorComboBox.getSelectedId() == 7) {
-            mParameter.setParameterMinTime(minVal);
+            mParameter.setParamMinTime(minVal);
             mAudioProcessor.setOnsetDetectionMinTime(mParameter.getParameterID(), minVal);
         }
         };
 
-    mDescriptorMaxTime.setRange(ALMOST_ZERO, 30.0);
-    mDescriptorMaxTime.setSliderStyle(juce::Slider::LinearHorizontal);
-    mDescriptorMaxTime.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
-    addAndMakeVisible(mDescriptorMaxTime);
-    mDescriptorMaxTime.onValueChange = [this] {
-        auto minVal{ mDescriptorMinTime.getValue() };
-        auto maxVal{ mDescriptorMaxTime.getValue() };
+    mDescriptorMaxTimeSlider.setRange(ALMOST_ZERO, 30.0);
+    mDescriptorMaxTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    mDescriptorMaxTimeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 80, 20);
+    addAndMakeVisible(mDescriptorMaxTimeSlider);
+    mDescriptorMaxTimeSlider.onValueChange = [this] {
+        auto minVal{ mDescriptorMinTimeSlider.getValue() };
+        auto maxVal{ mDescriptorMaxTimeSlider.getValue() };
         if (maxVal < minVal) {
             maxVal = minVal + ALMOST_ZERO;
-            mDescriptorMaxTime.setValue(maxVal);
+            mDescriptorMaxTimeSlider.setValue(maxVal);
         }
         if (mDescriptorComboBox.getSelectedId() == 7) {
-            mParameter.setParameterMaxTime(maxVal);
+            mParameter.setParamMaxTime(maxVal);
             mAudioProcessor.setOnsetDetectionMaxTime(mParameter.getParameterID(), maxVal);
         }
         };
@@ -413,111 +425,111 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
     if (comboBox == &mDescriptorComboBox) {
         if (mDescriptorComboBox.getSelectedId() == 1) {
 
-            mDescriptorFactor.setVisible(false);
+            mDescriptorFactorSlider.setVisible(false);
             mDescriptorFactorLabel.setVisible(false);
 
-            mDescriptorLap.setVisible(false);
+            mDescriptorLapSlider.setVisible(false);
             mDescriptorLapLabel.setVisible(false);
 
-            mDescriptorOffset.setVisible(false);
+            mDescriptorOffsetSlider.setVisible(false);
             mDescriptorOffsetLabel.setVisible(false);
 
-            mDescriptorSmooth.setVisible(false);
+            mDescriptorSmoothSlider.setVisible(false);
             mDescriptorSmoothLabel.setVisible(false);
 
-            mDescriptorMoreSmooth.setVisible(false);
+            mDescriptorSmoothCoefSlider.setVisible(false);
             mDescriptorMoreSmoothLabel.setVisible(false);
 
-            mDescriptorRange.setVisible(false);
+            mDescriptorRangeSlider.setVisible(false);
             mDescriptorRangeLabel.setVisible(false);
 
-            mDescriptorMinFreq.setVisible(false);
+            mDescriptorMinFreqSlider.setVisible(false);
             mDescriptorMinFreqLabel.setVisible(false);
 
-            mDescriptorMaxFreq.setVisible(false);
+            mDescriptorMaxFreqSlider.setVisible(false);
             mDescriptorMaxFreqLabel.setVisible(false);
 
             mDescriptorMetricComboBox.setVisible(false);
 
-            mDescriptorThreshold.setVisible(false);
+            mDescriptorThresholdSlider.setVisible(false);
             mDescriptorThresholdLabel.setVisible(false);
 
-            mDescriptorMinTime.setVisible(false);
+            mDescriptorMinTimeSlider.setVisible(false);
             mDescriptorMinTimeLabel.setVisible(false);
 
-            mDescriptorMaxTime.setVisible(false);
+            mDescriptorMaxTimeSlider.setVisible(false);
             mDescriptorMaxTimeLabel.setVisible(false);
         }
         else if (mDescriptorComboBox.getSelectedId() != 1) {
             if (isAzimuth) {
-                mDescriptorLap.setVisible(true);
+                mDescriptorLapSlider.setVisible(true);
                 mDescriptorLapLabel.setVisible(true);
             }
 
             if (isOffset) {
-                mDescriptorOffset.setVisible(true);
+                mDescriptorOffsetSlider.setVisible(true);
                 mDescriptorOffsetLabel.setVisible(true);
             }
 
-            mDescriptorFactor.setVisible(true);
+            mDescriptorFactorSlider.setVisible(true);
             mDescriptorFactorLabel.setVisible(true);
 
-            mDescriptorSmooth.setVisible(true);
+            mDescriptorSmoothSlider.setVisible(true);
             mDescriptorSmoothLabel.setVisible(true);
 
-            mDescriptorMoreSmooth.setVisible(true);
+            mDescriptorSmoothCoefSlider.setVisible(true);
             mDescriptorMoreSmoothLabel.setVisible(true);
 
-            mDescriptorRange.setVisible(true);
+            mDescriptorRangeSlider.setVisible(true);
             mDescriptorRangeLabel.setVisible(true);
 
             mDescriptorMetricComboBox.setVisible(false);
 
-            mDescriptorThreshold.setVisible(false);
+            mDescriptorThresholdSlider.setVisible(false);
             mDescriptorThresholdLabel.setVisible(false);
 
-            mDescriptorMinTime.setVisible(false);
+            mDescriptorMinTimeSlider.setVisible(false);
             mDescriptorMinTimeLabel.setVisible(false);
 
-            mDescriptorMaxTime.setVisible(false);
+            mDescriptorMaxTimeSlider.setVisible(false);
             mDescriptorMaxTimeLabel.setVisible(false);
 
             if (mDescriptorComboBox.getSelectedId() == 3 || mDescriptorComboBox.getSelectedId() == 4) {
-                mDescriptorMinFreq.setVisible(true);
+                mDescriptorMinFreqSlider.setVisible(true);
                 mDescriptorMinFreqLabel.setVisible(true);
 
-                mDescriptorMaxFreq.setVisible(true);
+                mDescriptorMaxFreqSlider.setVisible(true);
                 mDescriptorMaxFreqLabel.setVisible(true);
 
-                mDescriptorFactor.setVisible(false);
+                mDescriptorFactorSlider.setVisible(false);
                 mDescriptorFactorLabel.setVisible(false);
             }
             else if (mDescriptorComboBox.getSelectedId() == 7) {
                 mDescriptorMetricComboBox.setVisible(true);
 
-                mDescriptorThreshold.setVisible(true);
+                mDescriptorThresholdSlider.setVisible(true);
                 mDescriptorThresholdLabel.setVisible(true);
 
-                mDescriptorMinTime.setVisible(true);
+                mDescriptorMinTimeSlider.setVisible(true);
                 mDescriptorMinTimeLabel.setVisible(true);
 
-                mDescriptorMaxTime.setVisible(true);
+                mDescriptorMaxTimeSlider.setVisible(true);
                 mDescriptorMaxTimeLabel.setVisible(true);
 
-                mDescriptorFactor.setVisible(false);
+                mDescriptorFactorSlider.setVisible(false);
                 mDescriptorFactorLabel.setVisible(false);
 
-                mDescriptorMinFreq.setVisible(false);
+                mDescriptorMinFreqSlider.setVisible(false);
                 mDescriptorMinFreqLabel.setVisible(false);
 
-                mDescriptorMaxFreq.setVisible(false);
+                mDescriptorMaxFreqSlider.setVisible(false);
                 mDescriptorMaxFreqLabel.setVisible(false);
             }
             else {
-                mDescriptorMinFreq.setVisible(false);
+                mDescriptorMinFreqSlider.setVisible(false);
                 mDescriptorMinFreqLabel.setVisible(false);
 
-                mDescriptorMaxFreq.setVisible(false);
+                mDescriptorMaxFreqSlider.setVisible(false);
                 mDescriptorMaxFreqLabel.setVisible(false);
             }
         }
@@ -543,40 +555,40 @@ void PanelView::resized()
 
     mDescriptorFactorBox = generalFlexBoxConfig;
     mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactorLabel).withMinWidth(10).withFlex(1));
-    mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactor).withFlex(3).withMargin(sliderMargin));
+    mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactorSlider).withFlex(3).withMargin(sliderMargin));
 
     if (isAzimuth) {
         mDescriptorLapBox = generalFlexBoxConfig;
         mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapLabel).withMinWidth(10).withFlex(1));
-        mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLap).withFlex(3).withMargin(sliderMargin));
+        mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapSlider).withFlex(3).withMargin(sliderMargin));
     }
 
 
     if (isOffset) {
         mDescriptorOffsetBox = generalFlexBoxConfig;
         mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffsetLabel).withMinWidth(10).withFlex(1));
-        mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffset).withFlex(3).withMargin(sliderMargin));
+        mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffsetSlider).withFlex(3).withMargin(sliderMargin));
     }
 
     mDescriptorSmoothBox = generalFlexBoxConfig;
     mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothLabel).withMinWidth(10).withFlex(1));
-    mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmooth).withFlex(3).withMargin(sliderMargin));
+    mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMoreSmoothBox = generalFlexBoxConfig;
     mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorMoreSmoothLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorMoreSmooth).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothCoefSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorRangeBox = generalFlexBoxConfig;
     mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRange).withFlex(3).withMargin(sliderMargin));
+    mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMinFreqBox = generalFlexBoxConfig;
     mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreqLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreq).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreqSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMaxFreqBox = generalFlexBoxConfig;
     mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreqLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreq).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreqSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMetricBox = generalFlexBoxConfig;
     //azimuthMetricBox.items.add(juce::FlexItem(mAzimuthMetricLabel).withMinWidth(10).withFlex(1));
@@ -584,15 +596,15 @@ void PanelView::resized()
 
     mDescriptorThresholdBox = generalFlexBoxConfig;
     mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThresholdLabel).withMinWidth(10).withFlex(1));
-    mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThreshold).withFlex(3).withMargin(sliderMargin));
+    mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThresholdSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMinTimeBox = generalFlexBoxConfig;
     mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTimeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTime).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTimeSlider).withFlex(3).withMargin(sliderMargin));
 
     mDescriptorMaxTimeBox = generalFlexBoxConfig;
     mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTimeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTime).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTimeSlider).withFlex(3).withMargin(sliderMargin));
 
     juce::FlexBox descriptorFlexBox;
     descriptorFlexBox.flexDirection = juce::FlexBox::Direction::column;

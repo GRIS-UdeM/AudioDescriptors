@@ -29,10 +29,12 @@
 class VspanCube : public Parameters
 {
 public:
-	VspanCube()
+	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+		: Parameters(audioProcessorValueTreeState)
 	{
 		parameterName = juce::String("Z Span");
 		paramID = ParameterID::elevationspan;
+		setParametersState();
 	}
 
 	void parameters(double range, double smooth, double lap, double offset) {

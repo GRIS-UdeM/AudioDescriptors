@@ -32,55 +32,64 @@
 class CubeSettings
 {
 public:
+    CubeSettings() = delete;
+    explicit CubeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+        : mXCube(audioProcessorValueTreeState)
+        , mYCube(audioProcessorValueTreeState)
+        , mZCube(audioProcessorValueTreeState)
+        , mHSpanCube(audioProcessorValueTreeState)
+        , mVSpanCube(audioProcessorValueTreeState)
+    {};
+
 /// /////////////////////////// Les conditions de verifications//////////////////////////
 
     bool checkConditionNeedSpectralAnalyse() {
-        if (mXCube.getParameterComboBoxIndex() > 3 || mYCube.getParameterComboBoxIndex() > 3 || mZCube.getParameterComboBoxIndex() > 3 || mHSpanCube.getParameterComboBoxIndex() > 3 || mVSpanCube.getParameterComboBoxIndex() > 3) {
-            if ((mXCube.getParameterComboBoxIndex() > 3 && mXCube.getParameterComboBoxIndex() < 7) &&
+        if (mXCube.getParamDescriptorComboBoxIndex() > 3 || mYCube.getParamDescriptorComboBoxIndex() > 3 || mZCube.getParamDescriptorComboBoxIndex() > 3 || mHSpanCube.getParamDescriptorComboBoxIndex() > 3 || mVSpanCube.getParamDescriptorComboBoxIndex() > 3) {
+            if ((mXCube.getParamDescriptorComboBoxIndex() > 3 && mXCube.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mXCube.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mXCube.getParamMaxFreqArray()[indexMaxFreqCentroid] > mXCube.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mXCube.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mXCube.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mXCube.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mXCube.getParamFactorArray()[indexFactorNoise] > 0)
+                (mXCube.getParamRangeCentroid() != 0 && mXCube.getParamMaxFreqCentroid() > mXCube.getParamMinFreqCentroid()) ||
+                (mXCube.getParamRangeSpread() != 0 && mXCube.getParamFactorSpread() > 0) ||
+                (mXCube.getParamRangeNoise() != 0 && mXCube.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mYCube.getParameterComboBoxIndex() > 3 && mYCube.getParameterComboBoxIndex() < 7) &&
+            if ((mYCube.getParamDescriptorComboBoxIndex() > 3 && mYCube.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mYCube.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mYCube.getParamMaxFreqArray()[indexMaxFreqCentroid] > mYCube.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mYCube.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mYCube.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mYCube.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mYCube.getParamFactorArray()[indexFactorNoise] > 0)
+                (mYCube.getParamRangeCentroid() != 0 && mYCube.getParamMaxFreqCentroid() > mYCube.getParamMinFreqCentroid()) ||
+                (mYCube.getParamRangeSpread() != 0 && mYCube.getParamFactorSpread() > 0) ||
+                (mYCube.getParamRangeNoise() != 0 && mYCube.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mZCube.getParameterComboBoxIndex() > 3 && mZCube.getParameterComboBoxIndex() < 7) &&
+            if ((mZCube.getParamDescriptorComboBoxIndex() > 3 && mZCube.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mZCube.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mZCube.getParamMaxFreqArray()[indexMaxFreqCentroid] > mZCube.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mZCube.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mZCube.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mZCube.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mZCube.getParamFactorArray()[indexFactorNoise] > 0)
+                (mZCube.getParamRangeCentroid() != 0 && mZCube.getParamMaxFreqCentroid() > mZCube.getParamMinFreqCentroid()) ||
+                (mZCube.getParamRangeSpread() != 0 && mZCube.getParamFactorSpread() > 0) ||
+                (mZCube.getParamRangeNoise() != 0 && mZCube.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mHSpanCube.getParameterComboBoxIndex() > 3 && mHSpanCube.getParameterComboBoxIndex() < 7) &&
+            if ((mHSpanCube.getParamDescriptorComboBoxIndex() > 3 && mHSpanCube.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mHSpanCube.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mHSpanCube.getParamMaxFreqArray()[indexMaxFreqCentroid] > mHSpanCube.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mHSpanCube.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mHSpanCube.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mHSpanCube.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mHSpanCube.getParamFactorArray()[indexFactorNoise] > 0)
+                (mHSpanCube.getParamRangeCentroid() != 0 && mHSpanCube.getParamMaxFreqCentroid() > mHSpanCube.getParamMinFreqCentroid()) ||
+                (mHSpanCube.getParamRangeSpread() != 0 && mHSpanCube.getParamFactorSpread() > 0) ||
+                (mHSpanCube.getParamRangeNoise() != 0 && mHSpanCube.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
             }
 
-            if ((mVSpanCube.getParameterComboBoxIndex() > 3 && mVSpanCube.getParameterComboBoxIndex() < 7) &&
+            if ((mVSpanCube.getParamDescriptorComboBoxIndex() > 3 && mVSpanCube.getParamDescriptorComboBoxIndex() < 7) &&
                 (
-                (mVSpanCube.getParamRangeArray()[indexSmoothAndRangeCentroid] != 0 && mVSpanCube.getParamMaxFreqArray()[indexMaxFreqCentroid] > mVSpanCube.getParamMinFreqArray()[indexMinFreqCentroid]) ||
-                (mVSpanCube.getParamRangeArray()[indexSmoothAndRangeSpread] != 0 && mVSpanCube.getParamFactorArray()[indexFactorSpread] > 0) ||
-                (mVSpanCube.getParamRangeArray()[indexSmoothAndRangeNoise] != 0 && mVSpanCube.getParamFactorArray()[indexFactorNoise] > 0)
+                (mVSpanCube.getParamRangeCentroid() != 0 && mVSpanCube.getParamMaxFreqCentroid() > mVSpanCube.getParamMinFreqCentroid()) ||
+                (mVSpanCube.getParamRangeSpread() != 0 && mVSpanCube.getParamFactorSpread() > 0) ||
+                (mVSpanCube.getParamRangeNoise() != 0 && mVSpanCube.getParamFactorNoise() > 0)
                 )
                 ) {
                 return true;
@@ -89,31 +98,31 @@ public:
         return false;
     }
     bool checkConditionLoudnessX() {
-        if (mXCube.getParameterComboBoxIndex() == 2 && mXCube.getParamArrayValue(indexFactorLoudness, mXCube.getParamFactorArray()) > 0 && mXCube.getParamArrayValue(indexSmoothAndRangeLoudness, mXCube.getParamRangeArray()) != 0) {
+        if (mXCube.getParamDescriptorComboBoxIndex() == 2 && mXCube.getParamFactorLoudness() > 0 && mXCube.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessY() {
-        if (mYCube.getParameterComboBoxIndex() == 2 && mYCube.getParamArrayValue(indexFactorLoudness, mYCube.getParamFactorArray()) > 0 && mYCube.getParamArrayValue(indexSmoothAndRangeLoudness, mYCube.getParamRangeArray()) != 0) {
+        if (mYCube.getParamDescriptorComboBoxIndex() == 2 && mYCube.getParamFactorLoudness() > 0 && mYCube.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessZ() {
-        if (mZCube.getParameterComboBoxIndex() == 2 && mZCube.getParamArrayValue(indexFactorLoudness, mZCube.getParamFactorArray()) > 0 && mZCube.getParamArrayValue(indexSmoothAndRangeLoudness, mZCube.getParamRangeArray()) != 0) {
+        if (mZCube.getParamDescriptorComboBoxIndex() == 2 && mZCube.getParamFactorLoudness() > 0 && mZCube.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 2 && mHSpanCube.getParamArrayValue(indexFactorLoudness, mHSpanCube.getParamFactorArray()) > 0 && mHSpanCube.getParamArrayValue(indexSmoothAndRangeLoudness, mHSpanCube.getParamRangeArray()) != 0) {
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 2 && mHSpanCube.getParamFactorLoudness() > 0 && mHSpanCube.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionLoudnessVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 2 && mVSpanCube.getParamArrayValue(indexFactorLoudness, mVSpanCube.getParamFactorArray()) > 0 && mVSpanCube.getParamArrayValue(indexSmoothAndRangeLoudness, mVSpanCube.getParamRangeArray()) != 0) {
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 2 && mVSpanCube.getParamFactorLoudness() > 0 && mVSpanCube.getParamRangeLoudness() != 0) {
             return true;
         }
         return false;
@@ -131,87 +140,87 @@ public:
     }
 
     bool checkConditionOnsetDetectionAnalyse() {
-        if (mXCube.getParameterComboBoxIndex() == 7 || mYCube.getParameterComboBoxIndex() == 7 || mZCube.getParameterComboBoxIndex() == 7 || mHSpanCube.getParameterComboBoxIndex() == 7 || mVSpanCube.getParameterComboBoxIndex() == 7) {
+        if (mXCube.getParamDescriptorComboBoxIndex() == 7 || mYCube.getParamDescriptorComboBoxIndex() == 7 || mZCube.getParamDescriptorComboBoxIndex() == 7 || mHSpanCube.getParamDescriptorComboBoxIndex() == 7 || mVSpanCube.getParamDescriptorComboBoxIndex() == 7) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionX() {
-        if (mXCube.getParameterComboBoxIndex() == 7 && mXCube.getParameterMinTime() < mXCube.getParameterMaxTime()) {
+        if (mXCube.getParamDescriptorComboBoxIndex() == 7 && mXCube.getParamMinTime() < mXCube.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionY() {
-        if (mYCube.getParameterComboBoxIndex() == 7 && mYCube.getParameterMinTime() < mYCube.getParameterMaxTime()) {
+        if (mYCube.getParamDescriptorComboBoxIndex() == 7 && mYCube.getParamMinTime() < mYCube.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionZ() {
-        if (mZCube.getParameterComboBoxIndex() == 7 && mZCube.getParameterMinTime() < mZCube.getParameterMaxTime()) {
+        if (mZCube.getParamDescriptorComboBoxIndex() == 7 && mZCube.getParamMinTime() < mZCube.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 7 && mHSpanCube.getParameterMinTime() < mHSpanCube.getParameterMaxTime()) {
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 7 && mHSpanCube.getParamMinTime() < mHSpanCube.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionOnsetDetectionVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 7 && mVSpanCube.getParameterMinTime() < mVSpanCube.getParameterMaxTime()) {
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 7 && mVSpanCube.getParamMinTime() < mVSpanCube.getParamMaxTime()) {
             return true;
         }
         return false;
     }
 
     bool checkConditionPitchX() {
-        if (mXCube.getParameterComboBoxIndex() == 3 &&
-            mXCube.getParamArrayValue(indexMinFreqPitch, mXCube.getParamMinFreqArray()) < mXCube.getParamArrayValue(indexMaxFreqPitch, mXCube.getParamMaxFreqArray()) &&
-            mXCube.getParamArrayValue(indexSmoothAndRangePitch, mXCube.getParamRangeArray()) != 0
+        if (mXCube.getParamDescriptorComboBoxIndex() == 3 &&
+            mXCube.getParamMinFreqPitch() < mXCube.getParamMaxFreqPitch() &&
+            mXCube.getParamRangePitch() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionPitchY() {
-        if (mYCube.getParameterComboBoxIndex() == 3 &&
-            mYCube.getParamArrayValue(indexMinFreqPitch, mYCube.getParamMinFreqArray()) < mYCube.getParamArrayValue(indexMaxFreqPitch, mYCube.getParamMaxFreqArray()) &&
-            mYCube.getParamArrayValue(indexSmoothAndRangePitch, mYCube.getParamRangeArray()) != 0
+        if (mYCube.getParamDescriptorComboBoxIndex() == 3 &&
+            mYCube.getParamMinFreqPitch() < mYCube.getParamMaxFreqPitch() &&
+            mYCube.getParamRangePitch() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionPitchZ() {
-        if (mZCube.getParameterComboBoxIndex() == 3 &&
-            mZCube.getParamArrayValue(indexMinFreqPitch, mZCube.getParamMinFreqArray()) < mZCube.getParamArrayValue(indexMaxFreqPitch, mZCube.getParamMaxFreqArray()) &&
-            mZCube.getParamArrayValue(indexSmoothAndRangePitch, mZCube.getParamRangeArray()) != 0
+        if (mZCube.getParamDescriptorComboBoxIndex() == 3 &&
+            mZCube.getParamMinFreqPitch() < mZCube.getParamMaxFreqPitch() &&
+            mZCube.getParamRangePitch() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionPitchHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 3 &&
-            mHSpanCube.getParamArrayValue(indexMinFreqPitch, mHSpanCube.getParamMinFreqArray()) < mHSpanCube.getParamArrayValue(indexMaxFreqPitch, mHSpanCube.getParamMaxFreqArray()) &&
-            mHSpanCube.getParamArrayValue(indexSmoothAndRangePitch, mHSpanCube.getParamRangeArray()) != 0
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 3 &&
+            mHSpanCube.getParamMinFreqPitch() < mHSpanCube.getParamMaxFreqPitch() &&
+            mHSpanCube.getParamRangePitch() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionPitchVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 3 &&
-            mVSpanCube.getParamArrayValue(indexMinFreqPitch, mVSpanCube.getParamMinFreqArray()) < mVSpanCube.getParamArrayValue(indexMaxFreqPitch, mVSpanCube.getParamMaxFreqArray()) &&
-            mVSpanCube.getParamArrayValue(indexSmoothAndRangePitch, mVSpanCube.getParamRangeArray()) != 0
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 3 &&
+            mVSpanCube.getParamMinFreqPitch() < mVSpanCube.getParamMaxFreqPitch() &&
+            mVSpanCube.getParamRangePitch() != 0
             ) {
             return true;
         }
@@ -225,31 +234,31 @@ public:
     }
 
     bool checkConditionNoiseX() {
-        if (mXCube.getParameterComboBoxIndex() == 6 && mXCube.getParamArrayValue(indexFactorNoise, mXCube.getParamFactorArray()) > 0 && mXCube.getParamArrayValue(indexSmoothAndRangeNoise, mXCube.getParamRangeArray()) != 0) {
+        if (mXCube.getParamDescriptorComboBoxIndex() == 6 && mXCube.getParamFactorNoise() > 0 && mXCube.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseY() {
-        if (mYCube.getParameterComboBoxIndex() == 6 && mYCube.getParamArrayValue(indexFactorNoise, mYCube.getParamFactorArray()) > 0 && mYCube.getParamArrayValue(indexSmoothAndRangeNoise, mYCube.getParamRangeArray()) != 0) {
+        if (mYCube.getParamDescriptorComboBoxIndex() == 6 && mYCube.getParamFactorNoise() > 0 && mYCube.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseZ() {
-        if (mZCube.getParameterComboBoxIndex() == 6 && mZCube.getParamArrayValue(indexFactorNoise, mZCube.getParamFactorArray()) > 0 && mZCube.getParamArrayValue(indexSmoothAndRangeNoise, mZCube.getParamRangeArray()) != 0) {
+        if (mZCube.getParamDescriptorComboBoxIndex() == 6 && mZCube.getParamFactorNoise() > 0 && mZCube.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 6 && mHSpanCube.getParamArrayValue(indexFactorNoise, mHSpanCube.getParamFactorArray()) > 0 && mHSpanCube.getParamArrayValue(indexSmoothAndRangeNoise, mHSpanCube.getParamRangeArray()) != 0) {
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 6 && mHSpanCube.getParamFactorNoise() > 0 && mHSpanCube.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionNoiseVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 6 && mVSpanCube.getParamArrayValue(indexFactorNoise, mVSpanCube.getParamFactorArray()) > 0 && mVSpanCube.getParamArrayValue(indexSmoothAndRangeNoise, mVSpanCube.getParamRangeArray()) != 0) {
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 6 && mVSpanCube.getParamFactorNoise() > 0 && mVSpanCube.getParamRangeNoise() != 0) {
             return true;
         }
         return false;
@@ -267,31 +276,31 @@ public:
     }
 
     bool checkConditionSpreadX() {
-        if (mXCube.getParameterComboBoxIndex() == 5 && mXCube.getParamArrayValue(indexFactorSpread, mXCube.getParamFactorArray()) > 0 && mXCube.getParamArrayValue(indexSmoothAndRangeSpread, mXCube.getParamRangeArray()) != 0) {
+        if (mXCube.getParamDescriptorComboBoxIndex() == 5 && mXCube.getParamFactorSpread() > 0 && mXCube.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadY() {
-        if (mYCube.getParameterComboBoxIndex() == 5 && mYCube.getParamArrayValue(indexFactorSpread, mYCube.getParamFactorArray()) > 0 && mYCube.getParamArrayValue(indexSmoothAndRangeSpread, mYCube.getParamRangeArray()) != 0) {
+        if (mYCube.getParamDescriptorComboBoxIndex() == 5 && mYCube.getParamFactorSpread() > 0 && mYCube.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadZ() {
-        if (mZCube.getParameterComboBoxIndex() == 5 && mZCube.getParamArrayValue(indexFactorSpread, mZCube.getParamFactorArray()) > 0 && mZCube.getParamArrayValue(indexSmoothAndRangeSpread, mZCube.getParamRangeArray()) != 0) {
+        if (mZCube.getParamDescriptorComboBoxIndex() == 5 && mZCube.getParamFactorSpread() > 0 && mZCube.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 5 && mHSpanCube.getParamArrayValue(indexFactorSpread, mHSpanCube.getParamFactorArray()) > 0 && mHSpanCube.getParamArrayValue(indexSmoothAndRangeSpread, mHSpanCube.getParamRangeArray()) != 0) {
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 5 && mHSpanCube.getParamFactorSpread() > 0 && mHSpanCube.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
     }
     bool checkConditionSpreadVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 5 && mVSpanCube.getParamArrayValue(indexFactorSpread, mVSpanCube.getParamFactorArray()) > 0 && mVSpanCube.getParamArrayValue(indexSmoothAndRangeSpread, mVSpanCube.getParamRangeArray()) != 0) {
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 5 && mVSpanCube.getParamFactorSpread() > 0 && mVSpanCube.getParamRangeSpread() != 0) {
             return true;
         }
         return false;
@@ -309,45 +318,45 @@ public:
     }
 
     bool checkConditionCentroidX() {
-        if (mXCube.getParameterComboBoxIndex() == 4 &&
-            mXCube.getParamArrayValue(indexMinFreqCentroid, mXCube.getParamMinFreqArray()) < mXCube.getParamArrayValue(indexMaxFreqCentroid, mXCube.getParamMaxFreqArray()) &&
-            mXCube.getParamArrayValue(indexSmoothAndRangeCentroid, mXCube.getParamRangeArray()) != 0
+        if (mXCube.getParamDescriptorComboBoxIndex() == 4 &&
+            mXCube.getParamMinFreqCentroid() < mXCube.getParamMaxFreqCentroid() &&
+            mXCube.getParamRangeCentroid() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionCentroidY() {
-        if (mYCube.getParameterComboBoxIndex() == 4 &&
-            mYCube.getParamArrayValue(indexMinFreqCentroid, mYCube.getParamMinFreqArray()) < mYCube.getParamArrayValue(indexMaxFreqCentroid, mYCube.getParamMaxFreqArray()) &&
-            mYCube.getParamArrayValue(indexSmoothAndRangeCentroid, mYCube.getParamRangeArray()) != 0
+        if (mYCube.getParamDescriptorComboBoxIndex() == 4 &&
+            mYCube.getParamMinFreqCentroid() < mYCube.getParamMaxFreqCentroid() &&
+            mYCube.getParamRangeCentroid() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionCentroidZ() {
-        if (mZCube.getParameterComboBoxIndex() == 4 &&
-            mZCube.getParamArrayValue(indexMinFreqCentroid, mZCube.getParamMinFreqArray()) < mZCube.getParamArrayValue(indexMaxFreqCentroid, mZCube.getParamMaxFreqArray()) &&
-            mZCube.getParamArrayValue(indexSmoothAndRangeCentroid, mZCube.getParamRangeArray()) != 0
+        if (mZCube.getParamDescriptorComboBoxIndex() == 4 &&
+            mZCube.getParamMinFreqCentroid() < mZCube.getParamMaxFreqCentroid() &&
+            mZCube.getParamRangeCentroid() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionCentroidHSpan() {
-        if (mHSpanCube.getParameterComboBoxIndex() == 4 &&
-            mHSpanCube.getParamArrayValue(indexMinFreqCentroid, mHSpanCube.getParamMinFreqArray()) < mHSpanCube.getParamArrayValue(indexMaxFreqCentroid, mHSpanCube.getParamMaxFreqArray()) &&
-            mHSpanCube.getParamArrayValue(indexSmoothAndRangeCentroid, mHSpanCube.getParamRangeArray()) != 0
+        if (mHSpanCube.getParamDescriptorComboBoxIndex() == 4 &&
+            mHSpanCube.getParamMinFreqCentroid() < mHSpanCube.getParamMaxFreqCentroid() &&
+            mHSpanCube.getParamRangeCentroid() != 0
             ) {
             return true;
         }
         return false;
     }
     bool checkConditionCentroidVSpan() {
-        if (mVSpanCube.getParameterComboBoxIndex() == 4 &&
-            mVSpanCube.getParamArrayValue(indexMinFreqCentroid, mVSpanCube.getParamMinFreqArray()) < mVSpanCube.getParamArrayValue(indexMaxFreqCentroid, mVSpanCube.getParamMaxFreqArray()) &&
-            mVSpanCube.getParamArrayValue(indexSmoothAndRangeCentroid, mVSpanCube.getParamRangeArray()) != 0
+        if (mVSpanCube.getParamDescriptorComboBoxIndex() == 4 &&
+            mVSpanCube.getParamMinFreqCentroid() < mVSpanCube.getParamMaxFreqCentroid() &&
+            mVSpanCube.getParamRangeCentroid() != 0
             ) {
             return true;
         }
@@ -358,6 +367,15 @@ public:
             return true;
         }
         return false;
+    }
+
+    //=================================================================================
+    void updateCubeParametersState() {
+        mXCube.updateParameterState();
+        mYCube.updateParameterState();
+        mZCube.updateParameterState();
+        mHSpanCube.updateParameterState();
+        mVSpanCube.updateParameterState();
     }
 
     XCube& getXCube() {

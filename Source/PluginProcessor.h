@@ -133,6 +133,7 @@ public:
     void setCurrentOscAddress(juce::String& address);
     int getCurrentOscPort();
     void setCurrentOscPort(int const port);
+    int getControlGrisId();
     void setControlGrisId(int const id);
 
 private:
@@ -142,11 +143,12 @@ private:
     juce::AudioBuffer<float> mDescriptorsBuffer;
     SpatMode mSpatMode{ SpatMode::dome };
 
+    juce::AudioProcessorValueTreeState mAudioProcessorValueTreeState;
+
     // OSC
     //bool mOscActivated{ true };
     bool mOscConnected{ false };
     bool mOscOutputConnected{ false };
-    int mFirstSourceId{ 1 };
     int mControlGrisId{ 1 };
     juce::String mCurrentOscAddress{ "127.0.0.1" };
     int mLastConnectedOscPort{ -1 };

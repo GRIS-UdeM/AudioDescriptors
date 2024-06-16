@@ -28,10 +28,12 @@
 class ZCube : public Parameters
 {
 public:
-	ZCube()
+	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
+		: Parameters(audioProcessorValueTreeState)
 	{
 		parameterName = juce::String("Z");
 		paramID = ParameterID::z;
+		setParametersState();
 	}
 
 	void parameters(double range, double smooth, double lap, double offset) {

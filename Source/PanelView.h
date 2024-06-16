@@ -43,17 +43,17 @@ private:
 
     juce::ComboBox mDescriptorMetricComboBox;
     juce::ComboBox mDescriptorComboBox;
-    juce::Slider mDescriptorFactor;
-    juce::Slider mDescriptorSmooth;
-    juce::Slider mDescriptorMoreSmooth;
-    juce::Slider mDescriptorRange;
-    juce::Slider mDescriptorMinFreq;
-    juce::Slider mDescriptorMaxFreq;
-    juce::Slider mDescriptorThreshold;
-    juce::Slider mDescriptorMinTime;
-    juce::Slider mDescriptorMaxTime;
-    juce::Slider mDescriptorLap;
-    juce::Slider mDescriptorOffset;
+    juce::Slider mDescriptorFactorSlider;
+    juce::Slider mDescriptorSmoothSlider;
+    juce::Slider mDescriptorSmoothCoefSlider;
+    juce::Slider mDescriptorRangeSlider;
+    juce::Slider mDescriptorMinFreqSlider;
+    juce::Slider mDescriptorMaxFreqSlider;
+    juce::Slider mDescriptorThresholdSlider;
+    juce::Slider mDescriptorMinTimeSlider;
+    juce::Slider mDescriptorMaxTimeSlider;
+    juce::Slider mDescriptorLapSlider;
+    juce::Slider mDescriptorOffsetSlider;
     juce::Label mDescriptorLabel;
     juce::Label mDescriptorOffsetLabel;
     juce::Label mDescriptorFactorLabel;
