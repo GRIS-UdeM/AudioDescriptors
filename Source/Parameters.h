@@ -26,28 +26,26 @@
 
 #include "Parameters/Smooth.hpp"
 
+class PanelView;
 enum class ParameterID { invalid = -1, azimuth = 0, elevation, x, y, z, azimuthspan, elevationspan};
 
 class Parameters
 {
 public:
 	Parameters() = delete;
-	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState) : mAPVTS(audioProcessorValueTreeState) {};
+	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState);
 	virtual ~Parameters() = default;
 
 	virtual void parameters(double range, double smooth, double lap = 1.0, double offset = 1.0) = 0;
 	
-	virtual juce::String const & getParameterName() const {
-		return parameterName;
-	}
+	virtual juce::String const& getParameterName() const;
 
-	double getValue()
-	{
-		auto diff = lastRes - res;
-		lastRes = res;
-		//DBG("valeur finale = " << diff);
-		return diff;
-	}
+	virtual void addObserver(PanelView* observer);
+	virtual void removeObserver(PanelView* observer);
+	virtual void notifyObservers();
+
+	double getDiffValue();
+	double getValue();
 
 
 	//====================================================================
@@ -639,4 +637,7 @@ protected:
 	double paramThreshold = 0.1;
 	double paramMinTime = 0.1;
 	double paramMaxTime = 10.0;
+
+private:
+	std::vector<PanelView*> mObservers;
 };

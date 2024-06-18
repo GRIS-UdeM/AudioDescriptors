@@ -283,52 +283,52 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (getModeState() == SpatMode::dome) {
 				loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 				if (domeSettings.checkConditionLoudnessAzimuth()) {
-					DBG("--------------Azimuth Loudness -------------------");
+					//DBG("--------------Azimuth Loudness -------------------");
 					processDomeParameter(domeSettings.getAzimuthDome(), 2, loudnessValue, true, false);
-					mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionLoudnessElevation()) {
-					DBG("--------------Elevation Loudness -------------------");
+					//DBG("--------------Elevation Loudness -------------------");
 					processDomeParameter(domeSettings.getElevationDome(), 2, loudnessValue, false, true);
-					mElevationDomeValue = domeSettings.getElevationDome().getValue();
+					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionLoudnessHSpan()) {
-					DBG("--------------HSpan Loudness -------------------");
+					//DBG("--------------HSpan Loudness -------------------");
 					processDomeParameter(domeSettings.getHSpanDome(), 2, loudnessValue, false, false);
-					mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionLoudnessVSpan()) {
-					DBG("--------------VSpan Loudness -------------------");
+					//DBG("--------------VSpan Loudness -------------------");
 					processDomeParameter(domeSettings.getVSpanDome(), 2, loudnessValue, false,false);
-					mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
 			else {
 				loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 				if (cubeSettings.checkConditionLoudnessX()) {
-					DBG("--------------X Loudness -------------------");
+					//DBG("--------------X Loudness -------------------");
 					processCubeParameter(cubeSettings.getXCube(), 2, loudnessValue, false);
-					mXCubeValue = cubeSettings.getXCube().getValue();
+					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionLoudnessY()) {
-					DBG("--------------Y Loudness -------------------");
+					//DBG("--------------Y Loudness -------------------");
 					processCubeParameter(cubeSettings.getYCube(), 2, loudnessValue, false);
-					mYCubeValue = cubeSettings.getYCube().getValue();
+					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionLoudnessZ()) {
-					DBG("--------------Z Loudness -------------------");
+					//DBG("--------------Z Loudness -------------------");
 					processCubeParameter(cubeSettings.getZCube(), 2, loudnessValue, true);
-					mZCubeValue = cubeSettings.getZCube().getValue();
+					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionLoudnessHSpan()) {
-					DBG("--------------HSpan Loudness -------------------");
+					//DBG("--------------HSpan Loudness -------------------");
 					processCubeParameter(cubeSettings.getHSpanCube(), 2, loudnessValue, false);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionLoudnessVSpan()) {
-					DBG("--------------VSpan Loudness -------------------");
+					//DBG("--------------VSpan Loudness -------------------");
 					processCubeParameter(cubeSettings.getVSpanCube(), 2, loudnessValue, true);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
 		}
@@ -352,52 +352,52 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (getModeState() == SpatMode::dome) {
 				pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 				if (domeSettings.checkConditionPitchAzimuth()) {
-					DBG("--------------Azimuth Pitch -------------------");
+					//DBG("--------------Azimuth Pitch -------------------");
 					processDomeParameter(domeSettings.getAzimuthDome(), 3, pitchValue, true, false);
-					mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionPitchElevation()) {
-					DBG("--------------Elevation Pitch -------------------");
+					//DBG("--------------Elevation Pitch -------------------");
 					processDomeParameter(domeSettings.getElevationDome(), 3, pitchValue, false, true);
-					mElevationDomeValue = domeSettings.getElevationDome().getValue();
+					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionPitchHSpan()) {
-					DBG("--------------HSpan Pitch -------------------");
+					//DBG("--------------HSpan Pitch -------------------");
 					processDomeParameter(domeSettings.getHSpanDome(), 3, pitchValue, false, false);
-					mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionPitchVSpan()) {
-					DBG("--------------VSpan Pitch -------------------");
+					//DBG("--------------VSpan Pitch -------------------");
 					processDomeParameter(domeSettings.getVSpanDome(), 3, pitchValue, false, false );
-					mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
 			else {
 				pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 				if (cubeSettings.checkConditionPitchX()) {
-					DBG("--------------X Pitch -------------------");
+					//DBG("--------------X Pitch -------------------");
 					processCubeParameter(cubeSettings.getXCube(), 3, pitchValue, false);
-					mXCubeValue = cubeSettings.getXCube().getValue();
+					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionPitchY()) {
-					DBG("--------------Y Pitch -------------------");
+					//DBG("--------------Y Pitch -------------------");
 					processCubeParameter(cubeSettings.getYCube(), 3, pitchValue, false);
-					mYCubeValue = cubeSettings.getYCube().getValue();
+					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionPitchZ()) {
-					DBG("--------------Z Pitch -------------------");
+					//DBG("--------------Z Pitch -------------------");
 					processCubeParameter(cubeSettings.getZCube(), 3, pitchValue, true);
-					mZCubeValue = cubeSettings.getZCube().getValue();
+					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionPitchHSpan()) {
-					DBG("--------------HSpan Pitch -------------------");
+					//DBG("--------------HSpan Pitch -------------------");
 					processCubeParameter(cubeSettings.getHSpanCube(), 3, pitchValue, false);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionPitchVSpan()) {
-					DBG("--------------VSpan Pitch -------------------");
+					//DBG("--------------VSpan Pitch -------------------");
 					processCubeParameter(cubeSettings.getVSpanCube(), 3, pitchValue, true);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
 		}
@@ -442,68 +442,68 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				flatnessValue = mParamFunctions.power(flatnessValue);
 				if (domeSettings.checkConditionForCentroidAnalyse()) {
 					if (domeSettings.checkConditionCentroidAzimuth()) {
-						DBG("--------------Azimuth Centroid -------------------");
+						//DBG("--------------Azimuth Centroid -------------------");
 						processDomeParameter(domeSettings.getAzimuthDome(), 4, centroidValue, true, false);
-						mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+						mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionCentroidElevation()) {
-						DBG("--------------Elevation Centroid -------------------");
+						//DBG("--------------Elevation Centroid -------------------");
 						processDomeParameter(domeSettings.getElevationDome(), 4, centroidValue, false, true);
-						mElevationDomeValue = domeSettings.getElevationDome().getValue();
+						mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionCentroidHSpan()) {
-						DBG("--------------HSpan Centroid -------------------");
+						//DBG("--------------HSpan Centroid -------------------");
 						processDomeParameter(domeSettings.getHSpanDome(), 4, centroidValue, false, false);
-						mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+						mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionCentroidVSpan()) {
-						DBG("--------------VSpan Centroid -------------------");
+						//DBG("--------------VSpan Centroid -------------------");
 						processDomeParameter(domeSettings.getVSpanDome(), 4, centroidValue, false, false);
-						mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+						mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 					}
 				}
 				if (domeSettings.checkConditionForSpreadAnalyse()) {
 					if (domeSettings.checkConditionSpreadAzimuth()) {
-						DBG("--------------Azimuth Spread -------------------");
+						//DBG("--------------Azimuth Spread -------------------");
 						processDomeParameter(domeSettings.getAzimuthDome(), 5, zmap, true, false);
-						mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+						mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionSpreadElevation()) {
-						DBG("--------------Elevation Spread -------------------");
+						//DBG("--------------Elevation Spread -------------------");
 						processDomeParameter(domeSettings.getElevationDome(), 5, zmap, false, true);
-						mElevationDomeValue = domeSettings.getElevationDome().getValue();
+						mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionSpreadHSpan()) {
-						DBG("--------------HSpan Spread -------------------");
+						//DBG("--------------HSpan Spread -------------------");
 						processDomeParameter(domeSettings.getHSpanDome(), 5, zmap, false, false);
-						mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+						mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionSpreadVSpan()) {
-						DBG("--------------VSpan Spread -------------------");
+						//DBG("--------------VSpan Spread -------------------");
 						processDomeParameter(domeSettings.getVSpanDome(), 5, zmap, false, false);
-						mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+						mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 					}
 				}
 				if (domeSettings.checkConditionForNoiseAnalyse()) {	
 					if (domeSettings.checkConditionNoiseAzimuth()) {
-						DBG("--------------Azimuth Noise -------------------");
+						//DBG("--------------Azimuth Noise -------------------");
 						processDomeParameter(domeSettings.getAzimuthDome(), 6, flatnessValue, true, false);
-						mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+						mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionNoiseElevation()) {
-						DBG("--------------Elevation Noise -------------------");
+						//DBG("--------------Elevation Noise -------------------");
 						processDomeParameter(domeSettings.getElevationDome(), 6, flatnessValue, false, true);
-						mElevationDomeValue = domeSettings.getElevationDome().getValue();
+						mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionNoiseHSpan()) {
-						DBG("--------------HSpan Noise -------------------");
+						//DBG("--------------HSpan Noise -------------------");
 						processDomeParameter(domeSettings.getHSpanDome(), 6, flatnessValue, false, false);
-						mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+						mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 					}
 					if (domeSettings.checkConditionNoiseVSpan()) {
-						DBG("--------------VSpan Noise -------------------");
+						//DBG("--------------VSpan Noise -------------------");
 						processDomeParameter(domeSettings.getVSpanDome(), 6, flatnessValue, false, false);
-						mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+						mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 					}
 				}
 			}
@@ -513,83 +513,83 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				flatnessValue = mParamFunctions.power(flatnessValue);
 				if (cubeSettings.checkConditionForCentroidAnalyse()) {
 					if (cubeSettings.checkConditionCentroidX()) {
-						DBG("--------------X Centroid -------------------");
+						//DBG("--------------X Centroid -------------------");
 						processCubeParameter(cubeSettings.getXCube(), 4, centroidValue, false);
-						mXCubeValue = cubeSettings.getXCube().getValue();
+						mXCubeValue = cubeSettings.getXCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionCentroidY()) {
-						DBG("--------------Y Centroid -------------------");
+						//DBG("--------------Y Centroid -------------------");
 						processCubeParameter(cubeSettings.getYCube(), 4, centroidValue, false);
-						mYCubeValue = cubeSettings.getYCube().getValue();
+						mYCubeValue = cubeSettings.getYCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionCentroidZ()) {
-						DBG("--------------Z Centroid -------------------");
+						//DBG("--------------Z Centroid -------------------");
 						processCubeParameter(cubeSettings.getZCube(), 4, centroidValue, true);
-						mZCubeValue = cubeSettings.getZCube().getValue();
+						mZCubeValue = cubeSettings.getZCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionCentroidHSpan()) {
-						DBG("--------------HSpan Centroid -------------------");
+						//DBG("--------------HSpan Centroid -------------------");
 						processCubeParameter(cubeSettings.getHSpanCube(), 4, centroidValue, false);
-						mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+						mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionCentroidVSpan()) {
-						DBG("--------------VSpan Centroid -------------------");
+						//DBG("--------------VSpan Centroid -------------------");
 						processCubeParameter(cubeSettings.getVSpanCube(), 4, centroidValue, true);
-						mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+						mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 					}
 				}
 				if (cubeSettings.checkConditionForSpreadAnalyse()) {
 					if (cubeSettings.checkConditionSpreadX()) {
-						DBG("--------------X Spread -------------------");
+						//DBG("--------------X Spread -------------------");
 						processCubeParameter(cubeSettings.getXCube(), 5, zmap, false);
-						mXCubeValue = cubeSettings.getXCube().getValue();
+						mXCubeValue = cubeSettings.getXCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionSpreadY()) {
-						DBG("--------------Y Spread -------------------");
+						//DBG("--------------Y Spread -------------------");
 						processCubeParameter(cubeSettings.getYCube(), 5, zmap, false);
-						mYCubeValue = cubeSettings.getYCube().getValue();
+						mYCubeValue = cubeSettings.getYCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionSpreadZ()) {
-						DBG("--------------Z Spread -------------------");
+						//DBG("--------------Z Spread -------------------");
 						processCubeParameter(cubeSettings.getZCube(), 5, zmap, true);
-						mZCubeValue = cubeSettings.getZCube().getValue();
+						mZCubeValue = cubeSettings.getZCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionSpreadHSpan()) {
-						DBG("--------------HSpan Spread -------------------");
+						//DBG("--------------HSpan Spread -------------------");
 						processCubeParameter(cubeSettings.getHSpanCube(), 5, zmap, false);
-						mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+						mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionSpreadVSpan()) {
-						DBG("--------------VSpan Spread -------------------");
+						//DBG("--------------VSpan Spread -------------------");
 						processCubeParameter(cubeSettings.getVSpanCube(), 5, zmap, true);
-						mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+						mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 					}
 				}
 				if (cubeSettings.checkConditionForNoiseAnalyse()) {
 					if (cubeSettings.checkConditionNoiseX()) {
-						DBG("--------------X Noise -------------------");
+						//DBG("--------------X Noise -------------------");
 						processCubeParameter(cubeSettings.getXCube(), 6, flatnessValue, false);
-						mXCubeValue = cubeSettings.getXCube().getValue();
+						mXCubeValue = cubeSettings.getXCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionNoiseY()) {
-						DBG("--------------Y Noise -------------------");
+						//DBG("--------------Y Noise -------------------");
 						processCubeParameter(cubeSettings.getYCube(), 6, flatnessValue, false);
-						mYCubeValue = cubeSettings.getYCube().getValue();
+						mYCubeValue = cubeSettings.getYCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionNoiseZ()) {
-						DBG("--------------Z Noise -------------------");
+						//DBG("--------------Z Noise -------------------");
 						processCubeParameter(cubeSettings.getZCube(), 6, flatnessValue, true);
-						mZCubeValue = cubeSettings.getZCube().getValue();
+						mZCubeValue = cubeSettings.getZCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionNoiseHSpan()) {
-						DBG("--------------HSpan Noise -------------------");
+						//DBG("--------------HSpan Noise -------------------");
 						processCubeParameter(cubeSettings.getHSpanCube(), 6, flatnessValue, false);
-						mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+						mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 					}
 					if (cubeSettings.checkConditionNoiseVSpan()) {
-						DBG("--------------VSpan Noise -------------------");
+						//DBG("--------------VSpan Noise -------------------");
 						processCubeParameter(cubeSettings.getVSpanCube(), 6, flatnessValue, true);
-						mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+						mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 					}
 				}
 			}
@@ -601,28 +601,28 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 					mOnsetDetectionAzimuth.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionAzimuth.getOnsetDetectionValue() };
 					processDomeParameter(domeSettings.getAzimuthDome(), 7, onsetDetectionValue, true, false);
-					mAzimuthDomeValue = domeSettings.getAzimuthDome().getValue();
+					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionOnsetDetectionElevation()) {
 					//DBG("--------------Elevation Iterations Speed-----------------");
 					mOnsetDetectionElevation.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionElevation.getOnsetDetectionValue() };
 					processDomeParameter(domeSettings.getElevationDome(), 7, onsetDetectionValue, false, false);
-					mElevationDomeValue = domeSettings.getElevationDome().getValue();
+					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionOnsetDetectionHSpan()) {
 					//DBG("--------------HSpan Iterations Speed-----------------");
 					mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionHSpan.getOnsetDetectionValue() };
 					processDomeParameter(domeSettings.getHSpanDome(), 7, onsetDetectionValue, false, false);
-					mHspanDomeValue = domeSettings.getHSpanDome().getValue();
+					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionOnsetDetectionVSpan()) {
 					//DBG("--------------VSpan Iterations Speed-----------------");
 					mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionVSpan.getOnsetDetectionValue() };
 					processDomeParameter(domeSettings.getVSpanDome(), 7, onsetDetectionValue, false, true);
-					mVspanDomeValue = domeSettings.getVSpanDome().getValue();
+					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
 			else {
@@ -631,35 +631,35 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 					mOnsetDetectionX.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionX.getOnsetDetectionValue() };
 					processCubeParameter(cubeSettings.getXCube(), 7, onsetDetectionValue, false);
-					mXCubeValue = cubeSettings.getXCube().getValue();
+					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionOnsetDetectionY()) {
 					//DBG("--------------Y Iterations Speed-----------------");
 					mOnsetDetectionY.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionY.getOnsetDetectionValue() };
 					processCubeParameter(cubeSettings.getYCube(), 7, onsetDetectionValue, false);
-					mYCubeValue = cubeSettings.getYCube().getValue();
+					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionOnsetDetectionZ()) {
 					//DBG("--------------Z Iterations Speed-----------------");
 					mOnsetDetectionZ.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionZ.getOnsetDetectionValue() };
 					processCubeParameter(cubeSettings.getZCube(), 7, onsetDetectionValue, true);
-					mZCubeValue = cubeSettings.getZCube().getValue();
+					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionOnsetDetectionHSpan()) {
 					//DBG("--------------HSpan Iterations Speed-----------------");
 					mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionHSpan.getOnsetDetectionValue() };
 					processCubeParameter(cubeSettings.getHSpanCube(), 7, onsetDetectionValue, false);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getValue();
+					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionOnsetDetectionVSpan()) {
 					//DBG("--------------VSpan Iterations Speed-----------------");
 					mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 					auto const onsetDetectionValue{ mOnsetDetectionVSpan.getOnsetDetectionValue() };
 					processCubeParameter(cubeSettings.getVSpanCube(), 7, onsetDetectionValue, true);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getValue();
+					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
 		}

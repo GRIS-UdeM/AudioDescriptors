@@ -25,7 +25,10 @@
 PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& parameter)
     : mAudioProcessor(processor)
     , mParameter(parameter)
+    , mDataGraph(parameter)
 {
+    mParameter.addObserver(this);
+
     setSize(1000, 1000);
 
     // default values
@@ -413,11 +416,13 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
             mAudioProcessor.setOnsetDetectionMaxTime(mParameter.getParameterID(), maxVal);
         }
         };
+
+    addAndMakeVisible(mDataGraph);
 }
 
 PanelView::~PanelView()
 {
-    //mDescriptor = nullptr;
+    mParameter.removeObserver(this);
 }
 
 void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
@@ -459,8 +464,12 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
 
             mDescriptorMaxTimeSlider.setVisible(false);
             mDescriptorMaxTimeLabel.setVisible(false);
+
+            mDataGraph.setVisible(false);
         }
         else if (mDescriptorComboBox.getSelectedId() != 1) {
+            mDataGraph.setVisible(true);
+
             if (isAzimuth) {
                 mDescriptorLapSlider.setVisible(true);
                 mDescriptorLapLabel.setVisible(true);
@@ -547,7 +556,7 @@ void PanelView::paint(juce::Graphics& g)
 void PanelView::resized()
 {
     auto area = getLocalBounds().reduced(10);
-    const juce::FlexItem::Margin sliderMargin(0, 200, 0, 0);
+
     juce::FlexItem::Margin margin(0, 10, 0, 0);
     juce::FlexBox generalFlexBoxConfig;
     generalFlexBoxConfig.flexDirection = juce::FlexBox::Direction::row;
@@ -555,85 +564,230 @@ void PanelView::resized()
 
     mDescriptorFactorBox = generalFlexBoxConfig;
     mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactorLabel).withMinWidth(10).withFlex(1));
-    mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactorSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorFactorBox.items.add(juce::FlexItem(mDescriptorFactorSlider).withFlex(3));
 
     if (isAzimuth) {
         mDescriptorLapBox = generalFlexBoxConfig;
         mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapLabel).withMinWidth(10).withFlex(1));
-        mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapSlider).withFlex(3).withMargin(sliderMargin));
+        mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapSlider).withFlex(3));
     }
 
 
     if (isOffset) {
         mDescriptorOffsetBox = generalFlexBoxConfig;
         mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffsetLabel).withMinWidth(10).withFlex(1));
-        mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffsetSlider).withFlex(3).withMargin(sliderMargin));
+        mDescriptorOffsetBox.items.add(juce::FlexItem(mDescriptorOffsetSlider).withFlex(3));
     }
 
     mDescriptorSmoothBox = generalFlexBoxConfig;
     mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothLabel).withMinWidth(10).withFlex(1));
-    mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothSlider).withFlex(3));
 
     mDescriptorMoreSmoothBox = generalFlexBoxConfig;
     mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorMoreSmoothLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothCoefSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothCoefSlider).withFlex(3));
 
     mDescriptorRangeBox = generalFlexBoxConfig;
     mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeSlider).withFlex(3));
 
     mDescriptorMinFreqBox = generalFlexBoxConfig;
     mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreqLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreqSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMinFreqBox.items.add(juce::FlexItem(mDescriptorMinFreqSlider).withFlex(3));
 
     mDescriptorMaxFreqBox = generalFlexBoxConfig;
     mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreqLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreqSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMaxFreqBox.items.add(juce::FlexItem(mDescriptorMaxFreqSlider).withFlex(3));
 
     mDescriptorMetricBox = generalFlexBoxConfig;
-    //azimuthMetricBox.items.add(juce::FlexItem(mAzimuthMetricLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMetricBox.items.add(juce::FlexItem(mDescriptorMetricComboBox).withMinHeight(20).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMetricBox.items.add(juce::FlexItem(mDescriptorMetricComboBox).withMinHeight(20).withFlex(3));
 
     mDescriptorThresholdBox = generalFlexBoxConfig;
     mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThresholdLabel).withMinWidth(10).withFlex(1));
-    mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThresholdSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorThresholdBox.items.add(juce::FlexItem(mDescriptorThresholdSlider).withFlex(3));
 
     mDescriptorMinTimeBox = generalFlexBoxConfig;
     mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTimeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTimeSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMinTimeBox.items.add(juce::FlexItem(mDescriptorMinTimeSlider).withFlex(3));
 
     mDescriptorMaxTimeBox = generalFlexBoxConfig;
     mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTimeLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTimeSlider).withFlex(3).withMargin(sliderMargin));
+    mDescriptorMaxTimeBox.items.add(juce::FlexItem(mDescriptorMaxTimeSlider).withFlex(3));
 
-    juce::FlexBox descriptorFlexBox;
-    descriptorFlexBox.flexDirection = juce::FlexBox::Direction::column;
-    descriptorFlexBox.justifyContent = juce::FlexBox::JustifyContent::flexStart;
-    descriptorFlexBox.alignItems = juce::FlexBox::AlignItems::stretch;
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorLabel).withHeight(50).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorComboBox).withHeight(40).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorFactorBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMoreSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    mGraphBox = generalFlexBoxConfig;
+    mGraphBox.items.add(juce::FlexItem(mDataGraph).withFlex(3));
+
+    juce::FlexBox descriptorFlexBoxTopPart;
+    juce::FlexBox descriptorFlexBoxBottomPart;
+    juce::FlexBox descriptorFlexBoxBottomLeftPart;
+    juce::FlexBox descriptorFlexBoxBottomRightPart;
+
+    descriptorFlexBoxTopPart.flexDirection = juce::FlexBox::Direction::column;
+    descriptorFlexBoxTopPart.justifyContent = juce::FlexBox::JustifyContent::flexStart;
+    descriptorFlexBoxTopPart.alignItems = juce::FlexBox::AlignItems::stretch;
+
+    descriptorFlexBoxBottomPart.flexDirection = juce::FlexBox::Direction::row;
+    descriptorFlexBoxBottomPart.justifyContent = juce::FlexBox::JustifyContent::flexStart;
+    descriptorFlexBoxBottomPart.alignItems = juce::FlexBox::AlignItems::stretch;
+
+    descriptorFlexBoxBottomLeftPart.flexDirection = juce::FlexBox::Direction::column;
+    descriptorFlexBoxBottomLeftPart.justifyContent = juce::FlexBox::JustifyContent::flexStart;
+    descriptorFlexBoxBottomLeftPart.alignItems = juce::FlexBox::AlignItems::stretch;
+
+    descriptorFlexBoxBottomRightPart.flexDirection = juce::FlexBox::Direction::column;
+    descriptorFlexBoxBottomRightPart.justifyContent = juce::FlexBox::JustifyContent::flexStart;
+    descriptorFlexBoxBottomRightPart.alignItems = juce::FlexBox::AlignItems::stretch;
+
+    descriptorFlexBoxTopPart.items.add(juce::FlexItem(mDescriptorLabel).withHeight(40).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxTopPart.items.add(juce::FlexItem(mDescriptorComboBox).withHeight(40).withMargin(juce::FlexItem::Margin(5)));
+
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorFactorBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMoreSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     if (isAzimuth) {
-        descriptorFlexBox.items.add(juce::FlexItem(mDescriptorLapBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+        descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorLapBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     }
     if (isOffset) {
-        descriptorFlexBox.items.add(juce::FlexItem(mDescriptorOffsetBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+        descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorOffsetBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     }
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorRangeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMinFreqBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMaxFreqBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMetricBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorThresholdBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMinTimeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBox.items.add(juce::FlexItem(mDescriptorMaxTimeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorRangeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMinFreqBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMaxFreqBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMetricBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorThresholdBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMinTimeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMaxTimeBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+
+    descriptorFlexBoxBottomRightPart.items.add(juce::FlexItem(mGraphBox)
+        .withMinHeight(80)
+        .withMinWidth(80)
+        //.withMaxHeight(80)
+        //.withMaxWidth(80)
+        .withMargin(juce::FlexItem::Margin(5))
+        .withAlignSelf(juce::FlexItem::AlignSelf::center));
 
     //////////
+
+    descriptorFlexBoxBottomPart.items.add(juce::FlexItem(descriptorFlexBoxBottomLeftPart).withFlex(3));
+    descriptorFlexBoxBottomPart.items.add(juce::FlexItem(descriptorFlexBoxBottomRightPart).withFlex(1));
+
     juce::FlexBox parentFlexBox;
-    parentFlexBox.flexDirection = juce::FlexBox::Direction::row; // Disposition horizontale
+    parentFlexBox.flexDirection = juce::FlexBox::Direction::column; // Disposition horizontale
     parentFlexBox.justifyContent = juce::FlexBox::JustifyContent::flexStart;
     parentFlexBox.alignItems = juce::FlexBox::AlignItems::stretch;
-    parentFlexBox.items.add(juce::FlexItem(descriptorFlexBox).withFlex(1));
+
+    parentFlexBox.items.add(juce::FlexItem(descriptorFlexBoxTopPart).withFlex(1));
+    parentFlexBox.items.add(juce::FlexItem(descriptorFlexBoxBottomPart).withFlex(4));
     parentFlexBox.performLayout(area); // Utilise topHalf pour le layout
+}
+
+void PanelView::addNewParamValue(double value)
+{
+    // normalize value
+    auto lap = static_cast<int>(mDescriptorLapSlider.getValue());
+    switch (mParameter.getParameterID())
+    {
+    case ParameterID::azimuth:
+        value = juce::jmap(std::abs(value), 0.0, 360.0 * lap, 0.0, 1.0);
+        break;
+    case ParameterID::elevation:
+        value = juce::jmap(std::abs(value), 0.0, 90.0, 0.0, 1.0);
+        break;
+    case ParameterID::x:
+    case ParameterID::y:
+        value = juce::jmap(std::abs(value), 0.0, 1.66, 0.0, 1.0);
+        break;
+    case ParameterID::z:
+        value = juce::jmap(std::abs(value), 0.0, 1.0, 0.0, 1.0);
+    case ParameterID::azimuthspan:
+    case ParameterID::elevationspan:
+        value = juce::jmap(std::abs(value), 0.0, 100.0, 0.0, 1.0);
+    case ParameterID::invalid:
+    default:
+        break;
+    }
+
+    mDataGraph.addToBuffer(value);
+}
+
+//==============================================================================
+DataGraph::DataGraph(Parameters& parameter)
+    : param(parameter)
+{
+    mGUIBuffer.resize(100);
+    std::fill(mGUIBuffer.begin(), mGUIBuffer.end(), 0.0);
+
+    startTimer(50);
+}
+
+DataGraph::~DataGraph()
+{
+}
+
+void DataGraph::paint(juce::Graphics& g)
+{
+    g.fillAll(juce::Colours::yellow);
+
+    g.setOpacity(1.0f);
+    g.setColour(juce::Colours::black);
+
+    auto area = getLocalBounds().reduced(1);
+    juce::RectangleList<float> rectList{};
+
+    for (int i{}; i < mGUIBuffer.size(); ++i) {
+        auto initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
+        auto initialY = static_cast<float>(area.getHeight() - (area.getHeight() * mGUIBuffer.at(i)) + 1);
+        auto width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
+        auto height = static_cast<float>(area.getHeight() * mGUIBuffer.at(i));
+        rectList.add(initialX, initialY, width, height);
+    }
+    g.fillRectList(rectList);
+}
+
+void DataGraph::resized()
+{
+}
+
+void DataGraph::timerCallback()
+{
+    if (isVisible()) {
+        mGUIBuffer.push_back(readBufferMean());
+        if (mGUIBuffer.size() > 100) {
+            mGUIBuffer.pop_front();
+        }
+        repaint();
+    }
+}
+
+void DataGraph::addToBuffer(double value)
+{
+    if (mWritingBuffer == WritingBuffer::first) {
+        mBuffer[0].push_back(value);
+    }
+    else {
+        mBuffer[1].push_back(value);
+    }
+}
+
+double DataGraph::readBufferMean()
+{
+    double mean{};
+    int index{};
+
+    if (mWritingBuffer == WritingBuffer::first) {
+        mWritingBuffer = WritingBuffer::second;
+        index = 0;
+    }
+    else {
+        mWritingBuffer = WritingBuffer::first;
+        index = 1;
+    }
+
+    if (mBuffer[index].size() > 0) {
+        auto sum = std::reduce(mBuffer[index].begin(), mBuffer[index].end());
+        mean = sum / mBuffer[index].size();
+        mBuffer[index].clear();
+    }
+
+    return mean;
 }

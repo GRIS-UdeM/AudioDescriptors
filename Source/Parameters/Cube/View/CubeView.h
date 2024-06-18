@@ -64,12 +64,6 @@ private:
 
     //==============================================================================
 
-    //juce::TextButton mLoudnessButton;
-    juce::TextButton mPitchButton;
-    juce::TextButton mCentroidButton;
-    juce::TextButton mSpreadButton;
-    juce::TextButton mNoiseButton;
-
     PanelView mXPanel;
     PanelView mYPanel;
     PanelView mZPanel;

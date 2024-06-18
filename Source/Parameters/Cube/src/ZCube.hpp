@@ -39,9 +39,6 @@ public:
 	void parameters(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
 		double clipMax = 0.999999;
 
-		DBG("valeur de offset avant : " << offset);
-
-		//DBG("valeur de offset : " << offset);
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
 		res = clip * inputRange;

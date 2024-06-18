@@ -30,6 +30,7 @@
       <FILE id="dDQVpx" name="ParameterFunctions.h" compile="0" resource="0"
             file="Source/ParameterFunctions.h"/>
       <FILE id="DJQ2ky" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
+      <FILE id="GUli4U" name="Parameters.cpp" compile="1" resource="0" file="Source/Parameters.cpp"/>
       <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
       <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
       <GROUP id="{688B671C-E3DE-2F6F-52A4-0EC5A70926D1}" name="Cube">
