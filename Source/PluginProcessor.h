@@ -110,9 +110,6 @@ public:
 
     //==============================================================================
 
-    bool getInterfaceState();
-    void setInterfaceState();
-
     SpatMode getModeState();
     void setModeState(SpatMode spatMode);
     juce::String getSpatModeToString();
@@ -190,9 +187,6 @@ private:
     OnsetDetectionD mOnsetDetectionZ;
 
     ParameterFunctions mParamFunctions;
-   
-    // Variable genstion de l'interface
-    bool interfaceOpened = false;
 
     DomeSettings domeSettings;
     CubeSettings cubeSettings;

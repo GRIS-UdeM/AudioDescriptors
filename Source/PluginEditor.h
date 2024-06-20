@@ -39,9 +39,7 @@ public:
     //==============================================================================
     void paint(juce::Graphics&) override;
     void resized() override;
-
-
-    void visibilityChanged() override;
+    //void visibilityChanged() override;
 
     void setMode(SpatMode spatMode);
 
@@ -68,8 +66,6 @@ private:
     juce::FlexBox mode;
     juce::FlexBox host;
     juce::FlexBox port;
-
-    bool isFirstTimeVisible = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDescriptorsAudioProcessorEditor)
 };

@@ -378,6 +378,7 @@ public:
         mVSpanCube.updateParameterState();
     }
 
+    //=================================================================================
     XCube& getXCube() {
         return mXCube;
     }

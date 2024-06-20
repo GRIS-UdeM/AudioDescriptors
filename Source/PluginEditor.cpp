@@ -196,17 +196,9 @@ void AudioDescriptorsAudioProcessorEditor::drawFrame(AudioDescriptorsAudioProces
 
 }
 
-
-
-void AudioDescriptorsAudioProcessorEditor::visibilityChanged()
-{
-    if (isFirstTimeVisible && isVisible())
-    {
-        mAudioProcessor.setInterfaceState();
-        isFirstTimeVisible = false;
-        //DBG("L'éditeur est visible pour la première fois.");
-    }
-}
+//void AudioDescriptorsAudioProcessorEditor::visibilityChanged()
+//{
+//}
 
 void AudioDescriptorsAudioProcessorEditor::setMode(SpatMode spatMode)
 {
