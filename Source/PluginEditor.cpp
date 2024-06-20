@@ -140,11 +140,9 @@ void AudioDescriptorsAudioProcessorEditor::resized()
 {
     auto area = getLocalBounds().reduced(10);
 
-    auto firstThird = area.removeFromTop(area.getHeight() / 40);
-    //auto secondThird = area.removeFromTop(area.getHeight() / 2);
-    auto thirdThird = area;
+    auto panelArea = area.removeFromTop(30);
+    auto parametersArea = area;
 
-    const juce::FlexItem::Margin sliderMargin(0, 200, 0, 0);
     juce::FlexItem::Margin margin(0, 10, 0, 0);
     juce::FlexBox generalFlexBoxConfig;
     generalFlexBoxConfig.flexDirection = juce::FlexBox::Direction::row;
@@ -168,27 +166,26 @@ void AudioDescriptorsAudioProcessorEditor::resized()
     panelFlexBox.alignItems = juce::FlexBox::AlignItems::stretch;
     panelFlexBox.items.add(juce::FlexItem(source).withHeight(30).withMargin(juce::FlexItem::Margin(2)));
 
-
     juce::FlexBox parentFlexBoxTwo;
     parentFlexBoxTwo.flexDirection = juce::FlexBox::Direction::row;
     parentFlexBoxTwo.justifyContent = juce::FlexBox::JustifyContent::flexStart;
     parentFlexBoxTwo.alignItems = juce::FlexBox::AlignItems::stretch;
     parentFlexBoxTwo.items.add(juce::FlexItem(mViewportCube).withFlex(1));
-    parentFlexBoxTwo.performLayout(thirdThird);
+    parentFlexBoxTwo.performLayout(parametersArea);
 
     juce::FlexBox parentFlexBoxOne;
     parentFlexBoxOne.flexDirection = juce::FlexBox::Direction::row;
     parentFlexBoxOne.justifyContent = juce::FlexBox::JustifyContent::flexStart;
     parentFlexBoxOne.alignItems = juce::FlexBox::AlignItems::stretch;
     parentFlexBoxOne.items.add(juce::FlexItem(mViewportDome).withFlex(1));
-    parentFlexBoxOne.performLayout(thirdThird);
+    parentFlexBoxOne.performLayout(parametersArea);
 
     juce::FlexBox parentFlexBoxThree;
     parentFlexBoxThree.flexDirection = juce::FlexBox::Direction::row;
     parentFlexBoxThree.justifyContent = juce::FlexBox::JustifyContent::flexStart;
     parentFlexBoxThree.alignItems = juce::FlexBox::AlignItems::stretch;
     parentFlexBoxThree.items.add(juce::FlexItem(panelFlexBox).withFlex(1));
-    parentFlexBoxThree.performLayout(firstThird);
+    parentFlexBoxThree.performLayout(panelArea);
 }
 
 void AudioDescriptorsAudioProcessorEditor::drawFrame(AudioDescriptorsAudioProcessor& /*audioProcessor*/, juce::Graphics& /*g*/)
