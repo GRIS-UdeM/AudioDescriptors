@@ -56,4 +56,7 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mFlatnessRunningStats;
 	double mDescFlatness{};
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(FlatnessD)
 };

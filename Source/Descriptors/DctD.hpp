@@ -42,4 +42,6 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::DCT> mDct;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(DctD)
 };

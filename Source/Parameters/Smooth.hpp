@@ -70,4 +70,6 @@ private:
 	bool startHistory = true;
 	double valueSmoothHistory = 0;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(Smooth)
 };

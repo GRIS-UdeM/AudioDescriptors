@@ -55,4 +55,6 @@ private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mSkewnessRunningStats;
 	double mDescSkewness{};
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(SkewnessD)
 };

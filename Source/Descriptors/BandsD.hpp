@@ -43,4 +43,7 @@ public:
 
 private:
 	std::unique_ptr<fluid::algorithm::MelBands>	mBands;
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(BandsD)
 };

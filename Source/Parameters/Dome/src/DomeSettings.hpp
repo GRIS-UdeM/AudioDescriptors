@@ -386,4 +386,7 @@ private:
     ElevationDome mElevationDome;
     HspanDome mHSpanDome;
     VspanDome mVSpanDome;
+
+    //==============================================================================
+    JUCE_LEAK_DETECTOR(DomeSettings)
 };

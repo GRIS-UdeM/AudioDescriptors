@@ -52,4 +52,8 @@ public:
 		}
 		//DBG("valeur finale = " << res);
 	}
+
+private:
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(VspanDome)
 };

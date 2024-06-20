@@ -640,4 +640,7 @@ protected:
 
 private:
 	std::vector<PanelView*> mObservers;
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(Parameters)
 };

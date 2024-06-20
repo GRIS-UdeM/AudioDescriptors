@@ -52,4 +52,7 @@ public:
 
 private:
 	std::unique_ptr<fluid::algorithm::STFT>	mStft;
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(StftD)
 };

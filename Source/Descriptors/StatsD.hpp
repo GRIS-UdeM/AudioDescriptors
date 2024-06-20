@@ -45,4 +45,6 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::MultiStats>     mStats;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(StatsD)
 };

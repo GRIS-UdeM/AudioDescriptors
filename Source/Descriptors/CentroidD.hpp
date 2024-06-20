@@ -55,5 +55,6 @@ private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mCentroidRunningStats;
 	double mDescCentroid{};
 
-
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(CentroidD)
 };

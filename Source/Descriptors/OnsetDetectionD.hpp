@@ -202,4 +202,7 @@ private:
     std::deque<double> mTimeSinceLastOnsetDetectionDeque{};
     Direction mOnsetDetectionDirection{};
     int mSampleCounter{};
+
+    //==============================================================================
+    JUCE_LEAK_DETECTOR(OnsetDetectionD)
 };

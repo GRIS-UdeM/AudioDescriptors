@@ -96,4 +96,8 @@ public:
 	double power(double input) {
 		return pow(input, 0.4);
 	}
+
+private:
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(ParameterFunctions)
 };

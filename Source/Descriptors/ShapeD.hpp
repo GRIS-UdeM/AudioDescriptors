@@ -51,4 +51,6 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::SpectralShape>  mShape;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(ShapeD)
 };

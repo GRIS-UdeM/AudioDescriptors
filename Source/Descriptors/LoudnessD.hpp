@@ -87,4 +87,6 @@ private:
 	double mDescTruePeak{};
 	std::unique_ptr<fluid::algorithm::Loudness> mLoudness;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(LoudnessD)
 };

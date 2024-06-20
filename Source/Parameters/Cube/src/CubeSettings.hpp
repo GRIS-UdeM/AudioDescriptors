@@ -405,4 +405,7 @@ private:
     ZCube mZCube;
     HspanCube mHSpanCube;
     VspanCube mVSpanCube;
+
+    //==============================================================================
+    JUCE_LEAK_DETECTOR(CubeSettings)
 };

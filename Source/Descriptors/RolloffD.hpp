@@ -55,4 +55,6 @@ private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mRolloffRunningStats;
 	double mDescRolloff{};
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(RolloffD)
 };

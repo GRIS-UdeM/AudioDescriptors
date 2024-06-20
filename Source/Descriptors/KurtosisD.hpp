@@ -53,4 +53,7 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mKurtosisRunningStats;
 	double mDescKurtosis{};
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(KurtosisD)
 };

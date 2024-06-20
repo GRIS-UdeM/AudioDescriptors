@@ -136,4 +136,7 @@ public:
 		mels.resize(mNBandsSpectral);
 	}
 
+private:
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(OperationsD)
 };

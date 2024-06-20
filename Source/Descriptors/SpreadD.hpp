@@ -55,5 +55,6 @@ private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mSpreadRunningStats;
 	double mDescSpread{};
 
-
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(SpreadD)
 };

@@ -85,4 +85,6 @@ private:
 	double mDescPitchConfidence{};
 	std::unique_ptr<fluid::algorithm::YINFFT>	mYin;
 
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(PitchD)
 };

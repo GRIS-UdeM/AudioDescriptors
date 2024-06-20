@@ -55,4 +55,7 @@ public:
 private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mCrestRunningStats;
 	double mDescCrest{};
+
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(CrestD)
 };

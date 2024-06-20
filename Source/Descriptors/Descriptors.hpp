@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <JuceHeader.h>
 #include "algorithms/public/MultiStats.hpp"
 
 
@@ -85,5 +86,7 @@ protected:
 	//fluid::index mMinFreqSpectralFlatness = 20;//20 pour la
 	//fluid::index mMaxFreqSpectralFlatness = 20000;
 
-
+private:
+	//==============================================================================
+	JUCE_LEAK_DETECTOR(Descriptors)
 };
