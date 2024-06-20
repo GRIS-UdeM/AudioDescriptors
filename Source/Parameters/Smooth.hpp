@@ -29,7 +29,7 @@ class Smooth
 {
 public:
 
-	double DoSmooth(double targetValue, double smooth, double moreSmooth) {
+	double DoSmooth(double targetValue, double smooth, double smoothCoef) {
 		smooth = juce::jmap(smooth, 0.0, 100.0, 0.0, 200.0);
 		smooth = std::max(1.0, std::min(smooth, 200.0));
 
@@ -39,14 +39,14 @@ public:
 			this->smoothHistory = smooth;
 		}
 		else {
-			moreSmooth *= 0.01;
-			moreSmooth = 1 - moreSmooth;
-			if (moreSmooth == 0) {
-				moreSmooth = ALMOST_ZERO;
+			smoothCoef *= 0.01;
+			smoothCoef = 1 - smoothCoef;
+			if (smoothCoef == 0) {
+				smoothCoef = ALMOST_ZERO;
 			}
 			double logsmooth = std::log(smooth);
 			double normalizedsmooth = 1.0 / logsmooth;
-			double adjustment = (targetValue - currentValue) * (normalizedsmooth*moreSmooth);
+			double adjustment = (targetValue - currentValue) * (normalizedsmooth*smoothCoef);
 
 
 

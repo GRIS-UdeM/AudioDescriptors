@@ -84,7 +84,7 @@ private:
     juce::Label mDescriptorOffsetLabel;
     juce::Label mDescriptorFactorLabel;
     juce::Label mDescriptorSmoothLabel;
-    juce::Label mDescriptorMoreSmoothLabel;
+    juce::Label mDescriptorSmoothCoefLabel;
     juce::Label mDescriptorRangeLabel;
     juce::Label mDescriptorMinFreqLabel;
     juce::Label mDescriptorMaxFreqLabel;
@@ -95,7 +95,7 @@ private:
 
     juce::FlexBox mDescriptorFactorBox;
     juce::FlexBox mDescriptorSmoothBox;
-    juce::FlexBox mDescriptorMoreSmoothBox;
+    juce::FlexBox mDescriptorSmoothCoefBox;
     juce::FlexBox mDescriptorRangeBox;
     juce::FlexBox mDescriptorMinFreqBox;
     juce::FlexBox mDescriptorMaxFreqBox;

@@ -80,8 +80,8 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
     addAndMakeVisible(mDescriptorSmoothLabel);
     mDescriptorSmoothLabel.setText("Smooth", juce::dontSendNotification);
 
-    addAndMakeVisible(mDescriptorMoreSmoothLabel);
-    mDescriptorMoreSmoothLabel.setText("More Smooth", juce::dontSendNotification);
+    addAndMakeVisible(mDescriptorSmoothCoefLabel);
+    mDescriptorSmoothCoefLabel.setText("Smooth Coef.", juce::dontSendNotification);
 
     addAndMakeVisible(mDescriptorRangeLabel);
     mDescriptorRangeLabel.setText("Range", juce::dontSendNotification);
@@ -443,7 +443,7 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
             mDescriptorSmoothLabel.setVisible(false);
 
             mDescriptorSmoothCoefSlider.setVisible(false);
-            mDescriptorMoreSmoothLabel.setVisible(false);
+            mDescriptorSmoothCoefLabel.setVisible(false);
 
             mDescriptorRangeSlider.setVisible(false);
             mDescriptorRangeLabel.setVisible(false);
@@ -487,7 +487,7 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
             mDescriptorSmoothLabel.setVisible(true);
 
             mDescriptorSmoothCoefSlider.setVisible(true);
-            mDescriptorMoreSmoothLabel.setVisible(true);
+            mDescriptorSmoothCoefLabel.setVisible(true);
 
             mDescriptorRangeSlider.setVisible(true);
             mDescriptorRangeLabel.setVisible(true);
@@ -583,9 +583,9 @@ void PanelView::resized()
     mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothLabel).withMinWidth(10).withFlex(1));
     mDescriptorSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothSlider).withFlex(3));
 
-    mDescriptorMoreSmoothBox = generalFlexBoxConfig;
-    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorMoreSmoothLabel).withMinWidth(10).withFlex(1));
-    mDescriptorMoreSmoothBox.items.add(juce::FlexItem(mDescriptorSmoothCoefSlider).withFlex(3));
+    mDescriptorSmoothCoefBox = generalFlexBoxConfig;
+    mDescriptorSmoothCoefBox.items.add(juce::FlexItem(mDescriptorSmoothCoefLabel).withMinWidth(10).withFlex(1));
+    mDescriptorSmoothCoefBox.items.add(juce::FlexItem(mDescriptorSmoothCoefSlider).withFlex(3));
 
     mDescriptorRangeBox = generalFlexBoxConfig;
     mDescriptorRangeBox.items.add(juce::FlexItem(mDescriptorRangeLabel).withMinWidth(10).withFlex(1));
@@ -643,7 +643,7 @@ void PanelView::resized()
 
     descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorFactorBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
-    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorMoreSmoothBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
+    descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorSmoothCoefBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     if (isAzimuth) {
         descriptorFlexBoxBottomLeftPart.items.add(juce::FlexItem(mDescriptorLapBox).withHeight(30).withMargin(juce::FlexItem::Margin(5)));
     }
