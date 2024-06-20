@@ -66,7 +66,6 @@
       <FILE id="AusRG7" name="Smooth.hpp" compile="0" resource="0" file="Source/Parameters/Smooth.hpp"/>
     </GROUP>
     <GROUP id="{29F41BE7-848D-EDE9-766F-23D6C0F9C7B2}" name="Source">
-      <FILE id="Arhaoq" name="PCH.h" compile="0" resource="0" file="Source/PCH.h"/>
       <FILE id="oGragP" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
       <FILE id="aPHWDa" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
