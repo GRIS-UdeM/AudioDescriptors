@@ -74,6 +74,11 @@ public:
         mDescOnsetDetectionCurrent = 0.0;
     }
 
+    void setOnsetDetectionFromClick(double timeValue) {
+        mTimerButtonClickvalue = timeValue;
+        mUseTimerButtonclickValue = true;
+    }
+
 	void mOnsetDetectionProcess(juce::AudioBuffer<float>& descriptorBuffer, double sampleRate, int blockSize) {
         std::vector<float> allSamples;
         std::vector<double> onsetDectectionVals{};
@@ -116,42 +121,72 @@ public:
             mOnsetDetectionUnusedSamples.resize(0);
         }
 
-        for (int i{}; i < onsetDectectionVals.size(); ++i) {
-            if (onsetDectectionVals[i] >= mDescOnsetDetectionThreshold && mIsOnsetDetectionReady) {
-                mSampleCounter = 0;
-                mIsOnsetDetectionReady = false;
-                mOnsetDetectionStartCountingSamples = true;
-                mTimeSinceLastOnsetDetectionDeque.push_back(mOnsetDetectionNumSamples / sampleRate * 1000 / nFramesDivider);
-                mOnsetDetectionNumSamples = 0;
+        if (mUseTimerButtonclickValue) {
+            // when user clicks for Iterations Speed
+            mTimeSinceLastOnsetDetectionDeque.push_back(mTimerButtonClickvalue);
+            mUseTimerButtonclickValue = false;
+            mSampleCounter = 0;
 
-                if (mTimeSinceLastOnsetDetectionDeque.size() > 3) {
-                    mTimeSinceLastOnsetDetectionDeque.pop_front();
-                }
+            if (mTimeSinceLastOnsetDetectionDeque.size() > 3) {
+                mTimeSinceLastOnsetDetectionDeque.pop_front();
+            }
 
-                if (mTimeSinceLastOnsetDetectionDeque.size() == 3) {
-                    auto timeSinceLastOnsetDetectionVec = mTimeSinceLastOnsetDetectionDeque;
-                    std::sort(timeSinceLastOnsetDetectionVec.begin(), timeSinceLastOnsetDetectionVec.end());
-                    auto median = timeSinceLastOnsetDetectionVec.at(2); // Not the median. The longest time appears to give better results
+            if (mTimeSinceLastOnsetDetectionDeque.size() == 3) {
+                auto timeSinceLastOnsetDetectionVec = mTimeSinceLastOnsetDetectionDeque;
+                std::sort(timeSinceLastOnsetDetectionVec.begin(), timeSinceLastOnsetDetectionVec.end());
+                auto median = timeSinceLastOnsetDetectionVec.at(2); // Not the median. The longest time appears to give better results
 
-                    if (median < mOnsetDetectionTimeMin || median > mOnsetDetectionTimeMax) {
-                        continue;
-                    }
-
+                if (median >= mOnsetDetectionTimeMin && median <= mOnsetDetectionTimeMax) {
                     mDescOnsetDetectionTarget = juce::jmap(median, mOnsetDetectionTimeMin, mOnsetDetectionTimeMax, 1.0, 0.0);
                     mDescOnsetDetectionTarget = std::clamp(mDescOnsetDetectionTarget, 0.0, 1.0);
                     mDescOnsetDetectionTarget = std::pow(mDescOnsetDetectionTarget, 4);
                     mTimeToOnsetDetectionTarget = median * 0.25;
                     mTimeToOnsetDetectionZero = median * 5;
                     mDifferenceOnsetDetection = mDescOnsetDetectionTarget - mDescOnsetDetectionCurrent;
-                    mOnsetDetectionIncrement = (mDifferenceOnsetDetection / (mTimeToOnsetDetectionTarget * (blockSize / sampleRate * 1000))) * 200; // 200 could be adjusted for smoothed value
+                    mOnsetDetectionIncrement = (mDifferenceOnsetDetection / (mTimeToOnsetDetectionTarget * (blockSize / sampleRate * 1000))) * 200;
                     mDescOnsetDetectionTarget > mDescOnsetDetectionCurrent ? mOnsetDetectionDirection = Direction::up : mOnsetDetectionDirection = Direction::down;
                 }
             }
-            else if (onsetDectectionVals[i] < mDescOnsetDetectionThreshold) {
-                mIsOnsetDetectionReady = true;
-            }
-            if (mOnsetDetectionStartCountingSamples) {
-                mOnsetDetectionNumSamples += numSamplesToProcess;
+        }
+        else {
+            // get onset detection from audio
+            for (int i{}; i < onsetDectectionVals.size(); ++i) {
+                if (onsetDectectionVals[i] >= mDescOnsetDetectionThreshold && mIsOnsetDetectionReady) {
+                    mSampleCounter = 0;
+                    mIsOnsetDetectionReady = false;
+                    mOnsetDetectionStartCountingSamples = true;
+                    mTimeSinceLastOnsetDetectionDeque.push_back(mOnsetDetectionNumSamples / sampleRate * 1000 / nFramesDivider);
+                    mOnsetDetectionNumSamples = 0;
+
+                    if (mTimeSinceLastOnsetDetectionDeque.size() > 3) {
+                        mTimeSinceLastOnsetDetectionDeque.pop_front();
+                    }
+
+                    if (mTimeSinceLastOnsetDetectionDeque.size() == 3) {
+                        auto timeSinceLastOnsetDetectionVec = mTimeSinceLastOnsetDetectionDeque;
+                        std::sort(timeSinceLastOnsetDetectionVec.begin(), timeSinceLastOnsetDetectionVec.end());
+                        auto median = timeSinceLastOnsetDetectionVec.at(2); // Not the median. The longest time appears to give better results
+
+                        if (median < mOnsetDetectionTimeMin || median > mOnsetDetectionTimeMax) {
+                            continue;
+                        }
+
+                        mDescOnsetDetectionTarget = juce::jmap(median, mOnsetDetectionTimeMin, mOnsetDetectionTimeMax, 1.0, 0.0);
+                        mDescOnsetDetectionTarget = std::clamp(mDescOnsetDetectionTarget, 0.0, 1.0);
+                        mDescOnsetDetectionTarget = std::pow(mDescOnsetDetectionTarget, 4);
+                        mTimeToOnsetDetectionTarget = median * 0.25;
+                        mTimeToOnsetDetectionZero = median * 5;
+                        mDifferenceOnsetDetection = mDescOnsetDetectionTarget - mDescOnsetDetectionCurrent;
+                        mOnsetDetectionIncrement = (mDifferenceOnsetDetection / (mTimeToOnsetDetectionTarget * (blockSize / sampleRate * 1000))) * 200; // 200 could be adjusted for smoothed value
+                        mDescOnsetDetectionTarget > mDescOnsetDetectionCurrent ? mOnsetDetectionDirection = Direction::up : mOnsetDetectionDirection = Direction::down;
+                    }
+                }
+                else if (onsetDectectionVals[i] < mDescOnsetDetectionThreshold) {
+                    mIsOnsetDetectionReady = true;
+                }
+                if (mOnsetDetectionStartCountingSamples) {
+                    mOnsetDetectionNumSamples += numSamplesToProcess;
+                }
             }
         }
 
@@ -202,6 +237,8 @@ private:
     std::deque<double> mTimeSinceLastOnsetDetectionDeque{};
     Direction mOnsetDetectionDirection{};
     int mSampleCounter{};
+    bool mUseTimerButtonclickValue{};
+    double mTimerButtonClickvalue{};
 
     //==============================================================================
     JUCE_LEAK_DETECTOR(OnsetDetectionD)

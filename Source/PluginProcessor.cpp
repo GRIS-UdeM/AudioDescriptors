@@ -990,6 +990,36 @@ void AudioDescriptorsAudioProcessor::setOnsetDetectionMaxTime(ParameterID paramI
 	}
 }
 
+void AudioDescriptorsAudioProcessor::setOnsetDetectionFromClick(ParameterID paramID, const double timeValue)
+{
+	switch (paramID)
+	{
+	case ParameterID::azimuth:
+		mOnsetDetectionAzimuth.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::elevation:
+		mOnsetDetectionElevation.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::x:
+		mOnsetDetectionX.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::y:
+		mOnsetDetectionY.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::z:
+		mOnsetDetectionZ.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::azimuthspan:
+		mOnsetDetectionHSpan.setOnsetDetectionFromClick(timeValue);
+		break;
+	case ParameterID::elevationspan:
+		mOnsetDetectionVSpan.setOnsetDetectionFromClick(timeValue);
+		break;
+	default:
+		break;
+	}
+}
+
 void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter, int index, double value, bool isAzimuth, bool isOffset)
 {
 	if (index == 2) {

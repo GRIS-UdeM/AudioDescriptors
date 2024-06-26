@@ -26,7 +26,7 @@
 #include "../Source/PluginProcessor.h"
 
 //==============================================================================
-class DataGraph : public juce::Component, juce::Timer
+class DataGraph : public juce::Component, private juce::Timer
 {
 public:
     DataGraph(Parameters& parameter);
@@ -42,15 +42,15 @@ public:
 private:
     Parameters& param;
     std::deque<double> mGUIBuffer;
-    std::vector<double> mBuffer[2];
-    enum class WritingBuffer{ first = 0, second = 1 } mWritingBuffer{ WritingBuffer::first };
+    double mBuffer{};
+    int mBufferCount{};
 
     //==============================================================================
     JUCE_LEAK_DETECTOR(DataGraph)
 };
 
 //==============================================================================
-class PanelView : public juce::Component, public juce::ComboBox::Listener
+class PanelView : public juce::Component, public juce::ComboBox::Listener, private juce::Timer
 {
 public:
     PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& parameter);
@@ -59,6 +59,7 @@ public:
     void comboBoxChanged(juce::ComboBox* comboBox) override;
     void paint(juce::Graphics&) override;
     void resized() override;
+    void timerCallback() override;
 
     void addNewParamValue(double value);
 
@@ -93,6 +94,8 @@ private:
     juce::Label mDescriptorMaxTimeLabel;
     juce::Label mDescriptorLapLabel;
 
+    juce::TextButton mClickTimerButton;
+
     juce::FlexBox mDescriptorFactorBox;
     juce::FlexBox mDescriptorSmoothBox;
     juce::FlexBox mDescriptorSmoothCoefBox;
@@ -106,6 +109,7 @@ private:
     juce::FlexBox mDescriptorLapBox;
     juce::FlexBox mDescriptorOffsetBox;
     juce::FlexBox mGraphBox;
+    juce::FlexBox mClickTimerBox;
 
     juce::StringArray boxItems{ "Select parameters", "Loudness", "Pitch", "Centroid", "Spread", "Noise", "Iterations Speed" };
     juce::StringArray metricBoxItems{ "Energy", "High Frequency Content", "Spectral Flux", "Rectified Complex Domain" };
@@ -113,6 +117,7 @@ private:
     bool isAzimuth = false;
     bool isOffset = false;
 
+    int mOnsetDetectiontimerCounter{};
     //==============================================================================
     JUCE_LEAK_DETECTOR(PanelView)
 };

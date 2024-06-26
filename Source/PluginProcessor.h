@@ -121,6 +121,7 @@ public:
     void setOnsetDetectionThreshold(ParameterID paramID, const float tresh);
     void setOnsetDetectionMinTime(ParameterID paramID, const double minTime);
     void setOnsetDetectionMaxTime(ParameterID paramID, const double maxTime);
+    void setOnsetDetectionFromClick(ParameterID paramID, const double timeValue);
 
     DomeSettings& getDomeSettings();
     CubeSettings& getCubeSettings();

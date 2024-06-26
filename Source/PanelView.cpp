@@ -71,6 +71,15 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
         addAndMakeVisible(mDescriptorOffsetSlider);
         isOffset = true;
     }
+
+    addAndMakeVisible(mClickTimerButton);
+    mClickTimerButton.setButtonText("click me!");
+    mClickTimerButton.onClick = [this] {
+        mAudioProcessor.setOnsetDetectionFromClick(mParameter.getParameterID(), static_cast<double>(mOnsetDetectiontimerCounter));
+        mOnsetDetectiontimerCounter = 0;
+        startTimer(5);
+    };
+
     addAndMakeVisible(mDescriptorLabel);
     mDescriptorLabel.setText(mParameter.getParameterName(), juce::dontSendNotification);
 
@@ -466,9 +475,11 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
             mDescriptorMaxTimeLabel.setVisible(false);
 
             mDataGraph.setVisible(false);
+            mClickTimerButton.setVisible(false);
         }
         else if (mDescriptorComboBox.getSelectedId() != 1) {
             mDataGraph.setVisible(true);
+            mClickTimerButton.setVisible(false);
 
             if (isAzimuth) {
                 mDescriptorLapSlider.setVisible(true);
@@ -533,6 +544,8 @@ void PanelView::comboBoxChanged(juce::ComboBox* comboBox)
 
                 mDescriptorMaxFreqSlider.setVisible(false);
                 mDescriptorMaxFreqLabel.setVisible(false);
+
+                mClickTimerButton.setVisible(true);
             }
             else {
                 mDescriptorMinFreqSlider.setVisible(false);
@@ -571,7 +584,6 @@ void PanelView::resized()
         mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapLabel).withMinWidth(10).withFlex(1));
         mDescriptorLapBox.items.add(juce::FlexItem(mDescriptorLapSlider).withFlex(3));
     }
-
 
     if (isOffset) {
         mDescriptorOffsetBox = generalFlexBoxConfig;
@@ -616,6 +628,9 @@ void PanelView::resized()
 
     mGraphBox = generalFlexBoxConfig;
     mGraphBox.items.add(juce::FlexItem(mDataGraph).withFlex(3));
+
+    mClickTimerBox = generalFlexBoxConfig;
+    mClickTimerBox.items.add(juce::FlexItem(mClickTimerButton).withFlex(1));
 
     juce::FlexBox descriptorFlexBoxTopPart;
     juce::FlexBox descriptorFlexBoxBottomPart;
@@ -665,6 +680,10 @@ void PanelView::resized()
         //.withMaxWidth(80)
         .withMargin(juce::FlexItem::Margin(5))
         .withAlignSelf(juce::FlexItem::AlignSelf::center));
+    descriptorFlexBoxBottomRightPart.items.add(juce::FlexItem(mClickTimerButton)
+        .withMinHeight(20)
+        .withMinWidth(80)
+        .withAlignSelf(juce::FlexItem::AlignSelf::center));
 
     //////////
 
@@ -679,6 +698,27 @@ void PanelView::resized()
     parentFlexBox.items.add(juce::FlexItem(descriptorFlexBoxTopPart).withFlex(1));
     parentFlexBox.items.add(juce::FlexItem(descriptorFlexBoxBottomPart).withFlex(4));
     parentFlexBox.performLayout(area); // Utilise topHalf pour le layout
+}
+
+void PanelView::timerCallback()
+{
+    mOnsetDetectiontimerCounter += getTimerInterval();
+
+    if (mOnsetDetectiontimerCounter >= 1000 * 120) {
+        stopTimer();
+        mOnsetDetectiontimerCounter = 0;
+        mClickTimerButton.setButtonText(juce::String("click me!"));
+    }
+    else {
+        if (mOnsetDetectiontimerCounter < 1000) {
+            mClickTimerButton.setButtonText(juce::String(mOnsetDetectiontimerCounter) + juce::String(" ms"));
+        }
+        else {
+            auto buttonTimerValue = static_cast<double>(mOnsetDetectiontimerCounter) / 1000;
+            auto formattedTimerValue = juce::String(buttonTimerValue, 2);
+            mClickTimerButton.setButtonText(formattedTimerValue + juce::String(" s"));
+        }
+    }
 }
 
 void PanelView::addNewParamValue(double value)
@@ -761,32 +801,18 @@ void DataGraph::timerCallback()
 
 void DataGraph::addToBuffer(double value)
 {
-    if (mWritingBuffer == WritingBuffer::first) {
-        mBuffer[0].push_back(value);
-    }
-    else {
-        mBuffer[1].push_back(value);
-    }
+    mBuffer += value;
+    mBufferCount++;
 }
 
 double DataGraph::readBufferMean()
 {
     double mean{};
-    int index{};
 
-    if (mWritingBuffer == WritingBuffer::first) {
-        mWritingBuffer = WritingBuffer::second;
-        index = 0;
-    }
-    else {
-        mWritingBuffer = WritingBuffer::first;
-        index = 1;
-    }
-
-    if (mBuffer[index].size() > 0) {
-        auto sum = std::reduce(mBuffer[index].begin(), mBuffer[index].end());
-        mean = sum / mBuffer[index].size();
-        mBuffer[index].clear();
+    if (mBufferCount > 0) {
+        mean = mBuffer / mBufferCount;
+        mBuffer = 0.0;
+        mBufferCount = 0;
     }
 
     return mean;
