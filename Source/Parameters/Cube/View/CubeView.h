@@ -70,9 +70,5 @@ private:
     PanelView mHSpanPanel;
     PanelView mVSpanPanel;
 
-    juce::StringArray boxItems{ "Select parameters","Loudness", "Pitch", "Centroid", "Spread", "Noise", "Iterations Speed" };
-    juce::StringArray metricBoxItems{ "Energy", "High Frequency Content", "Spectral Flux", "Rectified Complex Domain" };
-
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CubeView)
 };
