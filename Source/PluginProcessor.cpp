@@ -298,7 +298,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 			if (domeSettings.checkConditionLoudnessVSpan()) {
 				//DBG("--------------VSpan Loudness -------------------");
-				processDomeParameter(domeSettings.getVSpanDome(), 2, loudnessValue, false,false);
+				processDomeParameter(domeSettings.getVSpanDome(), 2, loudnessValue, false, true);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
 		}
@@ -367,7 +367,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 			if (domeSettings.checkConditionPitchVSpan()) {
 				//DBG("--------------VSpan Pitch -------------------");
-				processDomeParameter(domeSettings.getVSpanDome(), 3, pitchValue, false, false );
+				processDomeParameter(domeSettings.getVSpanDome(), 3, pitchValue, false, true);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
 		}
@@ -457,7 +457,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 				if (domeSettings.checkConditionCentroidVSpan()) {
 					//DBG("--------------VSpan Centroid -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 4, centroidValue, false, false);
+					processDomeParameter(domeSettings.getVSpanDome(), 4, centroidValue, false, true);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
@@ -479,7 +479,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 				if (domeSettings.checkConditionSpreadVSpan()) {
 					//DBG("--------------VSpan Spread -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 5, zmap, false, false);
+					processDomeParameter(domeSettings.getVSpanDome(), 5, zmap, false, true);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
@@ -501,7 +501,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				}
 				if (domeSettings.checkConditionNoiseVSpan()) {
 					//DBG("--------------VSpan Noise -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 6, flatnessValue, false, false);
+					processDomeParameter(domeSettings.getVSpanDome(), 6, flatnessValue, false, true);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
@@ -606,7 +606,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				//DBG("--------------Elevation Iterations Speed-----------------");
 				mOnsetDetectionElevation.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionElevation.getOnsetDetectionValue() };
-				processDomeParameter(domeSettings.getElevationDome(), 7, onsetDetectionValue, false, false);
+				processDomeParameter(domeSettings.getElevationDome(), 7, onsetDetectionValue, false, true);
 				mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionHSpan()) {

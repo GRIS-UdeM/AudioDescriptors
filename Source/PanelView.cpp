@@ -739,9 +739,11 @@ void PanelView::addNewParamValue(double value)
         break;
     case ParameterID::z:
         value = juce::jmap(std::abs(value), 0.0, 1.0, 0.0, 1.0);
+        break;
     case ParameterID::azimuthspan:
     case ParameterID::elevationspan:
         value = juce::jmap(std::abs(value), 0.0, 100.0, 0.0, 1.0);
+        break;
     case ParameterID::invalid:
     default:
         break;

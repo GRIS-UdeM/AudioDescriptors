@@ -40,12 +40,6 @@ public:
 		double clipMax = 0.999999;
 		int multiplier = 90;
 
-		//offset *= 0.01;
-		//offset = 1 - offset;
-		//if (offset == 0) {
-		//	offset = ALMOST_ZERO;
-		//}
-
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
 		res = clip * inputRange * multiplier;

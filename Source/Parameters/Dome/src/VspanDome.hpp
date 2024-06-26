@@ -37,20 +37,18 @@ public:
 		setParametersState();
 	}
 
-	void parameters(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
+	void parameters(double range, double smooth, [[maybe_unused]] double lap, double offset) {
 		double clipMax = 0.999999;
 		int multiplier = 100;
-
-		
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
 		res = clip * inputRange * multiplier;
+		res -= offset * 100;
 
 		if (std::isnan(res)) {
 			res = 0.0;
 		}
-		//DBG("valeur finale = " << res);
 	}
 
 private:

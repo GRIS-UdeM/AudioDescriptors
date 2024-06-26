@@ -45,7 +45,7 @@ public:
 		double inputRange = range * 0.01;
 		res = clip * inputRange;
 		res = res * multiplier ;
-		res -= offset;
+		res -= offset * 100;
 
 		if (std::isnan(res)) {
 			res = 0.0;
