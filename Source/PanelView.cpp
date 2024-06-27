@@ -723,27 +723,27 @@ void PanelView::timerCallback()
 
 void PanelView::addNewParamValue(double value)
 {
-    // normalize value
     auto lap = static_cast<int>(mDescriptorLapSlider.getValue());
+
     switch (mParameter.getParameterID())
     {
     case ParameterID::azimuth:
         value = juce::jmap(std::abs(value), 0.0, 360.0 * lap, 0.0, 1.0);
         break;
     case ParameterID::elevation:
-        value = juce::jmap(std::abs(value), 0.0, 90.0, 0.0, 1.0);
+        value = juce::jmap(value, -90.0, 90.0, -1.0, 1.0);
         break;
     case ParameterID::x:
     case ParameterID::y:
         value = juce::jmap(std::abs(value), 0.0, 1.66, 0.0, 1.0);
         break;
-    case ParameterID::z:
-        value = juce::jmap(std::abs(value), 0.0, 1.0, 0.0, 1.0);
-        break;
     case ParameterID::azimuthspan:
-    case ParameterID::elevationspan:
         value = juce::jmap(std::abs(value), 0.0, 100.0, 0.0, 1.0);
         break;
+    case ParameterID::elevationspan:
+        value = juce::jmap(value, -100.0, 100.0, -1.0, 1.0);
+        break;
+    case ParameterID::z: //value = juce::jmap(value, -1.0, 1.0, -1.0, 1.0);
     case ParameterID::invalid:
     default:
         break;
@@ -777,11 +777,38 @@ void DataGraph::paint(juce::Graphics& g)
     juce::RectangleList<float> rectList{};
 
     for (int i{}; i < mGUIBuffer.size(); ++i) {
-        auto initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
-        auto initialY = static_cast<float>(area.getHeight() - (area.getHeight() * mGUIBuffer.at(i)) + 1);
-        auto width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
-        auto height = static_cast<float>(area.getHeight() * mGUIBuffer.at(i));
-        rectList.add(initialX, initialY, width, height);
+        //auto initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
+        //auto initialY = static_cast<float>(area.getHeight() - (area.getHeight() * mGUIBuffer.at(i)) + 1);
+        //auto width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
+        //auto height = static_cast<float>(area.getHeight() * mGUIBuffer.at(i));
+
+        float initialX{}, initialY{}, width{}, height{};
+        float valueToPaint{ static_cast<float>(mGUIBuffer.at(i)) };
+        
+        if (param.getParameterID() == ParameterID::elevation || param.getParameterID() == ParameterID::elevationspan || param.getParameterID() == ParameterID::z) {
+            // parameter has an offset option, the graph can have negative values
+            initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
+            width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
+            height = static_cast<float>(area.getHeight() * std::abs(valueToPaint) / 2);
+            if (valueToPaint < 0) {
+                // bottom half
+                initialY = static_cast<float>((area.getHeight() / 2) + 1.0f);
+                rectList.add(initialX, initialY, width, height);
+            }
+            else {
+                // top half
+                initialY = static_cast<float>((area.getHeight() / 2) - height + 1.0f);
+                rectList.add(initialX, initialY, width, height);
+            }
+        }
+        else {
+            // the graph uses only positive values
+            auto initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
+            auto initialY = static_cast<float>(area.getHeight() - (area.getHeight() * std::abs(mGUIBuffer.at(i))) + 1);
+            auto width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
+            auto height = static_cast<float>(area.getHeight() * std::abs(mGUIBuffer.at(i)));
+            rectList.add(initialX, initialY, width, height);
+        }
     }
     g.fillRectList(rectList);
 }
