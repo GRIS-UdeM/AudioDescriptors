@@ -24,35 +24,3 @@
 
 // Globals
 const double ALMOST_ZERO{ 0.0000000000001 };
-
-const int indexFactorLoudness = 0;
-const int indexFactorSpread = 1;
-const int indexFactorNoise = 2;
-
-const int indexSmoothAndRangeLoudness = 0;
-const int indexSmoothAndRangePitch = 1;
-const int indexSmoothAndRangeCentroid = 2;
-const int indexSmoothAndRangeSpread = 3;
-const int indexSmoothAndRangeNoise = 4;
-const int indexSmoothAndRangeOnsetDetection = 5;
-
-const int indexLapLoudness = 0;
-const int indexLapPitch = 1;
-const int indexLapCentroid = 2;
-const int indexLapSpread = 3;
-const int indexLapNoise = 4;
-const int indexLapOnsetDetection = 5;
-
-const int indexOffsetLoudness = 0;
-const int indexOffsetPitch = 1;
-const int indexOffsetCentroid = 2;
-const int indexOffsetSpread = 3;
-const int indexOffsetNoise = 4;
-const int indexOffsetOnsetDetection = 5;
-
-
-const int indexMinFreqPitch = 0;
-const int indexMinFreqCentroid = 1;
-
-const int indexMaxFreqPitch = 0;
-const int indexMaxFreqCentroid = 1;

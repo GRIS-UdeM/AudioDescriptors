@@ -36,25 +36,6 @@ public:
     void paint(juce::Graphics&) override;
     void resized() override;
 
-protected:
-    /////////////////X/////////////////
-
-    int indexFactorLoudness = 0;
-    int indexFactorSpread = 1;
-    int indexFactorNoise = 2;
-
-    int indexSmoothAndRangeLoudness = 0;
-    int indexSmoothAndRangePitch = 1;
-    int indexSmoothAndRangeCentroid = 2;
-    int indexSmoothAndRangeSpread = 3;
-    int indexSmoothAndRangeNoise = 4;
-
-    int indexMinFreqPitch = 0;
-    int indexMinFreqCentroid = 1;
-
-    int indexMaxFreqPitch = 0;
-    int indexMaxFreqCentroid = 1;
-
 private:
 
     //==============================================================================
