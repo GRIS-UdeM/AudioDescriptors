@@ -44,6 +44,18 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
     mDescriptorLapSlider.setDoubleClickReturnValue(true, 1.0);
     mDescriptorOffsetSlider.setDoubleClickReturnValue(true, 0.0);
 
+    mDescriptorFactorSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorSmoothSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorSmoothCoefSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorRangeSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorMinFreqSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorMaxFreqSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorThresholdSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorMinTimeSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorMaxTimeSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorLapSlider.setNumDecimalPlacesToDisplay(2);
+    mDescriptorOffsetSlider.setNumDecimalPlacesToDisplay(2);
+
 
     if (parameter.getParameterID() == ParameterID::azimuth) {
         addAndMakeVisible(mDescriptorLapLabel);
