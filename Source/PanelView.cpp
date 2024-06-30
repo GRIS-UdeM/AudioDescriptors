@@ -780,7 +780,7 @@ DataGraph::~DataGraph()
 
 void DataGraph::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::yellow);
+    g.fillAll(juce::Colour(200, 200, 102));
 
     g.setOpacity(1.0f);
     g.setColour(juce::Colours::black);
