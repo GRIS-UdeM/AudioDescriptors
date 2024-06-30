@@ -1256,6 +1256,16 @@ void AudioDescriptorsAudioProcessor::setControlGrisId(int const id)
 	mControlGrisId = id;
 }
 
+juce::Point<int> AudioDescriptorsAudioProcessor::getWindowDimensions() const
+{
+	return mWindowDimWidthHeight;
+}
+
+void AudioDescriptorsAudioProcessor::setWindowDimensions(juce::Point<int> dimensions)
+{
+	mWindowDimWidthHeight = dimensions;
+}
+
 juce::String AudioDescriptorsAudioProcessor::getSpatModeToString()
 {
 	if (mSpatMode == SpatMode::dome) {

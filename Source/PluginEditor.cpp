@@ -30,7 +30,7 @@ AudioDescriptorsAudioProcessorEditor::AudioDescriptorsAudioProcessorEditor(Audio
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize(800, 800);
+    setSize(mAudioProcessor.getWindowDimensions().getX(), mAudioProcessor.getWindowDimensions().getY());
     setResizable(true, true);
 
     addAndMakeVisible(mViewportCube);
@@ -138,6 +138,8 @@ void AudioDescriptorsAudioProcessorEditor::paint(juce::Graphics& g)
 
 void AudioDescriptorsAudioProcessorEditor::resized()
 {
+    mAudioProcessor.setWindowDimensions({ getWidth(), getHeight() });
+
     auto area = getLocalBounds().reduced(10);
 
     auto panelArea = area.removeFromTop(30);

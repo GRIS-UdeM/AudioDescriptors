@@ -133,6 +133,9 @@ public:
     int getControlGrisId();
     void setControlGrisId(int const id);
 
+    juce::Point<int> getWindowDimensions() const;
+    void setWindowDimensions(juce::Point<int> dimensions);
+
 private:
     //==============================================================================
     double mSampleRate{};
@@ -141,6 +144,9 @@ private:
     SpatMode mSpatMode{ SpatMode::dome };
 
     juce::AudioProcessorValueTreeState mAudioProcessorValueTreeState;
+
+    // GUI
+    juce::Point<int> mWindowDimWidthHeight = { 1020, 800 };
 
     // OSC
     //bool mOscActivated{ true };
