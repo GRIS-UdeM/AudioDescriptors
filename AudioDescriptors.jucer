@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildAU,buildVST3" pluginVST3Category="Analyzer"
               defines="JUCE_DISPLAY_SPLASH_SCREEN=0&#10;_USE_MATH_DEFINES=1"
-              version="0.0.1" companyName="GRIS - UdeM">
+              version="0.0.2" companyName="GRIS - UdeM">
   <MAINGROUP id="sk7ynA" name="AudioDescriptors">
     <GROUP id="{80AC6283-17AE-07BF-E117-3AC4EE993EA9}" name="Descriptors">
       <FILE id="DFgvK2" name="BandsD.hpp" compile="0" resource="0" file="Source/Descriptors/BandsD.hpp"/>
