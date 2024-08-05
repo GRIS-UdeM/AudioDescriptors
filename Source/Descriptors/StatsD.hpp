@@ -28,12 +28,11 @@
 class StatsD : public Descriptors
 {
 public:
-
-	void resetStats() {
+	void reset() override {
 		mStats.reset(new fluid::algorithm::MultiStats());
 	}
 
-	void initStats() {
+	void init() override {
 		mStats->init(0, 0, 50, 100);
 	}
 
@@ -41,9 +40,12 @@ public:
 		return mStats.get();
 	}
 
-
 private:
-	std::unique_ptr<fluid::algorithm::MultiStats>     mStats;
+	//==============================================================================
+	double getValue() override { return 0; }
+
+	//==============================================================================
+	std::unique_ptr<fluid::algorithm::MultiStats> mStats;
 
 	//==============================================================================
 	JUCE_LEAK_DETECTOR(StatsD)

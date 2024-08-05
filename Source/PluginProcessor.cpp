@@ -115,52 +115,41 @@ void AudioDescriptorsAudioProcessor::changeProgramName(int /*index*/, const juce
 
 void AudioDescriptorsAudioProcessor::resetFunction()
 {
-	//mStft.resetStft();
-	mStftPitch.resetStftPitch();
-	mStftSpectral.resetStftSpectral();
-
-	mBands.resetBands();
-	mDct.resetDct();
-
-	mPitch.resetPitch();
-	mLoudness.resetLoudness();
-	mStats.resetStats();
-	mShape.resetShape();
-	mCentroid.resetCentroid();
-	mSpread.resetSpread();
-	mFlatness.resetFlatness();
-	mOnsetDetectionAzimuth.resetOnsetDetection();
-	mOnsetDetectionElevation.resetOnsetDetection();
-	mOnsetDetectionHSpan.resetOnsetDetection();
-	mOnsetDetectionVSpan.resetOnsetDetection();
-	mOnsetDetectionX.resetOnsetDetection();
-	mOnsetDetectionY.resetOnsetDetection();
-	mOnsetDetectionZ.resetOnsetDetection();
+	mPitch.reset();
+	mLoudness.reset();
+	mStats.reset();
+	mShape.reset();
+	mCentroid.reset();
+	mSpread.reset();
+	mFlatness.reset();
+	mOnsetDetectionAzimuth.reset();
+	mOnsetDetectionElevation.reset();
+	mOnsetDetectionHSpan.reset();
+	mOnsetDetectionVSpan.reset();
+	mOnsetDetectionX.reset();
+	mOnsetDetectionY.reset();
+	mOnsetDetectionZ.reset();
 }
 
 void AudioDescriptorsAudioProcessor::initFunction()
 {
-	mBands.initBands(mSampleRate);
-	mDct.initDct();
-	mPitch.initPitch();
-	mLoudness.initLoudness(mSampleRate);
-	mStats.initStats();
-	mCentroid.initCentroid();
-	mSpread.initSpread();
-	mFlatness.initFlatness();
-	mOnsetDetectionAzimuth.initOnsetDetection();
-	mOnsetDetectionElevation.initOnsetDetection();
-	mOnsetDetectionHSpan.initOnsetDetection();
-	mOnsetDetectionVSpan.initOnsetDetection();
-	mOnsetDetectionX.initOnsetDetection();
-	mOnsetDetectionY.initOnsetDetection();
-	mOnsetDetectionZ.initOnsetDetection();
+	mPitch.init();
+	mLoudness.init(mSampleRate);
+	mStats.init();
+	mCentroid.init();
+	mSpread.init();
+	mFlatness.init();
+	mOnsetDetectionAzimuth.init();
+	mOnsetDetectionElevation.init();
+	mOnsetDetectionHSpan.init();
+	mOnsetDetectionVSpan.init();
+	mOnsetDetectionX.init();
+	mOnsetDetectionY.init();
+	mOnsetDetectionZ.init();
 }
 //==============================================================================
 void AudioDescriptorsAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-	// Use this method as the place to do any pre-playback
-	// initialisation that you need..
 	mSampleRate = sampleRate;
 	mBlockSize = samplesPerBlock;
 
@@ -251,34 +240,34 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		inPitch[i] = channelData[i];
 	}
 
-	RealVector paddedLoudness = ops.calculatePaddedLoudness(inLoudness);
-	fluid::index nFramesLoudness = ops.calculateFramesLoudness(paddedLoudness);
+	RealVector paddedLoudness = mLoudness.calculatePaddedLoudness(inLoudness);
+	fluid::index nFramesLoudness = mLoudness.calculateFramesLoudness(paddedLoudness);
 	RealMatrix loudnessMat(nFramesLoudness, 2);
 	std::fill(paddedLoudness.begin(), paddedLoudness.end(), 0);
-	paddedLoudness(ops.paddedValueLoudness(inLoudness)) <<= inLoudness;
+	paddedLoudness(mLoudness.paddedValueLoudness(inLoudness)) <<= inLoudness;
 
-	RealVector paddedPitch = ops.calculatePaddedPitch(inPitch);
-    fluid::index nFramesPitch = ops.calculateFramesPitch(paddedPitch);
+	RealVector paddedPitch = mPitch.calculatePaddedPitch(inPitch);
+    fluid::index nFramesPitch = mPitch.calculateFramesPitch(paddedPitch);
 	RealMatrix pitchMat(nFramesPitch, 2);
 	std::fill(paddedPitch.begin(), paddedPitch.end(), 0);
-	paddedPitch(ops.paddedValuePitch(inPitch)) <<= inPitch;
+	paddedPitch(mPitch.paddedValuePitch(inPitch)) <<= inPitch;
 
-	RealVector paddedSpectral = ops.calculatePaddedSpectral(inSpectral);
-    fluid::index nFramesSpectral = ops.calculateFramesSpectral(paddedSpectral);
+	RealVector paddedSpectral = mShape.calculatePaddedSpectral(inSpectral);
+    fluid::index nFramesSpectral = mShape.calculateFramesSpectral(paddedSpectral);
 	RealMatrix shapeMat(nFramesSpectral, 7);
 	std::fill(paddedSpectral.begin(), paddedSpectral.end(), 0);
-	paddedSpectral(ops.paddedValueSpectral(inSpectral)) <<= inSpectral;
+	paddedSpectral(mShape.paddedValueSpectral(inSpectral)) <<= inSpectral;
 	RealVector  shapeStats;
 
 	if (domeSettings.checkConditionForLoudnessAnalyse() || cubeSettings.checkConditionForLoudnessAnalyse()) {
 		for (int i = 0; i < nFramesLoudness; i++) {
 			RealVector loudnessDesc(2);
-			RealVectorView windowLoudness = ops.calculateWindowLoudness(paddedLoudness, i);
+			RealVectorView windowLoudness = mLoudness.calculateWindowLoudness(paddedLoudness, i);
 			mLoudness.mLoudnessProcess(windowLoudness, loudnessDesc);
 			loudnessMat.row(i) <<= loudnessDesc;
 		}
 		mLoudness.calculate(loudnessMat, *mStats.getStats());
-		double loudnessValue = mLoudness.getDescLoudness();
+		double loudnessValue = mLoudness.getValue();
 		if (getModeState() == SpatMode::dome) {
 			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 			if (domeSettings.checkConditionLoudnessAzimuth()) {
@@ -336,18 +325,18 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		RealVector magnitudePitch;
 		RealVector melsPitch;
 		for (int j = 0; j < nFramesPitch; j++) {
-			ops.setFramePitch(framePitch);
-			ops.setMagnitudePitch(magnitudePitch);
+			mPitch.setFramePitch(framePitch);
+			mPitch.setMagnitudePitch(magnitudePitch);
 			RealVector     pitch(2);
-			RealVectorView windowPitch = ops.calculateWindowPitch(paddedPitch, j);
+			RealVectorView windowPitch = mPitch.calculateWindowPitch(paddedPitch, j);
 
-			mStftPitch.stftProcess(windowPitch, framePitch);
-			mStftPitch.stftMagntiude(framePitch, magnitudePitch);
+			mPitch.stftProcess(windowPitch, framePitch);
+			mPitch.stftMagntiude(framePitch, magnitudePitch);
 			mPitch.mYinProcess(magnitudePitch, pitch, mSampleRate);
 			pitchMat.row(j) <<= pitch;
 		}
 		mPitch.calculate(pitchMat, *mStats.getStats());
-		double pitchValue = mPitch.getDescPitch();
+		double pitchValue = mPitch.getValue();
 		if (getModeState() == SpatMode::dome) {
 			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 			if (domeSettings.checkConditionPitchAzimuth()) {
@@ -405,32 +394,32 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		ComplexVector  frameSpectral;
 		RealVector     magnitudeSpectral;
 		for (int y = 0; y < nFramesSpectral; y++) {
-			ops.setFrameSpectral(frameSpectral);
-			ops.setMagnitudeSpectral(magnitudeSpectral);
+			mShape.setFrameSpectral(frameSpectral);
+			mShape.setMagnitudeSpectral(magnitudeSpectral);
 			RealVector     shapeDesc(7);
-			RealVectorView windowSpectral = ops.calculateWindowSpectral(paddedSpectral, y);
-			mStftSpectral.stftProcess(windowSpectral, frameSpectral);
-			mStftSpectral.stftMagntiude(frameSpectral, magnitudeSpectral);
+			RealVectorView windowSpectral = mShape.calculateWindowSpectral(paddedSpectral, y);
+			mShape.stftProcess(windowSpectral, frameSpectral);
+			mShape.stftMagntiude(frameSpectral, magnitudeSpectral);
 			mShape.mShapeProcess(magnitudeSpectral, shapeDesc, mSampleRate);
 			shapeMat.row(y) <<= shapeDesc;
 		}
 
 		shapeStats = mShape.shapeCalculate(shapeMat, *mStats.getStats());
 		mCentroid.calculate(shapeStats);
-		double centroidValue = mCentroid.getDescCentroid(); // centroidValue when silence = 118.02870609942256
+		double centroidValue = mCentroid.getValue(); // centroidValue when silence = 118.02870609942256
 		if (bufferMagnitude == 0.0f) {
 			centroidValue = 0.0;
 		}
 
 		mSpread.calculate(shapeStats);
-		double spreadValue = mSpread.getDescSpread(); // spreadValue when silence  = 16.520351353896057
+		double spreadValue = mSpread.getValue(); // spreadValue when silence  = 16.520351353896057
 		if (bufferMagnitude == 0.0f) {
 			spreadValue = 0.0;
 		}
 		double zmap = mParamFunctions.zmap(spreadValue, 0.0, 16.0);
 
 		mFlatness.calculate(shapeStats);
-		double flatnessValue = mFlatness.getDescFlatness(); // flatnessValue when silence = -6.9624443085150120e-13
+		double flatnessValue = mFlatness.getValue(); // flatnessValue when silence = -6.9624443085150120e-13
 		if (bufferMagnitude == 0.0f) {
 			flatnessValue = -160.0;
 		}
@@ -598,28 +587,28 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (domeSettings.checkConditionOnsetDetectionAzimuth()) {
 				//DBG("--------------Azimuth Iterations Speed-----------------");
 				mOnsetDetectionAzimuth.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionAzimuth.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionAzimuth.getValue() };
 				processDomeParameter(domeSettings.getAzimuthDome(), 7, onsetDetectionValue, true, false);
 				mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionElevation()) {
 				//DBG("--------------Elevation Iterations Speed-----------------");
 				mOnsetDetectionElevation.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionElevation.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionElevation.getValue() };
 				processDomeParameter(domeSettings.getElevationDome(), 7, onsetDetectionValue, false, true);
 				mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionHSpan()) {
 				//DBG("--------------HSpan Iterations Speed-----------------");
 				mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getValue() };
 				processDomeParameter(domeSettings.getHSpanDome(), 7, onsetDetectionValue, false, false);
 				mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionVSpan()) {
 				//DBG("--------------VSpan Iterations Speed-----------------");
 				mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getValue() };
 				processDomeParameter(domeSettings.getVSpanDome(), 7, onsetDetectionValue, false, true);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
@@ -628,35 +617,35 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (cubeSettings.checkConditionOnsetDetectionX()) {
 				//DBG("--------------X Iterations Speed-----------------");
 				mOnsetDetectionX.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionX.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionX.getValue() };
 				processCubeParameter(cubeSettings.getXCube(), 7, onsetDetectionValue, false);
 				mXCubeValue = cubeSettings.getXCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionY()) {
 				//DBG("--------------Y Iterations Speed-----------------");
 				mOnsetDetectionY.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionY.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionY.getValue() };
 				processCubeParameter(cubeSettings.getYCube(), 7, onsetDetectionValue, false);
 				mYCubeValue = cubeSettings.getYCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionZ()) {
 				//DBG("--------------Z Iterations Speed-----------------");
 				mOnsetDetectionZ.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionZ.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionZ.getValue() };
 				processCubeParameter(cubeSettings.getZCube(), 7, onsetDetectionValue, true);
 				mZCubeValue = cubeSettings.getZCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionHSpan()) {
 				//DBG("--------------HSpan Iterations Speed-----------------");
 				mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getValue() };
 				processCubeParameter(cubeSettings.getHSpanCube(), 7, onsetDetectionValue, false);
 				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionVSpan()) {
 				//DBG("--------------VSpan Iterations Speed-----------------");
 				mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getOnsetDetectionValue() };
+				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getValue() };
 				processCubeParameter(cubeSettings.getVSpanCube(), 7, onsetDetectionValue, true);
 				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 			}

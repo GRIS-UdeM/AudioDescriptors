@@ -28,15 +28,14 @@
 class SpreadD : public Descriptors
 {
 public:
-
-	void resetSpread() {
+	void reset() override {
 		mSpreadRunningStats.reset(new fluid::algorithm::RunningStats());
 	}
 
-	void initSpread() {
+	void init() override {
 		mSpreadRunningStats->init(mRunningStatsHistory, 1);
 	}
-	double getDescSpread() const {
+	double getValue() override {
 		return mDescSpread;
 	}
 

@@ -40,17 +40,19 @@ public:
         mOnsetDetectionUnusedSamples.resize(0);
     }
 
-	void initOnsetDetection() {
+	void init() override {
 		mOnsetDetection->init(mWindowSize, mFftSize, mOnsetDetectionFilterSize);
-		//mOnsetDetectionRunningStats->init(mRunningStatsHistory, 1);
 	}
-	void resetOnsetDetection() {
+	void reset() override {
 		mWindowSize = 256;
 		mFftSize = 256;
 		mHopSize = 64;
 		mOnsetDetection.reset(new fluid::algorithm::OnsetDetectionFunctions(mWindowSize, mOnesetDetectionMetric, fluid::FluidDefaultAllocator()));
-		//mOnsetDetectionRunningStats.reset(new fluid::algorithm::RunningStats());
 	}
+
+    double getValue() override {
+        return mDescOnsetDetectionCurrent;
+    }
 
     void setOnsetDetectionThreshold(const float treshold)
     {
@@ -210,14 +212,17 @@ public:
         }
 	}
 
-    double getOnsetDetectionValue() const {
-        return mDescOnsetDetectionCurrent;
-    }
-
 private:
 
 	std::unique_ptr<fluid::algorithm::OnsetDetectionFunctions> mOnsetDetection;
-	//std::unique_ptr<fluid::algorithm::RunningStats> mOnsetDetectionRunningStats;
+
+    fluid::index mNBins = 513;
+    fluid::index mFftSize = 2 * (mNBins - 1);
+    fluid::index mHopSize = 1024;
+    fluid::index mWindowSize = 1024;
+    fluid::index mHalfWindow = mWindowSize / 2;
+    fluid::index mNBands = 40;
+    fluid::index mNCoefs = 13;
 
     fluid::index mOnsetDetectionFilterSize = 3;
     fluid::index mOnesetDetectionMetric = 9;

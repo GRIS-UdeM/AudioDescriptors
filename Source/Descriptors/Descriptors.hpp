@@ -29,6 +29,11 @@
 class Descriptors {
 public:
 	Descriptors() = default;
+	virtual ~Descriptors() = default;
+
+	virtual void init() = 0;
+	virtual void reset() = 0;
+	virtual double getValue() = 0;
 
 	fluid::RealVector computeStats(fluid::RealMatrixView matrix, fluid::algorithm::MultiStats stats)
 	{
@@ -46,45 +51,7 @@ public:
 	}
 
 protected:
-	fluid::index mNBins = 513;
-	fluid::index mFftSize = 2 * (mNBins - 1);
-	fluid::index mHopSize = 1024;
-	fluid::index mWindowSize = 1024;
-	fluid::index mHalfWindow = mWindowSize / 2;
-	fluid::index mNBands = 40;
-	fluid::index mNCoefs = 13;
-	//fluid::index mMinFreq = 20;
-	//fluid::index mMaxFreq = 20000;
 	int mRunningStatsHistory = 1;
-
-	//LOUDNESS VALUE 
-	fluid::index mHopSizeLoudness = 256;
-	fluid::index mWindowSizeLoudness = 512;
-	fluid::index mHalfWindowLoudness = mWindowSizeLoudness / 2;
-
-	//PITCH VALUE 
-	fluid::index mNBinsPitch = 513;
-	fluid::index mHopSizePitch = 512;
-	fluid::index mWindowSizePitch = 1024;
-	fluid::index mHalfWindowPitch = mWindowSizePitch / 2;
-	fluid::index mFftSizePitch = 1024;
-	fluid::index mNBandsPitch = 40;
-	fluid::index mMinFreqPitch = 40;
-	fluid::index mMaxFreqPitch = 10000;
-
-
-	//SPECTRAL SHAPE FOR CENTROID FLATNESS ET SPREAD 
-	fluid::index mNBinsSpectral = 257;
-	fluid::index mHopSizeSpectral = 64;
-	fluid::index mWindowSizeSpectral = 256;
-	fluid::index mHalfWindowSpectral = mWindowSizeSpectral / 2;
-	fluid::index mFftSizeSpectral = 512;
-	fluid::index mNBandsSpectral = 40;
-	fluid::index mMinFreqSpectral = 20;//20 pour la
-	fluid::index mMaxFreqSpectral = 20000;
-
-	//fluid::index mMinFreqSpectralFlatness = 20;//20 pour la
-	//fluid::index mMaxFreqSpectralFlatness = 20000;
 
 private:
 	//==============================================================================

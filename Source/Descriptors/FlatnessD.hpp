@@ -27,17 +27,15 @@
 class FlatnessD : public Descriptors
 {
 public:
-
-	void resetFlatness() {
+	void reset() override {
 		mFlatnessRunningStats.reset(new fluid::algorithm::RunningStats());
-
 	}
 
-	void initFlatness() {
+	void init() override {
 		mFlatnessRunningStats->init(mRunningStatsHistory, 1);
 	}
 
-	double getDescFlatness() const {
+	double getValue() override {
 		return mDescFlatness;
 	}
 
@@ -51,7 +49,6 @@ public:
 		mFlatnessRunningStats->process(flatnessData, flatnessMeanOut, flatnessStdDevOut);
 		mDescFlatness = flatnessMeanOut[0];
 	}
-
 
 private:
 	std::unique_ptr<fluid::algorithm::RunningStats> mFlatnessRunningStats;

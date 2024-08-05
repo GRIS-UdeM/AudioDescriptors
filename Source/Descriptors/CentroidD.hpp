@@ -28,15 +28,15 @@
 class CentroidD : public Descriptors
 {
 public:
-
-	void resetCentroid() {
+	void reset() override {
 		mCentroidRunningStats.reset(new fluid::algorithm::RunningStats());
 	}
 
-	void initCentroid() {
+	void init() override {
 		mCentroidRunningStats->init(mRunningStatsHistory, 1);
 	}
-	double getDescCentroid() const {
+
+	double getValue() override {
 		return mDescCentroid;
 	}
 

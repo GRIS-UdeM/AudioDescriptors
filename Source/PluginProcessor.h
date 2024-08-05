@@ -24,7 +24,10 @@
 
 #include <JuceHeader.h>
 
+#include "Constants.h"
+
 #include "FluidVersion.hpp"
+
 #include "Descriptors/PitchD.hpp"
 #include "Descriptors/LoudnessD.hpp"
 #include "Descriptors/StatsD.hpp"
@@ -32,17 +35,11 @@
 #include "Descriptors/CentroidD.hpp"
 #include "Descriptors/SpreadD.hpp"
 #include "Descriptors/FlatnessD.hpp"
-#include "Descriptors/StftD.hpp"
-#include "Descriptors/BandsD.hpp"
-#include "Descriptors/DctD.hpp"
 #include "Descriptors/OnsetDetectionD.hpp"
-#include "Descriptors/OperationsD.hpp"
 
 #include "ParameterFunctions.h"
 #include "Parameters/Dome/src/DomeSettings.hpp"
 #include "Parameters/Cube/src/CubeSettings.hpp"
-
-#include "Constants.h"
 
 //==============================================================================
 /*Clean version code reference
@@ -170,16 +167,8 @@ private:
     double mHspanCubeValue{};
     double mVspanCubeValue{};
 
-    OperationsD ops;
-    DctD mDct;
-    BandsD mBands;
-
-    StftD mStftPitch;
-    StftD mStftSpectral;
-
     StatsD mStats;
     ShapeD mShape;
-
     PitchD mPitch;
     LoudnessD mLoudness;
     CentroidD mCentroid;
