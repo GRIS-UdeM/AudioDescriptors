@@ -7,24 +7,16 @@
               version="0.0.2" companyName="GRIS - UdeM">
   <MAINGROUP id="sk7ynA" name="AudioDescriptors">
     <GROUP id="{80AC6283-17AE-07BF-E117-3AC4EE993EA9}" name="Descriptors">
-      <FILE id="DFgvK2" name="BandsD.hpp" compile="0" resource="0" file="Source/Descriptors/BandsD.hpp"/>
       <FILE id="XJGlDr" name="CentroidD.hpp" compile="0" resource="0" file="Source/Descriptors/CentroidD.hpp"/>
-      <FILE id="yPTIh6" name="CrestD.hpp" compile="0" resource="0" file="Source/Descriptors/CrestD.hpp"/>
-      <FILE id="AVBnty" name="DctD.hpp" compile="0" resource="0" file="Source/Descriptors/DctD.hpp"/>
       <FILE id="JUNzYZ" name="Descriptors.hpp" compile="0" resource="0" file="Source/Descriptors/Descriptors.hpp"/>
       <FILE id="yXOI8q" name="FlatnessD.hpp" compile="0" resource="0" file="Source/Descriptors/FlatnessD.hpp"/>
-      <FILE id="taLeIQ" name="KurtosisD.hpp" compile="0" resource="0" file="Source/Descriptors/KurtosisD.hpp"/>
       <FILE id="haeV2J" name="LoudnessD.hpp" compile="0" resource="0" file="Source/Descriptors/LoudnessD.hpp"/>
       <FILE id="WRBa4d" name="OnsetDetectionD.hpp" compile="0" resource="0"
             file="Source/Descriptors/OnsetDetectionD.hpp"/>
-      <FILE id="MttRhb" name="OperationsD.hpp" compile="0" resource="0" file="Source/Descriptors/OperationsD.hpp"/>
       <FILE id="X39JVx" name="PitchD.hpp" compile="0" resource="0" file="Source/Descriptors/PitchD.hpp"/>
-      <FILE id="DbOe4Z" name="RolloffD.hpp" compile="0" resource="0" file="Source/Descriptors/RolloffD.hpp"/>
       <FILE id="jQiLhx" name="ShapeD.hpp" compile="0" resource="0" file="Source/Descriptors/ShapeD.hpp"/>
-      <FILE id="lDv5b0" name="SkewnessD.hpp" compile="0" resource="0" file="Source/Descriptors/SkewnessD.hpp"/>
       <FILE id="ZYTNJW" name="SpreadD.hpp" compile="0" resource="0" file="Source/Descriptors/SpreadD.hpp"/>
       <FILE id="iMvafm" name="StatsD.hpp" compile="0" resource="0" file="Source/Descriptors/StatsD.hpp"/>
-      <FILE id="Jt00Cl" name="StftD.hpp" compile="0" resource="0" file="Source/Descriptors/StftD.hpp"/>
     </GROUP>
     <GROUP id="{9A9777FC-9875-8829-230D-A5E1F4D1C1C7}" name="Parameters">
       <FILE id="dDQVpx" name="ParameterFunctions.h" compile="0" resource="0"
