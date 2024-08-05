@@ -328,17 +328,17 @@ namespace detail
 
     template <>
     struct shared_ptr_stateless_node_size<1>
-    : std::integral_constant<std::size_t, 32>
+    : std::integral_constant<std::size_t, 24>
     {};
 
     template <>
     struct shared_ptr_stateless_node_size<2>
-    : std::integral_constant<std::size_t, 32>
+    : std::integral_constant<std::size_t, 24>
     {};
 
     template <>
     struct shared_ptr_stateless_node_size<4>
-    : std::integral_constant<std::size_t, 32>
+    : std::integral_constant<std::size_t, 24>
     {};
 
     template <>
@@ -360,22 +360,22 @@ namespace detail
 
     template <>
     struct shared_ptr_stateful_node_size<1>
-    : std::integral_constant<std::size_t, 40>
+    : std::integral_constant<std::size_t, 32>
     {};
 
     template <>
     struct shared_ptr_stateful_node_size<2>
-    : std::integral_constant<std::size_t, 40>
+    : std::integral_constant<std::size_t, 32>
     {};
 
     template <>
     struct shared_ptr_stateful_node_size<4>
-    : std::integral_constant<std::size_t, 40>
+    : std::integral_constant<std::size_t, 32>
     {};
 
     template <>
     struct shared_ptr_stateful_node_size<8>
-    : std::integral_constant<std::size_t, 40>
+    : std::integral_constant<std::size_t, 32>
     {};
 } // namespace detail
 

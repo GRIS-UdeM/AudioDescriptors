@@ -44,6 +44,7 @@ AudioDescriptorsAudioProcessor::AudioDescriptorsAudioProcessor()
 	, cubeSettings(mAudioProcessorValueTreeState)
 {
 	//startTimerHz(50);
+	DBG("Fluid v" << fluid::client::fluidVersion());
 }
 
 AudioDescriptorsAudioProcessor::~AudioDescriptorsAudioProcessor()

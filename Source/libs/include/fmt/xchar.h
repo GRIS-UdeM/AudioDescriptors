@@ -8,24 +8,19 @@
 #ifndef FMT_XCHAR_H_
 #define FMT_XCHAR_H_
 
-#include <cwchar>
-
 #include "color.h"
 #include "format.h"
 #include "ranges.h"
 
-#ifndef FMT_STATIC_THOUSANDS_SEPARATOR
-#  include <locale>
+#ifndef FMT_MODULE
+#  include <cwchar>
+#  if !defined(FMT_STATIC_THOUSANDS_SEPARATOR)
+#    include <locale>
+#  endif
 #endif
 
 FMT_BEGIN_NAMESPACE
 namespace detail {
-
-#ifdef __cpp_char8_t
-using char8_type = char8_t;
-#else
-enum char8_type : unsigned char {};
-#endif
 
 template <typename T>
 using is_exotic_char = bool_constant<!std::is_same<T, char>::value>;
@@ -81,14 +76,18 @@ inline auto runtime(wstring_view s) -> runtime_format_string<wchar_t> {
 #endif
 
 template <> struct is_char<wchar_t> : std::true_type {};
-template <> struct is_char<detail::char8_type> : std::true_type {};
 template <> struct is_char<char16_t> : std::true_type {};
 template <> struct is_char<char32_t> : std::true_type {};
 
+#ifdef __cpp_char8_t
+template <>
+struct is_char<char8_t> : bool_constant<detail::is_utf8_enabled()> {};
+#endif
+
 template <typename... T>
 constexpr auto make_wformat_args(T&... args)
-    -> decltype(make_format_args<wformat_context>(args...)) {
-  return make_format_args<wformat_context>(args...);
+    -> decltype(fmt::make_format_args<wformat_context>(args...)) {
+  return fmt::make_format_args<wformat_context>(args...);
 }
 
 inline namespace literals {
@@ -139,6 +138,13 @@ auto format(wformat_string<T...> fmt, T&&... args) -> std::wstring {
   return vformat(fmt::wstring_view(fmt), fmt::make_wformat_args(args...));
 }
 
+template <typename OutputIt, typename... T>
+auto format_to(OutputIt out, wformat_string<T...> fmt, T&&... args)
+    -> OutputIt {
+  return vformat_to(out, fmt::wstring_view(fmt),
+                    fmt::make_wformat_args(args...));
+}
+
 // Pass char_t as a default template parameter instead of using
 // std::basic_string<char_t<S>> to reduce the symbol size.
 template <typename S, typename... T,
@@ -184,8 +190,9 @@ auto vformat_to(OutputIt out, const S& format_str,
 
 template <typename OutputIt, typename S, typename... T,
           typename Char = detail::format_string_char_t<S>,
-          FMT_ENABLE_IF(detail::is_output_iterator<OutputIt, Char>::value&&
-                            detail::is_exotic_char<Char>::value)>
+          FMT_ENABLE_IF(detail::is_output_iterator<OutputIt, Char>::value &&
+                        !std::is_same<Char, char>::value &&
+                        !std::is_same<Char, wchar_t>::value)>
 inline auto format_to(OutputIt out, const S& fmt, T&&... args) -> OutputIt {
   return vformat_to(out, detail::to_string_view(fmt),
                     fmt::make_format_args<buffered_context<Char>>(args...));
@@ -305,9 +312,7 @@ FMT_DEPRECATED void print(const text_style& ts, wformat_string<T...> fmt,
   return print(stdout, ts, fmt, args...);
 }
 
-/**
-  Converts *value* to ``std::wstring`` using the default format for type *T*.
- */
+/// Converts `value` to `std::wstring` using the default format for type `T`.
 template <typename T> inline auto to_wstring(const T& value) -> std::wstring {
   return format(FMT_STRING(L"{}"), value);
 }
