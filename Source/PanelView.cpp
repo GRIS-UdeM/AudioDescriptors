@@ -815,10 +815,10 @@ void DataGraph::paint(juce::Graphics& g)
         }
         else {
             // the graph uses only positive values
-            auto initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
-            auto initialY = static_cast<float>(area.getHeight() - (area.getHeight() * std::abs(mGUIBuffer.at(i))) + 1);
-            auto width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
-            auto height = static_cast<float>(area.getHeight() * std::abs(mGUIBuffer.at(i)));
+            initialX = (static_cast<float>(area.getWidth()) / static_cast<float>(mGUIBuffer.size())) * (i + 1);
+            initialY = static_cast<float>(area.getHeight() - (area.getHeight() * std::abs(mGUIBuffer.at(i))) + 1);
+            width = static_cast<float>(area.getWidth()) / mGUIBuffer.size();
+            height = static_cast<float>(area.getHeight() * std::abs(mGUIBuffer.at(i)));
             rectList.add(initialX, initialY, width, height);
         }
     }
