@@ -36,7 +36,7 @@ public:
 		setParametersState();
 	}
 
-	void parameters(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
+	void process(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
 		double clipMax = 1;
 
 		double clipOne = juce::jlimit(0.0, clipMax, smooth);

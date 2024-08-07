@@ -36,7 +36,7 @@ public:
 	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState);
 	virtual ~Parameters() = default;
 
-	virtual void parameters(double range, double smooth, double lap = 1.0, double offset = 1.0) = 0;
+	virtual void process(double range, double smooth, double lap = 1.0, double offset = 1.0) = 0;
 	
 	virtual juce::String const& getParameterName() const;
 

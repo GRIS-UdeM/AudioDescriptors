@@ -1016,15 +1016,15 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.processSmoothedLoudness(value);
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue,
+			parameter.process(parameter.getParamRangeLoudness(), smoothedValue,
 				parameter.getParamLapLoudness());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
+			parameter.process(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
 				parameter.getParamOffsetLoudness());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue);
+			parameter.process(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
 	else if (index == 3) {
@@ -1033,15 +1033,15 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.processSmoothedPitch(zmap);
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch,
+			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch,
 				parameter.getParamLapPitch());
 
 		} else if(isOffset){
-			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
+			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
 				parameter.getParamOffsetPitch());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch);
+			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
 	else if (index == 4) {
@@ -1050,15 +1050,15 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.processSmoothedCentroid(zmap);
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid,
+			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid,
 				parameter.getParamLapCentroid());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
+			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
 				parameter.getParamOffsetCentroid());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid);
+			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
 	else if (index == 5) {
@@ -1072,43 +1072,43 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.processSmoothedSpread(mValueToSmooth);
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue,
+			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue,
 				parameter.getParamLapSpread());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
+			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
 				parameter.getParamOffsetSpread());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue);
+			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
 	else if (index == 6) {
 		value = value * (parameter.getParamFactorNoise() * 0.01);
 		value = parameter.processSmoothedNoise(value);
 		if (isAzimuth) {
-			parameter.parameters(parameter.getParamRangeNoise(), value,
+			parameter.process(parameter.getParamRangeNoise(), value,
 				parameter.getParamLapNoise());
 		}
 		else if (isOffset) {
-			parameter.parameters(parameter.getParamRangeNoise(), value, 1.0,
+			parameter.process(parameter.getParamRangeNoise(), value, 1.0,
 				parameter.getParamOffsetNoise());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeNoise(), value);
+			parameter.process(parameter.getParamRangeNoise(), value);
 		}
 	}
 	else if (index == 7) {
 		auto smooth = parameter.processSmoothedOnsetDetection(value);
 		auto range = parameter.getParamRangeOnsetDetection();
 		if (isAzimuth) {
-			parameter.parameters(range, smooth, parameter.getParamLapOnsetDetection());
+			parameter.process(range, smooth, parameter.getParamLapOnsetDetection());
 		}
 		else if (isOffset) {
-			parameter.parameters(range, smooth, 1.0, parameter.getParamOffsetOnsetDetection());
+			parameter.process(range, smooth, 1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {
-			parameter.parameters(range, smooth);
+			parameter.process(range, smooth);
 		}
 	}
 }
@@ -1119,11 +1119,11 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.processSmoothedLoudness(value);
 		if (isOffset) {
-			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
+			parameter.process(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
 				parameter.getParamOffsetLoudness());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeLoudness(), smoothedValue);
+			parameter.process(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
 	else if (index == 3) {
@@ -1132,11 +1132,11 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.processSmoothedPitch(zmap);
 		if (isOffset) {
-			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
+			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
 				parameter.getParamOffsetPitch());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangePitch(), smoothedValuePitch);
+			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
 	else if (index == 4) {
@@ -1145,11 +1145,11 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.processSmoothedCentroid(zmap);
 		if (isOffset) {
-			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
+			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
 				parameter.getParamOffsetCentroid());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeCentroid(), smoothedValueCentroid);
+			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
 	else if (index == 5) {
@@ -1163,32 +1163,32 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.processSmoothedSpread(mValueToSmooth);
 		if (isOffset) {
-			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
+			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
 				parameter.getParamOffsetSpread());
 		}
 		else {
-			parameter.parameters(parameter.getParamRangeSpread(), mSmoothedValue);
+			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
 	else if (index == 6) {
 		value = value * (parameter.getParamFactorNoise() * 0.01);
 		value = parameter.processSmoothedNoise(value);
 		if (isOffset) {
-			parameter.parameters(parameter.getParamRangeNoise(), value, 1.0,
+			parameter.process(parameter.getParamRangeNoise(), value, 1.0,
 				parameter.getParamOffsetNoise());
 		}
 		else {
-		parameter.parameters(parameter.getParamRangeNoise(), value);
+		parameter.process(parameter.getParamRangeNoise(), value);
 		}
 	}
 	else if (index == 7) {
 		auto smooth = parameter.processSmoothedOnsetDetection(value);
 		auto range = parameter.getParamRangeOnsetDetection();
 		if (isOffset) {
-			parameter.parameters(range, smooth,1.0, parameter.getParamOffsetOnsetDetection());
+			parameter.process(range, smooth,1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {
-			parameter.parameters(range, smooth);
+			parameter.process(range, smooth);
 		}
 	}
 }
