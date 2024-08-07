@@ -61,7 +61,7 @@ public:
     void resized() override;
     void timerCallback() override;
 
-    void addNewParamValue(double value);
+    void addNewParamValueToDataGraph(double value);
 
 private:
     AudioDescriptorsAudioProcessor& mAudioProcessor;

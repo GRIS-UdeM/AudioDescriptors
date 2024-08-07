@@ -733,7 +733,7 @@ void PanelView::timerCallback()
     }
 }
 
-void PanelView::addNewParamValue(double value)
+void PanelView::addNewParamValueToDataGraph(double value)
 {
     auto lap = static_cast<int>(mDescriptorLapSlider.getValue());
 

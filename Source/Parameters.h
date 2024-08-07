@@ -433,28 +433,28 @@ public:
 	}
 
 	//====================================================================
-	Smooth& getSmoothLoudness() {
-		return smoothLoudness;
+	double processSmoothedLoudness(double targetValue) {
+		return mSmoothLoudness.doSmoothing(targetValue, paramSmoothLoudness, paramSmoothCoefLoudness);
 	}
 
-	Smooth& getSmoothPitch() {
-		return smoothPitch;
+	double processSmoothedPitch(double targetValue) {
+		return mSmoothPitch.doSmoothing(targetValue, paramSmoothPitch, paramSmoothCoefPitch);
 	}
 
-	Smooth& getSmoothCentroid() {
-		return smoothCentroid;
+	double processSmoothedCentroid(double targetValue) {
+		return mSmoothCentroid.doSmoothing(targetValue, paramSmoothCentroid, paramSmoothCoefCentroid);
 	}
 
-	Smooth& getSmoothSpread() {
-		return smoothSpread;
+	double processSmoothedSpread(double targetValue) {
+		return mSmoothSpread.doSmoothing(targetValue, paramSmoothSpread, paramSmoothCoefSpread);
 	}
 
-	Smooth& getSmoothNoise() {
-		return smoothNoise;
-
+	double processSmoothedNoise(double targetValue) {
+		return mSmoothNoise.doSmoothing(targetValue, paramSmoothNoise, paramSmoothCoefNoise);
 	}
-	Smooth& getSmoothOnsetDetection() {
-		return smoothOnsetDetection;
+
+	double processSmoothedOnsetDetection(double targetValue) {
+		return mSmoothOnsetDetection.doSmoothing(targetValue, paramSmoothOD, paramSmoothCoefOD);
 	}
 
 	//====================================================================
@@ -579,12 +579,12 @@ protected:
 	double lastRes{};
 	juce::String parameterName{};
 
-	Smooth smoothLoudness;
-	Smooth smoothPitch;
-	Smooth smoothCentroid;
-	Smooth smoothSpread;
-	Smooth smoothNoise;
-	Smooth smoothOnsetDetection;
+	Smooth mSmoothLoudness;
+	Smooth mSmoothPitch;
+	Smooth mSmoothCentroid;
+	Smooth mSmoothSpread;
+	Smooth mSmoothNoise;
+	Smooth mSmoothOnsetDetection;
 
 	int paramDescriptorComboBoxIndex = 1;
 

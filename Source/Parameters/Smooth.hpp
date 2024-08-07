@@ -28,15 +28,14 @@
 class Smooth
 {
 public:
-
-	double DoSmooth(double targetValue, double smooth, double smoothCoef) {
+	double doSmoothing(double targetValue, double smooth, double smoothCoef) {
 		smooth = juce::jmap(smooth, 0.0, 100.0, 0.0, 200.0);
 		smooth = std::max(1.0, std::min(smooth, 200.0));
 
-		if (this->startHistory || this->smoothHistory != smooth || smooth <= 1) {
-			currentValue = targetValue;
-			this->startHistory = false;
-			this->smoothHistory = smooth;
+		if (mStartHistory || mSmoothHistory != smooth || smooth <= 1) {
+			mCurrentValue = targetValue;
+			mStartHistory = false;
+			mSmoothHistory = smooth;
 		}
 		else {
 			smoothCoef *= 0.01;
@@ -46,29 +45,17 @@ public:
 			}
 			double logsmooth = std::log(smooth);
 			double normalizedsmooth = 1.0 / logsmooth;
-			double adjustment = (targetValue - currentValue) * (normalizedsmooth*smoothCoef);
+			double adjustment = (targetValue - mCurrentValue) * (normalizedsmooth*smoothCoef);
 
-
-
-			currentValue += adjustment;
+			mCurrentValue += adjustment;
 		}
-		//DBG("Valeur smooth = " << currentValue);
-		return currentValue;
-	}
-
-
-
-	double DbToGain(const double& valueLoudness, const double& factor) {
-		double linearLoudness = juce::Decibels::decibelsToGain(valueLoudness);
-		linearLoudness *= (factor * 0.01);
-		return linearLoudness;
+		return mCurrentValue;
 	}
 
 private:
-	double currentValue = -1;
-	double smoothHistory = -1;
-	bool startHistory = true;
-	double valueSmoothHistory = 0;
+	double mCurrentValue = -1;
+	double mSmoothHistory = -1;
+	bool mStartHistory = true;
 
 	//==============================================================================
 	JUCE_LEAK_DETECTOR(Smooth)

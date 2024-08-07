@@ -49,7 +49,7 @@ void Parameters::removeObserver(PanelView* observer)
 void Parameters::notifyObservers()
 {
 	for (auto observer : mObservers) {
-		observer->addNewParamValue(lastRes);
+		observer->addNewParamValueToDataGraph(lastRes);
 	}
 }
 
