@@ -25,6 +25,7 @@
 #include <JuceHeader.h>
 #include "algorithms/public/MultiStats.hpp"
 
+enum class DescriptorID { invalid = -1, loudness = 0, pitch, centroid, spread, noise, iterationsSpeed };
 
 class Descriptors {
 public:
@@ -35,8 +36,11 @@ public:
 	virtual void reset() = 0;
 	virtual double getValue() = 0;
 
-	fluid::RealVector computeStats(fluid::RealMatrixView matrix, fluid::algorithm::MultiStats stats)
-	{
+	DescriptorID getID() {
+		return mID;
+	}
+
+	fluid::RealVector computeStats(fluid::RealMatrixView matrix, fluid::algorithm::MultiStats stats) {
 		fluid::index dim = matrix.cols();
 		fluid::RealMatrix tmp(dim, 7);
 		fluid::RealVector result(dim * 7);
@@ -51,6 +55,7 @@ public:
 	}
 
 protected:
+	DescriptorID mID{ DescriptorID::invalid };
 	int mRunningStatsHistory = 1;
 
 private:

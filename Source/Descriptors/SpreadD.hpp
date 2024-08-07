@@ -28,6 +28,10 @@
 class SpreadD : public Descriptors
 {
 public:
+	SpreadD() {
+		mID = DescriptorID::spread;
+	}
+
 	void reset() override {
 		mSpreadRunningStats.reset(new fluid::algorithm::RunningStats());
 	}

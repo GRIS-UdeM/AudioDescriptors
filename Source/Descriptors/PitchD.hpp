@@ -30,6 +30,10 @@
 
 class PitchD : public Descriptors {
 public:
+	PitchD() {
+		mID = DescriptorID::pitch;
+	}
+
 	void init() override {
 		mPitchRunningStats->init(mRunningStatsHistory, 1);
 		//mPitchConfRunningStats->init(mRunningStatsHistory, 1);

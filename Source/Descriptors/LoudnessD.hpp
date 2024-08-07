@@ -30,6 +30,10 @@
 
 class LoudnessD : public Descriptors {
 public:
+	LoudnessD() {
+		mID = DescriptorID::loudness;
+	}
+
 	void init(double mSampleRate) {
 		mLoudness->init(mWindowSizeLoudness, mSampleRate);
 		mLoudnessRunningStats->init(mRunningStatsHistory, 1);

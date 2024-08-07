@@ -27,6 +27,10 @@
 class FlatnessD : public Descriptors
 {
 public:
+	FlatnessD() {
+		mID = DescriptorID::noise;
+	}
+
 	void reset() override {
 		mFlatnessRunningStats.reset(new fluid::algorithm::RunningStats());
 	}

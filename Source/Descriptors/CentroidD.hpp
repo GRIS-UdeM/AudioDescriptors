@@ -28,6 +28,10 @@
 class CentroidD : public Descriptors
 {
 public:
+	CentroidD() {
+		mID = DescriptorID::centroid;
+	}
+
 	void reset() override {
 		mCentroidRunningStats.reset(new fluid::algorithm::RunningStats());
 	}

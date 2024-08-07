@@ -37,6 +37,7 @@ class OnsetDetectionD : public Descriptors {
 public:
     OnsetDetectionD()
     {
+        mID = DescriptorID::iterationsSpeed;
         mOnsetDetectionUnusedSamples.resize(0);
     }
 
@@ -213,7 +214,6 @@ public:
 	}
 
 private:
-
 	std::unique_ptr<fluid::algorithm::OnsetDetectionFunctions> mOnsetDetection;
 
     fluid::index mNBins = 513;
