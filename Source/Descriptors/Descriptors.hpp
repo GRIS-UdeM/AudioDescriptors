@@ -36,7 +36,7 @@ public:
 	virtual void reset() = 0;
 	virtual double getValue() = 0;
 
-	DescriptorID getID() {
+	virtual DescriptorID getID() {
 		return mID;
 	}
 
