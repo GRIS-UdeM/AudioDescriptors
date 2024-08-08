@@ -273,22 +273,22 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 			if (domeSettings.checkConditionLoudnessAzimuth()) {
 				//DBG("--------------Azimuth Loudness -------------------");
-				processDomeParameter(domeSettings.getAzimuthDome(), 2, loudnessValue, true, false);
+				processDomeParameter(domeSettings.getAzimuthDome(), mLoudness.getID(), loudnessValue);
 				mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionLoudnessElevation()) {
 				//DBG("--------------Elevation Loudness -------------------");
-				processDomeParameter(domeSettings.getElevationDome(), 2, loudnessValue, false, true);
+				processDomeParameter(domeSettings.getElevationDome(), mLoudness.getID(), loudnessValue);
 				mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionLoudnessHSpan()) {
 				//DBG("--------------HSpan Loudness -------------------");
-				processDomeParameter(domeSettings.getHSpanDome(), 2, loudnessValue, false, false);
+				processDomeParameter(domeSettings.getHSpanDome(), mLoudness.getID(), loudnessValue);
 				mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionLoudnessVSpan()) {
 				//DBG("--------------VSpan Loudness -------------------");
-				processDomeParameter(domeSettings.getVSpanDome(), 2, loudnessValue, false, true);
+				processDomeParameter(domeSettings.getVSpanDome(), mLoudness.getID(), loudnessValue);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
 		}
@@ -296,27 +296,27 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 			if (cubeSettings.checkConditionLoudnessX()) {
 				//DBG("--------------X Loudness -------------------");
-				processCubeParameter(cubeSettings.getXCube(), 2, loudnessValue, false);
+				processCubeParameter(cubeSettings.getXCube(), mLoudness.getID(), loudnessValue);
 				mXCubeValue = cubeSettings.getXCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionLoudnessY()) {
 				//DBG("--------------Y Loudness -------------------");
-				processCubeParameter(cubeSettings.getYCube(), 2, loudnessValue, false);
+				processCubeParameter(cubeSettings.getYCube(), mLoudness.getID(), loudnessValue);
 				mYCubeValue = cubeSettings.getYCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionLoudnessZ()) {
 				//DBG("--------------Z Loudness -------------------");
-				processCubeParameter(cubeSettings.getZCube(), 2, loudnessValue, true);
+				processCubeParameter(cubeSettings.getZCube(), mLoudness.getID(), loudnessValue);
 				mZCubeValue = cubeSettings.getZCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionLoudnessHSpan()) {
 				//DBG("--------------HSpan Loudness -------------------");
-				processCubeParameter(cubeSettings.getHSpanCube(), 2, loudnessValue, false);
+				processCubeParameter(cubeSettings.getHSpanCube(), mLoudness.getID(), loudnessValue);
 				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionLoudnessVSpan()) {
 				//DBG("--------------VSpan Loudness -------------------");
-				processCubeParameter(cubeSettings.getVSpanCube(), 2, loudnessValue, true);
+				processCubeParameter(cubeSettings.getVSpanCube(), mLoudness.getID(), loudnessValue);
 				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 			}
 		}
@@ -342,22 +342,22 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 			if (domeSettings.checkConditionPitchAzimuth()) {
 				//DBG("--------------Azimuth Pitch -------------------");
-				processDomeParameter(domeSettings.getAzimuthDome(), 3, pitchValue, true, false);
+				processDomeParameter(domeSettings.getAzimuthDome(), mPitch.getID(), pitchValue);
 				mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionPitchElevation()) {
 				//DBG("--------------Elevation Pitch -------------------");
-				processDomeParameter(domeSettings.getElevationDome(), 3, pitchValue, false, true);
+				processDomeParameter(domeSettings.getElevationDome(), mPitch.getID(), pitchValue);
 				mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionPitchHSpan()) {
 				//DBG("--------------HSpan Pitch -------------------");
-				processDomeParameter(domeSettings.getHSpanDome(), 3, pitchValue, false, false);
+				processDomeParameter(domeSettings.getHSpanDome(), mPitch.getID(), pitchValue);
 				mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionPitchVSpan()) {
 				//DBG("--------------VSpan Pitch -------------------");
-				processDomeParameter(domeSettings.getVSpanDome(), 3, pitchValue, false, true);
+				processDomeParameter(domeSettings.getVSpanDome(), mPitch.getID(), pitchValue);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
 		}
@@ -365,27 +365,27 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 			if (cubeSettings.checkConditionPitchX()) {
 				//DBG("--------------X Pitch -------------------");
-				processCubeParameter(cubeSettings.getXCube(), 3, pitchValue, false);
+				processCubeParameter(cubeSettings.getXCube(), mPitch.getID(), pitchValue);
 				mXCubeValue = cubeSettings.getXCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionPitchY()) {
 				//DBG("--------------Y Pitch -------------------");
-				processCubeParameter(cubeSettings.getYCube(), 3, pitchValue, false);
+				processCubeParameter(cubeSettings.getYCube(), mPitch.getID(), pitchValue);
 				mYCubeValue = cubeSettings.getYCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionPitchZ()) {
 				//DBG("--------------Z Pitch -------------------");
-				processCubeParameter(cubeSettings.getZCube(), 3, pitchValue, true);
+				processCubeParameter(cubeSettings.getZCube(), mPitch.getID(), pitchValue);
 				mZCubeValue = cubeSettings.getZCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionPitchHSpan()) {
 				//DBG("--------------HSpan Pitch -------------------");
-				processCubeParameter(cubeSettings.getHSpanCube(), 3, pitchValue, false);
+				processCubeParameter(cubeSettings.getHSpanCube(), mPitch.getID(), pitchValue);
 				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionPitchVSpan()) {
 				//DBG("--------------VSpan Pitch -------------------");
-				processCubeParameter(cubeSettings.getVSpanCube(), 3, pitchValue, true);
+				processCubeParameter(cubeSettings.getVSpanCube(), mPitch.getID(), pitchValue);
 				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 			}
 		}
@@ -432,66 +432,66 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (domeSettings.checkConditionForCentroidAnalyse()) {
 				if (domeSettings.checkConditionCentroidAzimuth()) {
 					//DBG("--------------Azimuth Centroid -------------------");
-					processDomeParameter(domeSettings.getAzimuthDome(), 4, centroidValue, true, false);
+					processDomeParameter(domeSettings.getAzimuthDome(), mCentroid.getID(), centroidValue);
 					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionCentroidElevation()) {
 					//DBG("--------------Elevation Centroid -------------------");
-					processDomeParameter(domeSettings.getElevationDome(), 4, centroidValue, false, true);
+					processDomeParameter(domeSettings.getElevationDome(), mCentroid.getID(), centroidValue);
 					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionCentroidHSpan()) {
 					//DBG("--------------HSpan Centroid -------------------");
-					processDomeParameter(domeSettings.getHSpanDome(), 4, centroidValue, false, false);
+					processDomeParameter(domeSettings.getHSpanDome(), mCentroid.getID(), centroidValue);
 					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionCentroidVSpan()) {
 					//DBG("--------------VSpan Centroid -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 4, centroidValue, false, true);
+					processDomeParameter(domeSettings.getVSpanDome(), mCentroid.getID(), centroidValue);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
 			if (domeSettings.checkConditionForSpreadAnalyse()) {
 				if (domeSettings.checkConditionSpreadAzimuth()) {
 					//DBG("--------------Azimuth Spread -------------------");
-					processDomeParameter(domeSettings.getAzimuthDome(), 5, zmap, true, false);
+					processDomeParameter(domeSettings.getAzimuthDome(), mSpread.getID(), zmap);
 					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionSpreadElevation()) {
 					//DBG("--------------Elevation Spread -------------------");
-					processDomeParameter(domeSettings.getElevationDome(), 5, zmap, false, true);
+					processDomeParameter(domeSettings.getElevationDome(), mSpread.getID(), zmap);
 					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionSpreadHSpan()) {
 					//DBG("--------------HSpan Spread -------------------");
-					processDomeParameter(domeSettings.getHSpanDome(), 5, zmap, false, false);
+					processDomeParameter(domeSettings.getHSpanDome(), mSpread.getID(), zmap);
 					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionSpreadVSpan()) {
 					//DBG("--------------VSpan Spread -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 5, zmap, false, true);
+					processDomeParameter(domeSettings.getVSpanDome(), mSpread.getID(), zmap);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
 			if (domeSettings.checkConditionForNoiseAnalyse()) {
 				if (domeSettings.checkConditionNoiseAzimuth()) {
 					//DBG("--------------Azimuth Noise -------------------");
-					processDomeParameter(domeSettings.getAzimuthDome(), 6, flatnessValue, true, false);
+					processDomeParameter(domeSettings.getAzimuthDome(), mFlatness.getID(), flatnessValue);
 					mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionNoiseElevation()) {
 					//DBG("--------------Elevation Noise -------------------");
-					processDomeParameter(domeSettings.getElevationDome(), 6, flatnessValue, false, true);
+					processDomeParameter(domeSettings.getElevationDome(), mFlatness.getID(), flatnessValue);
 					mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionNoiseHSpan()) {
 					//DBG("--------------HSpan Noise -------------------");
-					processDomeParameter(domeSettings.getHSpanDome(), 6, flatnessValue, false, false);
+					processDomeParameter(domeSettings.getHSpanDome(), mFlatness.getID(), flatnessValue);
 					mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 				}
 				if (domeSettings.checkConditionNoiseVSpan()) {
 					//DBG("--------------VSpan Noise -------------------");
-					processDomeParameter(domeSettings.getVSpanDome(), 6, flatnessValue, false, true);
+					processDomeParameter(domeSettings.getVSpanDome(), mFlatness.getID(), flatnessValue);
 					mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 				}
 			}
@@ -503,81 +503,81 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			if (cubeSettings.checkConditionForCentroidAnalyse()) {
 				if (cubeSettings.checkConditionCentroidX()) {
 					//DBG("--------------X Centroid -------------------");
-					processCubeParameter(cubeSettings.getXCube(), 4, centroidValue, false);
+					processCubeParameter(cubeSettings.getXCube(), mCentroid.getID(), centroidValue);
 					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionCentroidY()) {
 					//DBG("--------------Y Centroid -------------------");
-					processCubeParameter(cubeSettings.getYCube(), 4, centroidValue, false);
+					processCubeParameter(cubeSettings.getYCube(), mCentroid.getID(), centroidValue);
 					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionCentroidZ()) {
 					//DBG("--------------Z Centroid -------------------");
-					processCubeParameter(cubeSettings.getZCube(), 4, centroidValue, true);
+					processCubeParameter(cubeSettings.getZCube(), mCentroid.getID(), centroidValue);
 					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionCentroidHSpan()) {
 					//DBG("--------------HSpan Centroid -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), 4, centroidValue, false);
+					processCubeParameter(cubeSettings.getHSpanCube(), mCentroid.getID(), centroidValue);
 					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionCentroidVSpan()) {
 					//DBG("--------------VSpan Centroid -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), 4, centroidValue, true);
+					processCubeParameter(cubeSettings.getVSpanCube(), mCentroid.getID(), centroidValue);
 					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
 			if (cubeSettings.checkConditionForSpreadAnalyse()) {
 				if (cubeSettings.checkConditionSpreadX()) {
 					//DBG("--------------X Spread -------------------");
-					processCubeParameter(cubeSettings.getXCube(), 5, zmap, false);
+					processCubeParameter(cubeSettings.getXCube(), mSpread.getID(), zmap);
 					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionSpreadY()) {
 					//DBG("--------------Y Spread -------------------");
-					processCubeParameter(cubeSettings.getYCube(), 5, zmap, false);
+					processCubeParameter(cubeSettings.getYCube(), mSpread.getID(), zmap);
 					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionSpreadZ()) {
 					//DBG("--------------Z Spread -------------------");
-					processCubeParameter(cubeSettings.getZCube(), 5, zmap, true);
+					processCubeParameter(cubeSettings.getZCube(), mSpread.getID(), zmap);
 					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionSpreadHSpan()) {
 					//DBG("--------------HSpan Spread -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), 5, zmap, false);
+					processCubeParameter(cubeSettings.getHSpanCube(), mSpread.getID(), zmap);
 					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionSpreadVSpan()) {
 					//DBG("--------------VSpan Spread -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), 5, zmap, true);
+					processCubeParameter(cubeSettings.getVSpanCube(), mSpread.getID(), zmap);
 					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
 			if (cubeSettings.checkConditionForNoiseAnalyse()) {
 				if (cubeSettings.checkConditionNoiseX()) {
 					//DBG("--------------X Noise -------------------");
-					processCubeParameter(cubeSettings.getXCube(), 6, flatnessValue, false);
+					processCubeParameter(cubeSettings.getXCube(), mFlatness.getID(), flatnessValue);
 					mXCubeValue = cubeSettings.getXCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionNoiseY()) {
 					//DBG("--------------Y Noise -------------------");
-					processCubeParameter(cubeSettings.getYCube(), 6, flatnessValue, false);
+					processCubeParameter(cubeSettings.getYCube(), mFlatness.getID(), flatnessValue);
 					mYCubeValue = cubeSettings.getYCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionNoiseZ()) {
 					//DBG("--------------Z Noise -------------------");
-					processCubeParameter(cubeSettings.getZCube(), 6, flatnessValue, true);
+					processCubeParameter(cubeSettings.getZCube(), mFlatness.getID(), flatnessValue);
 					mZCubeValue = cubeSettings.getZCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionNoiseHSpan()) {
 					//DBG("--------------HSpan Noise -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), 6, flatnessValue, false);
+					processCubeParameter(cubeSettings.getHSpanCube(), mFlatness.getID(), flatnessValue);
 					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 				}
 				if (cubeSettings.checkConditionNoiseVSpan()) {
 					//DBG("--------------VSpan Noise -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), 6, flatnessValue, true);
+					processCubeParameter(cubeSettings.getVSpanCube(), mFlatness.getID(), flatnessValue);
 					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 				}
 			}
@@ -589,28 +589,28 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				//DBG("--------------Azimuth Iterations Speed-----------------");
 				mOnsetDetectionAzimuth.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionAzimuth.getValue() };
-				processDomeParameter(domeSettings.getAzimuthDome(), 7, onsetDetectionValue, true, false);
+				processDomeParameter(domeSettings.getAzimuthDome(), mOnsetDetectionAzimuth.getID(), onsetDetectionValue);
 				mAzimuthDomeValue = domeSettings.getAzimuthDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionElevation()) {
 				//DBG("--------------Elevation Iterations Speed-----------------");
 				mOnsetDetectionElevation.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionElevation.getValue() };
-				processDomeParameter(domeSettings.getElevationDome(), 7, onsetDetectionValue, false, true);
+				processDomeParameter(domeSettings.getElevationDome(), mOnsetDetectionElevation.getID(), onsetDetectionValue);
 				mElevationDomeValue = domeSettings.getElevationDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionHSpan()) {
 				//DBG("--------------HSpan Iterations Speed-----------------");
 				mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getValue() };
-				processDomeParameter(domeSettings.getHSpanDome(), 7, onsetDetectionValue, false, false);
+				processDomeParameter(domeSettings.getHSpanDome(), mOnsetDetectionHSpan.getID(), onsetDetectionValue);
 				mHspanDomeValue = domeSettings.getHSpanDome().getDiffValue();
 			}
 			if (domeSettings.checkConditionOnsetDetectionVSpan()) {
 				//DBG("--------------VSpan Iterations Speed-----------------");
 				mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getValue() };
-				processDomeParameter(domeSettings.getVSpanDome(), 7, onsetDetectionValue, false, true);
+				processDomeParameter(domeSettings.getVSpanDome(), mOnsetDetectionVSpan.getID(), onsetDetectionValue);
 				mVspanDomeValue = domeSettings.getVSpanDome().getDiffValue();
 			}
 		}
@@ -619,35 +619,35 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 				//DBG("--------------X Iterations Speed-----------------");
 				mOnsetDetectionX.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionX.getValue() };
-				processCubeParameter(cubeSettings.getXCube(), 7, onsetDetectionValue, false);
+				processCubeParameter(cubeSettings.getXCube(), mOnsetDetectionX.getID(), onsetDetectionValue);
 				mXCubeValue = cubeSettings.getXCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionY()) {
 				//DBG("--------------Y Iterations Speed-----------------");
 				mOnsetDetectionY.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionY.getValue() };
-				processCubeParameter(cubeSettings.getYCube(), 7, onsetDetectionValue, false);
+				processCubeParameter(cubeSettings.getYCube(), mOnsetDetectionY.getID(), onsetDetectionValue);
 				mYCubeValue = cubeSettings.getYCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionZ()) {
 				//DBG("--------------Z Iterations Speed-----------------");
 				mOnsetDetectionZ.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionZ.getValue() };
-				processCubeParameter(cubeSettings.getZCube(), 7, onsetDetectionValue, true);
+				processCubeParameter(cubeSettings.getZCube(), mOnsetDetectionZ.getID(), onsetDetectionValue);
 				mZCubeValue = cubeSettings.getZCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionHSpan()) {
 				//DBG("--------------HSpan Iterations Speed-----------------");
 				mOnsetDetectionHSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getValue() };
-				processCubeParameter(cubeSettings.getHSpanCube(), 7, onsetDetectionValue, false);
+				processCubeParameter(cubeSettings.getHSpanCube(), mOnsetDetectionHSpan.getID(), onsetDetectionValue);
 				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
 			}
 			if (cubeSettings.checkConditionOnsetDetectionVSpan()) {
 				//DBG("--------------VSpan Iterations Speed-----------------");
 				mOnsetDetectionVSpan.mOnsetDetectionProcess(mDescriptorsBuffer, mSampleRate, mBlockSize);
 				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getValue() };
-				processCubeParameter(cubeSettings.getVSpanCube(), 7, onsetDetectionValue, true);
+				processCubeParameter(cubeSettings.getVSpanCube(), mOnsetDetectionVSpan.getID(), onsetDetectionValue);
 				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
 			}
 		}
@@ -1010,16 +1010,16 @@ void AudioDescriptorsAudioProcessor::setOnsetDetectionFromClick(ParameterID para
 	}
 }
 
-void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter, int index, double value, bool isAzimuth, bool isOffset)
+void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter, const DescriptorID& descId, double value)
 {
-	if (index == 2) {
+	if (descId == DescriptorID::loudness) {
 		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.processSmoothedLoudness(value);
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(parameter.getParamRangeLoudness(), smoothedValue,
 				parameter.getParamLapLoudness());
 		}
-		else if (isOffset) {
+		else if (parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
 				parameter.getParamOffsetLoudness());
 		}
@@ -1027,16 +1027,16 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
-	else if (index == 3) {
+	else if (descId == DescriptorID::pitch) {
 		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
 		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.processSmoothedPitch(zmap);
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch,
 				parameter.getParamLapPitch());
 
-		} else if(isOffset){
+		} else if(parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan){
 			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
 				parameter.getParamOffsetPitch());
 		}
@@ -1044,16 +1044,16 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
-	else if (index == 4) {
+	else if (descId == DescriptorID::centroid) {
 		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
 		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.processSmoothedCentroid(zmap);
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid,
 				parameter.getParamLapCentroid());
 		}
-		else if (isOffset) {
+		else if (parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
 				parameter.getParamOffsetCentroid());
 		}
@@ -1061,7 +1061,7 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
-	else if (index == 5) {
+	else if (descId == DescriptorID::spread) {
 		double ScaleOne = parameter.getParamFactorSpread();
 		ScaleOne = mParamFunctions.zmap(ScaleOne, 100.0, 500.0);
 		ScaleOne = mParamFunctions.subtractFromOne(ScaleOne);
@@ -1071,11 +1071,11 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 		ScaleTwo = mParamFunctions.ClipMyValue(ScaleTwo);
 		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.processSmoothedSpread(mValueToSmooth);
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue,
 				parameter.getParamLapSpread());
 		}
-		else if (isOffset) {
+		else if (parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
 				parameter.getParamOffsetSpread());
 		}
@@ -1083,14 +1083,14 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
-	else if (index == 6) {
+	else if (descId == DescriptorID::noise) {
 		value = value * (parameter.getParamFactorNoise() * 0.01);
 		value = parameter.processSmoothedNoise(value);
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(parameter.getParamRangeNoise(), value,
 				parameter.getParamLapNoise());
 		}
-		else if (isOffset) {
+		else if (parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeNoise(), value, 1.0,
 				parameter.getParamOffsetNoise());
 		}
@@ -1098,13 +1098,13 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeNoise(), value);
 		}
 	}
-	else if (index == 7) {
+	else if (descId == DescriptorID::iterationsSpeed) {
 		auto smooth = parameter.processSmoothedOnsetDetection(value);
 		auto range = parameter.getParamRangeOnsetDetection();
-		if (isAzimuth) {
+		if (parameter.getParameterID() == ParameterID::azimuth) {
 			parameter.process(range, smooth, parameter.getParamLapOnsetDetection());
 		}
-		else if (isOffset) {
+		else if (parameter.getParameterID() == ParameterID::elevation || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(range, smooth, 1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {
@@ -1113,12 +1113,12 @@ void AudioDescriptorsAudioProcessor::processDomeParameter(Parameters& parameter,
 	}
 }
 
-void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter, int index, double value, bool isOffset)
+void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter, const DescriptorID& descId, double value)
 {
-	if (index == 2) {
+	if (descId == DescriptorID::loudness) {
 		value = mParamFunctions.PourcentageConversion(value, parameter.getParamFactorLoudness());
 		double smoothedValue = parameter.processSmoothedLoudness(value);
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeLoudness(), smoothedValue, 1.0,
 				parameter.getParamOffsetLoudness());
 		}
@@ -1126,12 +1126,12 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeLoudness(), smoothedValue);
 		}
 	}
-	else if (index == 3) {
+	else if (descId == DescriptorID::pitch) {
 		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqPitch());
 		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqPitch());
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValuePitch = parameter.processSmoothedPitch(zmap);
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch, 1.0,
 				parameter.getParamOffsetPitch());
 		}
@@ -1139,12 +1139,12 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangePitch(), smoothedValuePitch);
 		}
 	}
-	else if (index == 4) {
+	else if (descId == DescriptorID::centroid) {
 		double minFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMinFreqCentroid());
 		double maxFreq = mParamFunctions.frequencyToMidiNoteNumber(parameter.getParamMaxFreqCentroid());
 		double zmap = mParamFunctions.zmap(value, minFreq, maxFreq);
 		double smoothedValueCentroid = parameter.processSmoothedCentroid(zmap);
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid, 1.0,
 				parameter.getParamOffsetCentroid());
 		}
@@ -1152,7 +1152,7 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeCentroid(), smoothedValueCentroid);
 		}
 	}
-	else if (index == 5) {
+	else if (descId == DescriptorID::spread) {
 		double ScaleOne = parameter.getParamFactorSpread();
 		ScaleOne = mParamFunctions.zmap(ScaleOne, 100.0, 500.0);
 		ScaleOne = mParamFunctions.subtractFromOne(ScaleOne);
@@ -1162,7 +1162,7 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		ScaleTwo = mParamFunctions.ClipMyValue(ScaleTwo);
 		double mValueToSmooth = mParamFunctions.valueToSmooth(mExpr, ScaleTwo);
 		double mSmoothedValue = parameter.processSmoothedSpread(mValueToSmooth);
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue, 1.0,
 				parameter.getParamOffsetSpread());
 		}
@@ -1170,10 +1170,10 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 			parameter.process(parameter.getParamRangeSpread(), mSmoothedValue);
 		}
 	}
-	else if (index == 6) {
+	else if (descId == DescriptorID::noise) {
 		value = value * (parameter.getParamFactorNoise() * 0.01);
 		value = parameter.processSmoothedNoise(value);
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(parameter.getParamRangeNoise(), value, 1.0,
 				parameter.getParamOffsetNoise());
 		}
@@ -1181,10 +1181,10 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(Parameters& parameter,
 		parameter.process(parameter.getParamRangeNoise(), value);
 		}
 	}
-	else if (index == 7) {
+	else if (descId == DescriptorID::iterationsSpeed) {
 		auto smooth = parameter.processSmoothedOnsetDetection(value);
 		auto range = parameter.getParamRangeOnsetDetection();
-		if (isOffset) {
+		if (parameter.getParameterID() == ParameterID::z || parameter.getParameterID() == ParameterID::elevationspan) {
 			parameter.process(range, smooth,1.0, parameter.getParamOffsetOnsetDetection());
 		}
 		else {

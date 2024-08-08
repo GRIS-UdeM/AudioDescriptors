@@ -111,8 +111,8 @@ public:
     void setModeState(SpatMode spatMode);
     juce::String getSpatModeToString();
 
-    void processDomeParameter(Parameters& parameter, int index, double value, bool isAzimuth, bool isOffset);
-    void processCubeParameter(Parameters& parameter, int index, double value, bool isOffset);
+    void processDomeParameter(Parameters& parameter, const DescriptorID& descId, double value);
+    void processCubeParameter(Parameters& parameter, const DescriptorID& descId, double value);
 
     void setOnsetDetectionMetric(ParameterID paramID, const int metric);
     void setOnsetDetectionThreshold(ParameterID paramID, const float tresh);
