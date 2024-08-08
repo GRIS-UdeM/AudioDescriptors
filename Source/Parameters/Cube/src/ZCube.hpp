@@ -28,8 +28,8 @@
 class ZCube : public Parameters
 {
 public:
-	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-		: Parameters(audioProcessorValueTreeState)
+	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+		: Parameters(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Z");
 		paramID = ParameterID::z;

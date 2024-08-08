@@ -28,8 +28,8 @@
 class HspanDome : public Parameters
 {
 public:
-	HspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-		: Parameters(audioProcessorValueTreeState)
+	HspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+		: Parameters(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Azimuth Span");
 		paramID = ParameterID::azimuthspan;

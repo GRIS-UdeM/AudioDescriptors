@@ -28,8 +28,8 @@
 class ElevationDome : public Parameters
 {
 public:
-	ElevationDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-		: Parameters(audioProcessorValueTreeState)
+	ElevationDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+		: Parameters(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Elevation");
 		paramID = ParameterID::elevation;

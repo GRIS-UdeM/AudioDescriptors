@@ -40,8 +40,8 @@ AudioDescriptorsAudioProcessor::AudioDescriptorsAudioProcessor()
 	)
 #endif
 	, mAudioProcessorValueTreeState(*this, nullptr, juce::Identifier(JucePlugin_Name), {})
-	, domeSettings(mAudioProcessorValueTreeState)
-	, cubeSettings(mAudioProcessorValueTreeState)
+	, domeSettings(mAudioProcessorValueTreeState, mParamFunctions)
+	, cubeSettings(mAudioProcessorValueTreeState, mParamFunctions)
 {
 	//startTimerHz(50);
 	DBG("Fluid v" << fluid::client::fluidVersion());

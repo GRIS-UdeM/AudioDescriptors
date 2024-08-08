@@ -28,16 +28,17 @@
 #include "../../Parameters/Dome/src/VspanDome.hpp"
 #include "../../Parameters/Smooth.hpp"
 #include "../../Constants.h"
+#include "../../ParameterFunctions.h"
 
 class DomeSettings
 {
 public:
     DomeSettings() = delete;
-    explicit DomeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-        : mAzimuthDome(audioProcessorValueTreeState)
-        , mElevationDome(audioProcessorValueTreeState)
-        , mHSpanDome(audioProcessorValueTreeState)
-        , mVSpanDome(audioProcessorValueTreeState)
+    explicit DomeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+        : mAzimuthDome(audioProcessorValueTreeState, functions)
+        , mElevationDome(audioProcessorValueTreeState, functions)
+        , mHSpanDome(audioProcessorValueTreeState, functions)
+        , mVSpanDome(audioProcessorValueTreeState, functions)
     {};
 
     bool checkConditionNeedSpectralAnalyse() {

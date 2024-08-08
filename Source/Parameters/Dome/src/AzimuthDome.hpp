@@ -28,8 +28,8 @@
 class AzimuthDome : public Parameters
 {
 public:
-	AzimuthDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-		: Parameters(audioProcessorValueTreeState)
+	AzimuthDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+		: Parameters(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Azimuth");
 		paramID = ParameterID::azimuth;

@@ -23,8 +23,9 @@
 #include "Parameters.h"
 #include "PanelView.h"
 
-Parameters::Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-	: mAPVTS(audioProcessorValueTreeState) 
+Parameters::Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	: mAPVTS(audioProcessorValueTreeState)
+	, mFunctions(functions)
 {
 }
 

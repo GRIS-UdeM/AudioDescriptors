@@ -33,12 +33,12 @@ class CubeSettings
 {
 public:
     CubeSettings() = delete;
-    explicit CubeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState)
-        : mXCube(audioProcessorValueTreeState)
-        , mYCube(audioProcessorValueTreeState)
-        , mZCube(audioProcessorValueTreeState)
-        , mHSpanCube(audioProcessorValueTreeState)
-        , mVSpanCube(audioProcessorValueTreeState)
+    explicit CubeSettings(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+        : mXCube(audioProcessorValueTreeState, functions)
+        , mYCube(audioProcessorValueTreeState, functions)
+        , mZCube(audioProcessorValueTreeState, functions)
+        , mHSpanCube(audioProcessorValueTreeState, functions)
+        , mVSpanCube(audioProcessorValueTreeState, functions)
     {};
 
 /// /////////////////////////// Les conditions de verifications//////////////////////////

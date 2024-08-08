@@ -25,6 +25,7 @@
 #include <JuceHeader.h>
 
 #include "Parameters/Smooth.hpp"
+#include "ParameterFunctions.h"
 
 class PanelView;
 enum class ParameterID { invalid = -1, azimuth = 0, elevation, x, y, z, azimuthspan, elevationspan};
@@ -33,7 +34,7 @@ class Parameters
 {
 public:
 	Parameters() = delete;
-	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState);
+	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions);
 	virtual ~Parameters() = default;
 
 	virtual void process(double range, double smooth, double lap = 1.0, double offset = 1.0) = 0;
@@ -574,6 +575,7 @@ public:
 
 protected:
 	juce::AudioProcessorValueTreeState& mAPVTS;
+	ParameterFunctions& mFunctions;
 	ParameterID paramID = ParameterID::invalid;
 	double res{};
 	double lastRes{};
