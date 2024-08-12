@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include "../../Parameters.h"
+#include "../../ParameterFunctions.h"
 
 class AzimuthDome : public Parameters
 {
@@ -36,22 +37,64 @@ public:
 		setParametersState();
 	}
 
-	void process(double range, double smooth, double lap, [[maybe_unused]] double offset) {
+	void process(const DescriptorID& descID, double valueToProcess) override {
+		auto range{ 0.0 };
+		auto lap{ 1.0 };
+		auto smooth{ 0.0 };
+		
+		switch (descID)
+		{
+		case DescriptorID::loudness:
+			range = paramRangeLoudness;
+			lap = paramLapLoudness;
+			smooth = processLoudness(valueToProcess);
+			break;
+		case DescriptorID::pitch:
+			range = paramRangePitch;
+			lap = paramLapPitch;
+			smooth = processPitch(valueToProcess);
+			break;
+		case DescriptorID::centroid:
+			range = paramRangeCentroid;
+			lap = paramLapCentroid;
+			smooth = processCentroid(valueToProcess);
+			break;
+		case DescriptorID::spread:
+			range = paramRangeSpread;
+			lap = paramLapSpread;
+			smooth = processSpread(valueToProcess);
+			break;
+		case DescriptorID::noise:
+			range = paramRangeNoise;
+			lap = paramLapNoise;
+			smooth = processNoise(valueToProcess);
+			break;
+		case DescriptorID::iterationsSpeed:
+			range = paramRangeOD;
+			lap = paramLapOD;
+			smooth = processSmoothedOnsetDetection(valueToProcess);
+			break;
+		case DescriptorID::invalid:
+		default:
+			break;
+		}
+
 		double clipMax = 1;
 		int multiplier = 360;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
-		//DBG("valeur de lap = " << lap);
 		res = clip * inputRange * multiplier * lap;
 
 		if (std::isnan(res)) {
 			res = 0.0;
 		}
-		//DBG("valeur finale = " << res);
 	}
 
 private:
+	//==============================================================================
+	//void process(double range, double smooth) override {}
+
 	//==============================================================================
 	JUCE_LEAK_DETECTOR(AzimuthDome)
 };

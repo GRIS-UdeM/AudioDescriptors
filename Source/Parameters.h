@@ -26,6 +26,7 @@
 
 #include "Parameters/Smooth.hpp"
 #include "ParameterFunctions.h"
+#include "Descriptors/Descriptors.hpp"
 
 class PanelView;
 enum class ParameterID { invalid = -1, azimuth = 0, elevation, x, y, z, azimuthspan, elevationspan};
@@ -37,7 +38,7 @@ public:
 	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions);
 	virtual ~Parameters() = default;
 
-	virtual void process(double range, double smooth, double lap = 1.0, double offset = 1.0) = 0;
+	virtual void process(const DescriptorID& descID, double valueToProcess) = 0;
 	
 	virtual juce::String const& getParameterName() const;
 
@@ -48,6 +49,18 @@ public:
 	double getDiffValue();
 	double getValue();
 
+	double processLoudness(double valueToProcess);
+	double processPitch(double valueToProcess);
+	double processCentroid(double valueToProcess);
+	double processSpread(double valueToProcess);
+	double processNoise(double valueToProcess);
+
+	double processSmoothedLoudness(double targetValue);
+	double processSmoothedPitch(double targetValue);
+	double processSmoothedCentroid(double targetValue);
+	double processSmoothedSpread(double targetValue);
+	double processSmoothedNoise(double targetValue);
+	double processSmoothedOnsetDetection(double targetValue);
 
 	//====================================================================
 	ParameterID getParameterID() const {
@@ -431,31 +444,6 @@ public:
 	void setParamMaxTime(double maxTime) {
 		paramMaxTime = maxTime;
 		mAPVTS.state.setProperty({ juce::String(parameterName.removeCharacters(" ") + "_MaxTimeOD") }, paramMaxTime, nullptr);
-	}
-
-	//====================================================================
-	double processSmoothedLoudness(double targetValue) {
-		return mSmoothLoudness.doSmoothing(targetValue, paramSmoothLoudness, paramSmoothCoefLoudness);
-	}
-
-	double processSmoothedPitch(double targetValue) {
-		return mSmoothPitch.doSmoothing(targetValue, paramSmoothPitch, paramSmoothCoefPitch);
-	}
-
-	double processSmoothedCentroid(double targetValue) {
-		return mSmoothCentroid.doSmoothing(targetValue, paramSmoothCentroid, paramSmoothCoefCentroid);
-	}
-
-	double processSmoothedSpread(double targetValue) {
-		return mSmoothSpread.doSmoothing(targetValue, paramSmoothSpread, paramSmoothCoefSpread);
-	}
-
-	double processSmoothedNoise(double targetValue) {
-		return mSmoothNoise.doSmoothing(targetValue, paramSmoothNoise, paramSmoothCoefNoise);
-	}
-
-	double processSmoothedOnsetDetection(double targetValue) {
-		return mSmoothOnsetDetection.doSmoothing(targetValue, paramSmoothOD, paramSmoothCoefOD);
 	}
 
 	//====================================================================

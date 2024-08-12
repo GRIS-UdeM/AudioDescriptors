@@ -58,7 +58,6 @@ double Parameters::getDiffValue()
 {
 	auto diff = lastRes - res;
 	lastRes = res;
-	//DBG("valeur finale = " << diff);
 	notifyObservers();
 	return diff;
 }
@@ -66,4 +65,77 @@ double Parameters::getDiffValue()
 double Parameters::getValue()
 {
 	return lastRes;
+}
+
+double Parameters::processLoudness(double valueToProcess)
+{
+	valueToProcess = mFunctions.PourcentageConversion(valueToProcess, paramFactorLoudness);
+	valueToProcess = processSmoothedLoudness(valueToProcess);
+	return valueToProcess;
+}
+
+double Parameters::processPitch(double valueToProcess)
+{
+	auto res{ 0.0 };
+	double minFreq = mFunctions.frequencyToMidiNoteNumber(paramMinFreqPitch);
+	double maxFreq = mFunctions.frequencyToMidiNoteNumber(paramMaxFreqPitch);
+	double zmap = mFunctions.zmap(valueToProcess, minFreq, maxFreq);
+	res = processSmoothedPitch(zmap);
+	return res;
+}
+
+double Parameters::processCentroid(double valueToProcess)
+{
+	auto res{ 0.0 };
+	double minFreq = mFunctions.frequencyToMidiNoteNumber(paramMinFreqCentroid);
+	double maxFreq = mFunctions.frequencyToMidiNoteNumber(paramMaxFreqCentroid);
+	double zmap = mFunctions.zmap(valueToProcess, minFreq, maxFreq);
+	res = processSmoothedCentroid(zmap);
+	return res;
+}
+
+double Parameters::processSpread(double valueToProcess)
+{
+	auto res{ 0.0 };
+	double ScaleOne = paramFactorSpread;
+	ScaleOne = mFunctions.zmap(ScaleOne, 100.0, 500.0);
+	ScaleOne = mFunctions.subtractFromOne(ScaleOne);
+	double power = mFunctions.calculatePower(valueToProcess, ScaleOne);
+	double mExpr = mFunctions.expr(power);
+	double ScaleTwo = paramFactorSpread;
+	ScaleTwo = mFunctions.ClipMyValue(ScaleTwo);
+	double valueToSmooth = mFunctions.valueToSmooth(mExpr, ScaleTwo);
+	res = processSmoothedSpread(valueToSmooth);
+	return res;
+}
+
+double Parameters::processNoise(double valueToProcess)
+{
+	valueToProcess = valueToProcess * (paramFactorNoise * 0.01);
+	valueToProcess = processSmoothedNoise(valueToProcess);
+	return valueToProcess;
+}
+
+double Parameters::processSmoothedLoudness(double targetValue) {
+	return mSmoothLoudness.doSmoothing(targetValue, paramSmoothLoudness, paramSmoothCoefLoudness);
+}
+
+double Parameters::processSmoothedPitch(double targetValue) {
+	return mSmoothPitch.doSmoothing(targetValue, paramSmoothPitch, paramSmoothCoefPitch);
+}
+
+double Parameters::processSmoothedCentroid(double targetValue) {
+	return mSmoothCentroid.doSmoothing(targetValue, paramSmoothCentroid, paramSmoothCoefCentroid);
+}
+
+double Parameters::processSmoothedSpread(double targetValue) {
+	return mSmoothSpread.doSmoothing(targetValue, paramSmoothSpread, paramSmoothCoefSpread);
+}
+
+double Parameters::processSmoothedNoise(double targetValue) {
+	return mSmoothNoise.doSmoothing(targetValue, paramSmoothNoise, paramSmoothCoefNoise);
+}
+
+double Parameters::processSmoothedOnsetDetection(double targetValue) {
+	return mSmoothOnsetDetection.doSmoothing(targetValue, paramSmoothOD, paramSmoothCoefOD);
 }

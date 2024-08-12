@@ -35,7 +35,42 @@ public:
 		paramID = ParameterID::y;
 		setParametersState();
 	}
-	void process(double range, double smooth, [[maybe_unused]] double lap, [[maybe_unused]] double offset) {
+
+	void process(const DescriptorID& descID, double valueToProcess) override {
+		auto range{ 0.0 };
+		auto smooth{ 0.0 };
+
+		switch (descID)
+		{
+		case DescriptorID::loudness:
+			range = paramRangeLoudness;
+			smooth = processLoudness(valueToProcess);
+			break;
+		case DescriptorID::pitch:
+			range = paramRangePitch;
+			smooth = processPitch(valueToProcess);
+			break;
+		case DescriptorID::centroid:
+			range = paramRangeCentroid;
+			smooth = processCentroid(valueToProcess);
+			break;
+		case DescriptorID::spread:
+			range = paramRangeSpread;
+			smooth = processSpread(valueToProcess);
+			break;
+		case DescriptorID::noise:
+			range = paramRangeNoise;
+			smooth = processNoise(valueToProcess);
+			break;
+		case DescriptorID::iterationsSpeed:
+			range = paramRangeOD;
+			smooth = processSmoothedOnsetDetection(valueToProcess);
+			break;
+		case DescriptorID::invalid:
+		default:
+			break;
+		}
+
 		double clipMax = 0.999999;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
@@ -47,7 +82,6 @@ public:
 		if (std::isnan(res)) {
 			res = 0.0;
 		}
-		//DBG("valeur finale = " << res);
 	}
 
 private:
