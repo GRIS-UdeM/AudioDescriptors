@@ -82,7 +82,7 @@ public:
         mUseTimerButtonclickValue = true;
     }
 
-	void mOnsetDetectionProcess(juce::AudioBuffer<float>& descriptorBuffer, double sampleRate, int blockSize) {
+	void process(juce::AudioBuffer<float>& descriptorBuffer, double sampleRate, int blockSize) {
         std::vector<float> allSamples;
         std::vector<double> onsetDectectionVals{};
         auto* channelData = descriptorBuffer.getReadPointer(0);

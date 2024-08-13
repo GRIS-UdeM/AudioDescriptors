@@ -23,13 +23,13 @@
 #pragma once
 
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 
-class ElevationDome : public Parameters
+class ElevationDome : public SpatialParameter
 {
 public:
 	ElevationDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Elevation");
 		paramID = ParameterID::elevation;

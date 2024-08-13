@@ -22,7 +22,7 @@
 
 #include "PanelView.h"
 
-PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& parameter)
+PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, SpatialParameter& parameter)
     : mAudioProcessor(processor)
     , mParameter(parameter)
     , mDataGraph(parameter)
@@ -138,6 +138,7 @@ PanelView::PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& para
     mDescriptorComboBox.addListener(this);
     mDescriptorComboBox.onChange = [this] {
         mParameter.setParamDescriptorComboBoxIndex(mDescriptorComboBox.getSelectedId());
+        mParameter.setDescriptorToUse(Descriptors::fromInt(mDescriptorComboBox.getSelectedId()));
         if (mDescriptorComboBox.getSelectedId() == 2) {
             mDescriptorFactorSlider.setValue(mParameter.getParamFactorLoudness());
             mDescriptorSmoothSlider.setValue(mParameter.getParamSmoothLoudness());
@@ -765,7 +766,7 @@ void PanelView::addNewParamValueToDataGraph(double value)
 }
 
 //==============================================================================
-DataGraph::DataGraph(Parameters& parameter)
+DataGraph::DataGraph(SpatialParameter& parameter)
     : param(parameter)
 {
     mGUIBuffer.resize(100);

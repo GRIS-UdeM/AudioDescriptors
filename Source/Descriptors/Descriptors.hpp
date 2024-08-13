@@ -40,6 +40,24 @@ public:
 		return mID;
 	}
 
+	static int toInt(DescriptorID descID) {
+		return static_cast<int>(descID) + 2;
+	}
+
+	static DescriptorID fromInt(int value) {
+		switch (value)
+		{
+		case 2: return DescriptorID::loudness;
+		case 3: return DescriptorID::pitch;
+		case 4: return DescriptorID::centroid;
+		case 5: return DescriptorID::spread;
+		case 6: return DescriptorID::noise;
+		case 7: return DescriptorID::iterationsSpeed;
+		default:
+			return DescriptorID::invalid;
+		}
+	}
+
 	fluid::RealVector computeStats(fluid::RealMatrixView matrix, fluid::algorithm::MultiStats stats) {
 		fluid::index dim = matrix.cols();
 		fluid::RealMatrix tmp(dim, 7);

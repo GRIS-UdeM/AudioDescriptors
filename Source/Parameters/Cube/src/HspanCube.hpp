@@ -23,14 +23,14 @@
 #pragma once
 #include <JuceHeader.h>
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 #include "../Source/Constants.h"
 
-class HspanCube : public Parameters
+class HspanCube : public SpatialParameter
 {
 public:
 	HspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("X-Y Span");
 		paramID = ParameterID::azimuthspan;

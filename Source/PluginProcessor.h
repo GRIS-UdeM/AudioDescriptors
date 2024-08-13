@@ -38,8 +38,12 @@
 #include "Descriptors/OnsetDetectionD.hpp"
 
 #include "ParameterFunctions.h"
-#include "Parameters/Dome/src/DomeSettings.hpp"
 #include "Parameters/Cube/src/CubeSettings.hpp"
+
+#include "Parameters/Dome/src/AzimuthDome.hpp"
+#include "Parameters/Dome/src/ElevationDome.hpp"
+#include "Parameters/Dome/src/HspanDome.hpp"
+#include "Parameters/Dome/src/VspanDome.hpp"
 
 //==============================================================================
 /*Clean version code reference
@@ -111,8 +115,8 @@ public:
     void setModeState(SpatMode spatMode);
     juce::String getSpatModeToString();
 
-    void processDomeParameter(Parameters& parameter, const DescriptorID& descId, double value);
-    void processCubeParameter(Parameters& parameter, const DescriptorID& descId, double value);
+    void processDomeParameter(SpatialParameter& parameter, const DescriptorID& descId, double value);
+    void processCubeParameter(SpatialParameter& parameter, const DescriptorID& descId, double value);
 
     void setOnsetDetectionMetric(ParameterID paramID, const int metric);
     void setOnsetDetectionThreshold(ParameterID paramID, const float tresh);
@@ -120,7 +124,6 @@ public:
     void setOnsetDetectionMaxTime(ParameterID paramID, const double maxTime);
     void setOnsetDetectionFromClick(ParameterID paramID, const double timeValue);
 
-    DomeSettings& getDomeSettings();
     CubeSettings& getCubeSettings();
 
     juce::String& getCurrentOscAddress();
@@ -132,6 +135,20 @@ public:
 
     juce::Point<int> getWindowDimensions() const;
     void setWindowDimensions(juce::Point<int> dimensions);
+
+    //=================================================================================
+    AzimuthDome& getAzimuthDome();
+    ElevationDome& getElevationDome();
+    HspanDome& getHSpanDome();
+    VspanDome& getVSpanDome();
+
+    bool shouldProcessDomeSpectralAnalysis();
+    bool shouldProcessDomeLoudnessAnalysis();
+    bool shouldProcessDomePitchAnalysis();
+    bool shouldProcessDomeCentroidAnalysis();
+    bool shouldProcessDomeSpreadAnalysis();
+    bool shouldProcessDomeNoiseAnalysis();
+    bool shouldProcessDomeOnsetDetectionAnalysis();
 
 private:
     //==============================================================================
@@ -167,6 +184,8 @@ private:
     double mHspanCubeValue{};
     double mVspanCubeValue{};
 
+    std::array<double*, 4> mSpatParametersDomeValueRefs; // just an array of references to dome spatial parameters values
+
     StatsD mStats;
     ShapeD mShape;
     PitchD mPitch;
@@ -182,9 +201,16 @@ private:
     OnsetDetectionD mOnsetDetectionY;
     OnsetDetectionD mOnsetDetectionZ;
 
+    std::array<OnsetDetectionD*, 4> mDomeOnsetDetectionRefs; // just an array of references to OnsetDetection objs
+
     ParameterFunctions mParamFunctions;
 
-    DomeSettings domeSettings;
+    AzimuthDome mAzimuthDome;
+    ElevationDome mElevationDome;
+    HspanDome mHSpanDome;
+    VspanDome mVSpanDome;
+    std::array<SpatialParameter*, 4> mSpatParametersDomeRefs; // just an array of references to dome spatial parameters
+
     CubeSettings cubeSettings;
 
     //==============================================================================

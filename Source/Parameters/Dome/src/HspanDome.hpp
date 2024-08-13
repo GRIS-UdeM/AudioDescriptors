@@ -23,13 +23,13 @@
 #pragma once
 
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 
-class HspanDome : public Parameters
+class HspanDome : public SpatialParameter
 {
 public:
 	HspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Azimuth Span");
 		paramID = ParameterID::azimuthspan;

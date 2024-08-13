@@ -31,12 +31,12 @@
 class PanelView;
 enum class ParameterID { invalid = -1, azimuth = 0, elevation, x, y, z, azimuthspan, elevationspan};
 
-class Parameters
+class SpatialParameter
 {
 public:
-	Parameters() = delete;
-	explicit Parameters(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions);
-	virtual ~Parameters() = default;
+	SpatialParameter() = delete;
+	explicit SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions);
+	virtual ~SpatialParameter() = default;
 
 	virtual void process(const DescriptorID& descID, double valueToProcess) = 0;
 	
@@ -48,6 +48,9 @@ public:
 
 	double getDiffValue();
 	double getValue();
+
+	void setDescriptorToUse(DescriptorID descID);
+	DescriptorID getDescriptorToUse();
 
 	double processLoudness(double valueToProcess);
 	double processPitch(double valueToProcess);
@@ -61,6 +64,16 @@ public:
 	double processSmoothedSpread(double targetValue);
 	double processSmoothedNoise(double targetValue);
 	double processSmoothedOnsetDetection(double targetValue);
+
+	//====================================================================
+	// Analysis
+	bool needsSpectralAnalysis();
+	bool shouldProcessLoudnessAnalysis();
+	bool shouldProcessPitchAnalysis();
+	bool shouldProcessCentroidAnalysis();
+	bool shouldProcessSpreadAnalysis();
+	bool shouldProcessNoiseAnalysis();
+	bool shouldProcessOnsetDetectionAnalysis();
 
 	//====================================================================
 	ParameterID getParameterID() const {
@@ -568,6 +581,7 @@ protected:
 	double res{};
 	double lastRes{};
 	juce::String parameterName{};
+	DescriptorID mDescriptorToUse;
 
 	Smooth mSmoothLoudness;
 	Smooth mSmoothPitch;
@@ -632,5 +646,5 @@ private:
 	std::vector<PanelView*> mObservers;
 
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(Parameters)
+	JUCE_LEAK_DETECTOR(SpatialParameter)
 };

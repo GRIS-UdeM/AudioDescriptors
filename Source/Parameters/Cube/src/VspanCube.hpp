@@ -23,14 +23,14 @@
 #pragma once
 #include <JuceHeader.h>
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 #include "../Source/Constants.h"
 
-class VspanCube : public Parameters
+class VspanCube : public SpatialParameter
 {
 public:
 	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Z Span");
 		paramID = ParameterID::elevationspan;

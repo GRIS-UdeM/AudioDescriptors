@@ -29,7 +29,7 @@
 class DataGraph : public juce::Component, private juce::Timer
 {
 public:
-    DataGraph(Parameters& parameter);
+    DataGraph(SpatialParameter& parameter);
     ~DataGraph() override;
 
     void paint(juce::Graphics&) override;
@@ -40,7 +40,7 @@ public:
     double readBufferMean();
 
 private:
-    Parameters& param;
+    SpatialParameter& param;
     std::deque<double> mGUIBuffer;
     double mBuffer{};
     int mBufferCount{};
@@ -53,7 +53,7 @@ private:
 class PanelView : public juce::Component, public juce::ComboBox::Listener, private juce::Timer
 {
 public:
-    PanelView(AudioDescriptorsAudioProcessor& processor, Parameters& parameter);
+    PanelView(AudioDescriptorsAudioProcessor& processor, SpatialParameter& parameter);
     ~PanelView() override;
 
     void comboBoxChanged(juce::ComboBox* comboBox) override;
@@ -65,7 +65,7 @@ public:
 
 private:
     AudioDescriptorsAudioProcessor& mAudioProcessor;
-    Parameters& mParameter;
+    SpatialParameter& mParameter;
     DataGraph mDataGraph;
 
     juce::ComboBox mDescriptorMetricComboBox;

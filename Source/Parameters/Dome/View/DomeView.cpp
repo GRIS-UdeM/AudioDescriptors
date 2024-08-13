@@ -25,10 +25,10 @@
 
 DomeView::DomeView(AudioDescriptorsAudioProcessor& processor)
     : mAudioProcessor(processor)
-    , mAzimuthPanel(processor, processor.getDomeSettings().getAzimuthDome())
-    , mElevationPanel(processor, processor.getDomeSettings().getElevationDome())
-    , mHSpanPanel(processor, processor.getDomeSettings().getHSpanDome())
-    , mVSpanPanel(processor, processor.getDomeSettings().getVSpanDome())
+    , mAzimuthPanel(processor, processor.getAzimuthDome())
+    , mElevationPanel(processor, processor.getElevationDome())
+    , mHSpanPanel(processor, processor.getHSpanDome())
+    , mVSpanPanel(processor, processor.getVSpanDome())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.

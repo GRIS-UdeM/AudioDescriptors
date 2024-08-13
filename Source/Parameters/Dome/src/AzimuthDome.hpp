@@ -23,14 +23,14 @@
 #pragma once
 
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 #include "../../ParameterFunctions.h"
 
-class AzimuthDome : public Parameters
+class AzimuthDome : public SpatialParameter
 {
 public:
 	AzimuthDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Azimuth");
 		paramID = ParameterID::azimuth;
@@ -92,9 +92,6 @@ public:
 	}
 
 private:
-	//==============================================================================
-	//void process(double range, double smooth) override {}
-
 	//==============================================================================
 	JUCE_LEAK_DETECTOR(AzimuthDome)
 };

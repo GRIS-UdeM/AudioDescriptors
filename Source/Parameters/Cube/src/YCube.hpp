@@ -23,13 +23,13 @@
 #pragma once
 #include <JuceHeader.h>
 #include <cmath>
-#include "../../Parameters.h"
+#include "../../SpatialParameter.h"
 
-class YCube : public Parameters
+class YCube : public SpatialParameter
 {
 public:
 	YCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
-		: Parameters(audioProcessorValueTreeState, functions)
+		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Y");
 		paramID = ParameterID::y;

@@ -21,8 +21,10 @@
     <GROUP id="{9A9777FC-9875-8829-230D-A5E1F4D1C1C7}" name="Parameters">
       <FILE id="dDQVpx" name="ParameterFunctions.h" compile="0" resource="0"
             file="Source/ParameterFunctions.h"/>
-      <FILE id="DJQ2ky" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
-      <FILE id="GUli4U" name="Parameters.cpp" compile="1" resource="0" file="Source/Parameters.cpp"/>
+      <FILE id="DJQ2ky" name="SpatialParameter.h" compile="0" resource="0"
+            file="Source/SpatialParameter.h"/>
+      <FILE id="GUli4U" name="SpatialParameter.cpp" compile="1" resource="0"
+            file="Source/SpatialParameter.cpp"/>
       <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
       <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
       <GROUP id="{688B671C-E3DE-2F6F-52A4-0EC5A70926D1}" name="Cube">
@@ -41,8 +43,6 @@
         </GROUP>
       </GROUP>
       <GROUP id="{DCD79291-6E57-746B-81A9-4A2941D32978}" name="Dome">
-        <FILE id="GDasW1" name="DomeSettings.hpp" compile="0" resource="0"
-              file="Source/Parameters/Dome/src/DomeSettings.hpp"/>
         <GROUP id="{6F36A96E-0787-AD56-D0DE-862D8D0DCE7D}" name="src">
           <FILE id="Gr1Hab" name="AzimuthDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/AzimuthDome.hpp"/>
           <FILE id="OEtMNf" name="ElevationDome.hpp" compile="0" resource="0"
