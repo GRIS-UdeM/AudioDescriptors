@@ -37,7 +37,7 @@
 #include "Descriptors/FlatnessD.hpp"
 #include "Descriptors/OnsetDetectionD.hpp"
 
-#include "Parameters/ParameterFunctions.h"
+#include "Parameters/SpatParamHelperFunctions.h"
 
 #include "Parameters/AzimuthDome.hpp"
 #include "Parameters/ElevationDome.hpp"

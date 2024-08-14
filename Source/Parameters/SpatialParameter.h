@@ -26,7 +26,7 @@
 #include <cmath>
 
 #include "Smooth.hpp"
-#include "ParameterFunctions.h"
+#include "SpatParamHelperFunctions.h"
 #include "../Constants.h"
 #include "../Descriptors/Descriptors.hpp"
 

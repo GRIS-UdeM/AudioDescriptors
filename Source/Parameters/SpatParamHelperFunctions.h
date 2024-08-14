@@ -28,29 +28,18 @@
 class ParameterFunctions
 {
 public:
-
-
-	double DbToGain(const double& value) {
-		double linearLoudness = juce::Decibels::decibelsToGain(value);
-		return linearLoudness;
-	}
-
-	double PourcentageConversion(const double& value, const double& factor) {
-		return value * (factor * 0.01);
-	}
-
 	double frequencyToMidiNoteNumber(double frequency) {
 		if (frequency <= 0.0) {
 			return -1;
 		}
 		double midiNoteNumber = 69.0 + 12.0 * std::log2(frequency / 440.0);
 
-		// Arrondir au nombre MIDI le plus proche
+		// Round to the nearest MIDI note
 		return std::round(midiNoteNumber);
 	}
 
 	double zmap(double value, double inputMin, double inputMax) {
-		// Assurez-vous que la valeur est comprise dans la plage d'entrée
+		// clip value
 		if (value < inputMin) {
 			value = inputMin;
 		}
@@ -58,39 +47,22 @@ public:
 			value = inputMax;
 		}
 
-		// Mappez la valeur d'entrée vers la plage de sortie [-1, 1]
-		// Formule : (valeur - minIn) / (maxIn - minIn) * (maxOut - minOut) + minOut
+		// Formula : (val - minIn) / (maxIn - minIn) * (maxOut - minOut) + minOut
 		return (value - inputMin) / (inputMax - inputMin) * (1.0 - 0.0) + 0.0;
 	}
 
-
-	double subtractFromOne(double input) {
-		return 1.0 - input;
-	}
-
-
-	double calculatePower(double base, double exponent) {
-		return pow(base, exponent);
-	}
-
-
-	double expr(double f1) {
-		if (f1 < 0.5) {
-			return 4.0 * pow(f1, 3);
+	double scaleExpr(double val) {
+		if (val < 0.5) {
+			return 4.0 * pow(val, 3);
 		}
 		else {
-			return 0.5 * pow((2.0 * f1 - 2.0), 3) + 1.0;
+			return 0.5 * pow((2.0 * val - 2.0), 3) + 1.0;
 		}
 	}
 
-	double ClipMyValue(double value) {
-
+	double clip(double value) {
 		double clipedValue = juce::jlimit(0.0, 100.0, value);
 		return clipedValue * 0.01;
-	}
-
-	double valueToSmooth(double valueOne, double clipedValue) {
-		return valueOne * clipedValue;
 	}
 
 	double power(double input) {

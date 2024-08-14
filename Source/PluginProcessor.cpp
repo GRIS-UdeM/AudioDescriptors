@@ -282,8 +282,8 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 		mLoudness.calculate(loudnessMat, *mStats.getStats());
 		double loudnessValue = mLoudness.getValue();
+		loudnessValue = juce::Decibels::decibelsToGain(loudnessValue);
 		if (getModeState() == SpatMode::dome) {
-			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 				if (mSpatParametersDomeRefs[i]->shouldProcessLoudnessAnalysis()) {
 					mSpatParametersDomeRefs[i]->process(mLoudness.getID(), loudnessValue);
@@ -292,7 +292,6 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 		else {
-			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
 			for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
 				if (mSpatParametersCubeRefs[i]->shouldProcessLoudnessAnalysis()) {
 					mSpatParametersCubeRefs[i]->process(mLoudness.getID(), loudnessValue);
@@ -301,6 +300,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 	}
+
 	if (shouldProcessDomePitchAnalysis() || shouldProcessCubePitchAnalysis()) {
 		ComplexVector framePitch;
 		RealVector magnitudePitch;
@@ -318,8 +318,8 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 		mPitch.calculate(pitchMat, *mStats.getStats());
 		double pitchValue = mPitch.getValue();
+		pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 		if (getModeState() == SpatMode::dome) {
-			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 				if (mSpatParametersDomeRefs[i]->shouldProcessPitchAnalysis()) {
 					mSpatParametersDomeRefs[i]->process(mPitch.getID(), pitchValue);
@@ -328,7 +328,6 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 		else {
-			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 			for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
 				if (mSpatParametersCubeRefs[i]->shouldProcessPitchAnalysis()) {
 					mSpatParametersCubeRefs[i]->process(mPitch.getID(), pitchValue);
@@ -337,6 +336,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 	}
+
 	if ((mSpatMode == SpatMode::dome && shouldProcessDomeSpectralAnalysis()) ||
 		(mSpatMode == SpatMode::cube && shouldProcessCubeSpectralAnalysis())) {
 		ComplexVector  frameSpectral;
@@ -353,30 +353,14 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 
 		shapeStats = mShape.shapeCalculate(shapeMat, *mStats.getStats());
-		mCentroid.calculate(shapeStats);
-		double centroidValue = mCentroid.getValue(); // centroidValue when silence = 118.02870609942256
-		if (bufferMagnitude == 0.0f) {
-			centroidValue = 0.0;
-		}
 
-		mSpread.calculate(shapeStats);
-		double spreadValue = mSpread.getValue(); // spreadValue when silence  = 16.520351353896057
-		if (bufferMagnitude == 0.0f) {
-			spreadValue = 0.0;
-		}
-		double zmap = mParamFunctions.zmap(spreadValue, 0.0, 16.0);
-
-		mFlatness.calculate(shapeStats);
-		double flatnessValue = mFlatness.getValue(); // flatnessValue when silence = -6.9624443085150120e-13
-		if (bufferMagnitude == 0.0f) {
-			flatnessValue = -160.0;
-		}
-
-		if (getModeState() == SpatMode::dome) {
-			flatnessValue = mParamFunctions.DbToGain(flatnessValue);
-			flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
-			flatnessValue = mParamFunctions.power(flatnessValue);
-			if (shouldProcessDomeCentroidAnalysis()) {
+		if (shouldProcessDomeCentroidAnalysis() || shouldProcessCubeCentroidAnalysis()) {
+			mCentroid.calculate(shapeStats);
+			double centroidValue = mCentroid.getValue(); // centroidValue when silence = 118.02870609942256
+			if (bufferMagnitude == 0.0f) {
+				centroidValue = 0.0;
+			}
+			if (getModeState() == SpatMode::dome) {
 				for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 					if (mSpatParametersDomeRefs[i]->shouldProcessCentroidAnalysis()) {
 						mSpatParametersDomeRefs[i]->process(mCentroid.getID(), centroidValue);
@@ -384,28 +368,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 					}
 				}
 			}
-			if (shouldProcessDomeSpreadAnalysis()) {
-				for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
-					if (mSpatParametersDomeRefs[i]->shouldProcessSpreadAnalysis()) {
-						mSpatParametersDomeRefs[i]->process(mSpread.getID(), zmap);
-						*mSpatParametersDomeValueRefs[i] = mSpatParametersDomeRefs[i]->getDiffValue();
-					}
-				}
-			}
-			if (shouldProcessDomeNoiseAnalysis()) {
-				for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
-					if (mSpatParametersDomeRefs[i]->shouldProcessNoiseAnalysis()) {
-						mSpatParametersDomeRefs[i]->process(mFlatness.getID(), flatnessValue);
-						*mSpatParametersDomeValueRefs[i] = mSpatParametersDomeRefs[i]->getDiffValue();
-					}
-				}
-			}
-		}
-		else {
-			flatnessValue = mParamFunctions.DbToGain(flatnessValue);
-			flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
-			flatnessValue = mParamFunctions.power(flatnessValue);
-			if (shouldProcessCubeCentroidAnalysis()) {
+			else {
 				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
 					if (mSpatParametersCubeRefs[i]->shouldProcessCentroidAnalysis()) {
 						mSpatParametersCubeRefs[i]->process(mCentroid.getID(), centroidValue);
@@ -413,15 +376,53 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 					}
 				}
 			}
-			if (shouldProcessCubeSpreadAnalysis()) {
+		}
+
+		if (shouldProcessDomeSpreadAnalysis() || shouldProcessCubeSpreadAnalysis()) {
+			mSpread.calculate(shapeStats);
+			double spreadValue = mSpread.getValue(); // spreadValue when silence  = 16.520351353896057
+			if (bufferMagnitude == 0.0f) {
+				spreadValue = 0.0;
+			}
+			spreadValue = mParamFunctions.zmap(spreadValue, 0.0, 16.0);
+
+			if (getModeState() == SpatMode::dome) {
+				for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
+					if (mSpatParametersDomeRefs[i]->shouldProcessSpreadAnalysis()) {
+						mSpatParametersDomeRefs[i]->process(mSpread.getID(), spreadValue);
+						*mSpatParametersDomeValueRefs[i] = mSpatParametersDomeRefs[i]->getDiffValue();
+					}
+				}
+			}
+			else {
 				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
 					if (mSpatParametersCubeRefs[i]->shouldProcessSpreadAnalysis()) {
-						mSpatParametersCubeRefs[i]->process(mSpread.getID(), zmap);
+						mSpatParametersCubeRefs[i]->process(mSpread.getID(), spreadValue);
 						*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
 					}
 				}
 			}
-			if (shouldProcessCubeNoiseAnalysis()) {
+		}
+
+		if (shouldProcessDomeNoiseAnalysis() || shouldProcessCubeNoiseAnalysis()) {
+			mFlatness.calculate(shapeStats);
+			double flatnessValue = mFlatness.getValue(); // flatnessValue when silence = -6.9624443085150120e-13
+			if (bufferMagnitude == 0.0f) {
+				flatnessValue = -160.0;
+			}
+			flatnessValue = juce::Decibels::decibelsToGain(flatnessValue);
+			flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
+			flatnessValue = mParamFunctions.power(flatnessValue);
+
+			if (getModeState() == SpatMode::dome) {
+				for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
+					if (mSpatParametersDomeRefs[i]->shouldProcessNoiseAnalysis()) {
+						mSpatParametersDomeRefs[i]->process(mFlatness.getID(), flatnessValue);
+						*mSpatParametersDomeValueRefs[i] = mSpatParametersDomeRefs[i]->getDiffValue();
+					}
+				}
+			}
+			else {
 				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
 					if (mSpatParametersCubeRefs[i]->shouldProcessNoiseAnalysis()) {
 						mSpatParametersCubeRefs[i]->process(mFlatness.getID(), flatnessValue);
@@ -431,6 +432,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 	}
+
 	if (shouldProcessDomeOnsetDetectionAnalysis() || shouldProcessCubeOnsetDetectionAnalysis()) {
 		if (getModeState() == SpatMode::dome) {
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {

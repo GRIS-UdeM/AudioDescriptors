@@ -80,7 +80,7 @@ DescriptorID SpatialParameter::getDescriptorToUse()
 
 double SpatialParameter::processLoudness(double valueToProcess)
 {
-	valueToProcess = mFunctions.PourcentageConversion(valueToProcess, paramFactorLoudness);
+	valueToProcess = valueToProcess * (paramFactorLoudness * 0.01);
 	valueToProcess = processSmoothedLoudness(valueToProcess);
 	return valueToProcess;
 }
@@ -108,14 +108,14 @@ double SpatialParameter::processCentroid(double valueToProcess)
 double SpatialParameter::processSpread(double valueToProcess)
 {
 	auto val{ 0.0 };
-	double ScaleOne = paramFactorSpread;
-	ScaleOne = mFunctions.zmap(ScaleOne, 100.0, 500.0);
-	ScaleOne = mFunctions.subtractFromOne(ScaleOne);
-	double power = mFunctions.calculatePower(valueToProcess, ScaleOne);
-	double mExpr = mFunctions.expr(power);
-	double ScaleTwo = paramFactorSpread;
-	ScaleTwo = mFunctions.ClipMyValue(ScaleTwo);
-	double valueToSmooth = mFunctions.valueToSmooth(mExpr, ScaleTwo);
+	double scaleOne = paramFactorSpread;
+	scaleOne = mFunctions.zmap(scaleOne, 100.0, 500.0);
+	scaleOne = 1.0 - scaleOne;
+	double power = pow(valueToProcess, scaleOne);
+	double scaleExpr = mFunctions.scaleExpr(power);
+	double scaleTwo = paramFactorSpread;
+	scaleTwo = mFunctions.clip(scaleTwo);
+	double valueToSmooth = scaleExpr * scaleTwo;
 	val = processSmoothedSpread(valueToSmooth);
 	return val;
 }

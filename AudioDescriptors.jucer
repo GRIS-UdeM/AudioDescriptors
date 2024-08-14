@@ -30,8 +30,8 @@
             file="Source/Parameters/ElevationDome.hpp"/>
       <FILE id="qSfhym" name="HspanCube.hpp" compile="0" resource="0" file="Source/Parameters/HspanCube.hpp"/>
       <FILE id="XrwgF0" name="HspanDome.hpp" compile="0" resource="0" file="Source/Parameters/HspanDome.hpp"/>
-      <FILE id="PGiP2M" name="ParameterFunctions.h" compile="0" resource="0"
-            file="Source/Parameters/ParameterFunctions.h"/>
+      <FILE id="PGiP2M" name="SpatParamHelperFunctions.h" compile="0" resource="0"
+            file="Source/Parameters/SpatParamHelperFunctions.h"/>
       <FILE id="iL692D" name="Smooth.hpp" compile="0" resource="0" file="Source/Parameters/Smooth.hpp"/>
       <FILE id="DoGdWx" name="SpatialParameter.cpp" compile="1" resource="0"
             file="Source/Parameters/SpatialParameter.cpp"/>
