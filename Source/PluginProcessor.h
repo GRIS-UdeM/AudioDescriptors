@@ -192,9 +192,6 @@ private:
     double mHspanCubeValue{};
     double mVspanCubeValue{};
 
-    std::array<double*, 4> mSpatParametersDomeValueRefs; // just an array of references to dome spatial parameters values
-    std::array<double*, 5> mSpatParametersCubeValueRefs; // just an array of references to cube spatial parameters values
-
     StatsD mStats;
     ShapeD mShape;
     PitchD mPitch;
@@ -210,24 +207,26 @@ private:
     OnsetDetectionD mOnsetDetectionY;
     OnsetDetectionD mOnsetDetectionZ;
 
-    // Just an arrays of references to OnsetDetection objs. We use the same span OnsetDetection
-    // objs in both dome and cube modes
-    std::array<OnsetDetectionD*, 4> mDomeOnsetDetectionRefs;
-    std::array<OnsetDetectionD*, 5> mCubeOnsetDetectionRefs;
-
     ParameterFunctions mParamFunctions;
 
     AzimuthDome mAzimuthDome;
     ElevationDome mElevationDome;
     HspanDome mHSpanDome;
     VspanDome mVSpanDome;
-    std::array<SpatialParameter*, 4> mSpatParametersDomeRefs; // just an array of references to dome spatial parameters
     XCube mXCube;
     YCube mYCube;
     ZCube mZCube;
     HspanCube mHSpanCube;
     VspanCube mVSpanCube;
+
+    std::array<SpatialParameter*, 4> mSpatParametersDomeRefs; // just an array of references to dome spatial parameters
     std::array<SpatialParameter*, 5> mSpatParametersCubeRefs; // just an array of references to cube spatial parameters
+    std::array<double*, 4> mSpatParametersDomeValueRefs; // just an array of references to dome spatial parameters values
+    std::array<double*, 5> mSpatParametersCubeValueRefs; // just an array of references to cube spatial parameters values
+    // Just an arrays of references to OnsetDetection objs. We use the same span OnsetDetection
+    // objs in both dome and cube modes
+    std::array<OnsetDetectionD*, 4> mDomeOnsetDetectionRefs;
+    std::array<OnsetDetectionD*, 5> mCubeOnsetDetectionRefs;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDescriptorsAudioProcessor)
