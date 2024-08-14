@@ -23,10 +23,12 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <cmath>
 
-#include "Parameters/Smooth.hpp"
+#include "Smooth.hpp"
 #include "ParameterFunctions.h"
-#include "Descriptors/Descriptors.hpp"
+#include "../Constants.h"
+#include "../Descriptors/Descriptors.hpp"
 
 class PanelView;
 enum class ParameterID { invalid = -1, azimuth = 0, elevation, x, y, z, azimuthspan, elevationspan};

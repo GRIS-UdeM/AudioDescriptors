@@ -21,49 +21,54 @@
 //==============================================================================
 
 #pragma once
+#include "SpatialParameter.h"
 
-#include <cmath>
-#include "../../SpatialParameter.h"
-
-class HspanDome : public SpatialParameter
+class VspanCube : public SpatialParameter
 {
 public:
-	HspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
-		parameterName = juce::String("Azimuth Span");
-		paramID = ParameterID::azimuthspan;
+		parameterName = juce::String("Z Span");
+		paramID = ParameterID::elevationspan;
 		setParametersState();
 	}
 
 	void process(const DescriptorID& descID, double valueToProcess) override {
 		auto range{ 0.0 };
+		auto offset{ 1.0 };
 		auto smooth{ 0.0 };
 
 		switch (descID)
 		{
 		case DescriptorID::loudness:
 			range = paramRangeLoudness;
+			offset = paramOffsetLoudness;
 			smooth = processLoudness(valueToProcess);
 			break;
 		case DescriptorID::pitch:
 			range = paramRangePitch;
+			offset = paramOffsetPitch;
 			smooth = processPitch(valueToProcess);
 			break;
 		case DescriptorID::centroid:
 			range = paramRangeCentroid;
+			offset = paramOffsetCentroid;
 			smooth = processCentroid(valueToProcess);
 			break;
 		case DescriptorID::spread:
 			range = paramRangeSpread;
+			offset = paramOffsetSpread;
 			smooth = processSpread(valueToProcess);
 			break;
 		case DescriptorID::noise:
 			range = paramRangeNoise;
+			offset = paramOffsetNoise;
 			smooth = processNoise(valueToProcess);
 			break;
 		case DescriptorID::iterationsSpeed:
 			range = paramRangeOD;
+			offset = paramOffsetOD;
 			smooth = processSmoothedOnsetDetection(valueToProcess);
 			break;
 		case DescriptorID::invalid:
@@ -76,7 +81,9 @@ public:
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
-		res = clip * inputRange * multiplier;
+		res = clip * inputRange;
+		res = res * multiplier ;
+		res -= offset * 100;
 
 		if (std::isnan(res)) {
 			res = 0.0;
@@ -85,5 +92,5 @@ public:
 
 private:
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(HspanDome)
+	JUCE_LEAK_DETECTOR(VspanCube)
 };

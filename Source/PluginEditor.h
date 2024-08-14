@@ -24,8 +24,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "Parameters/Dome/View/DomeView.h"
-#include "Parameters/Cube/View/CubeView.h"
+#include "Parameters/View/DomeView.h"
+#include "Parameters/View/CubeView.h"
 
 //==============================================================================
 /**

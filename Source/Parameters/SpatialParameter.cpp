@@ -21,7 +21,7 @@
 //==============================================================================
 
 #include "SpatialParameter.h"
-#include "PanelView.h"
+#include "../PanelView.h"
 
 SpatialParameter::SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
 	: mAPVTS(audioProcessorValueTreeState)

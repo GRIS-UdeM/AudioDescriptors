@@ -37,21 +37,19 @@
 #include "Descriptors/FlatnessD.hpp"
 #include "Descriptors/OnsetDetectionD.hpp"
 
-#include "ParameterFunctions.h"
+#include "Parameters/ParameterFunctions.h"
 
-#include "Parameters/Dome/src/AzimuthDome.hpp"
-#include "Parameters/Dome/src/ElevationDome.hpp"
-#include "Parameters/Dome/src/HspanDome.hpp"
-#include "Parameters/Dome/src/VspanDome.hpp"
-#include "Parameters/Cube/src/XCube.hpp"
-#include "Parameters/Cube/src/YCube.hpp"
-#include "Parameters/Cube/src/ZCube.hpp"
-#include "Parameters/Cube/src/HspanCube.hpp"
-#include "Parameters/Cube/src/VspanCube.hpp"
+#include "Parameters/AzimuthDome.hpp"
+#include "Parameters/ElevationDome.hpp"
+#include "Parameters/HspanDome.hpp"
+#include "Parameters/VspanDome.hpp"
+#include "Parameters/XCube.hpp"
+#include "Parameters/YCube.hpp"
+#include "Parameters/ZCube.hpp"
+#include "Parameters/HspanCube.hpp"
+#include "Parameters/VspanCube.hpp"
 
 //==============================================================================
-/*Clean version code reference
-*/
 class AudioDescriptorsAudioProcessorEditor;
 
 enum class SpatMode{ dome, cube };

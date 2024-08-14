@@ -23,7 +23,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Source/PluginProcessor.h"
+#include "../../PluginProcessor.h"
 #include "../../PanelView.h"
 
 

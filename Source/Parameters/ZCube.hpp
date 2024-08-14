@@ -21,19 +21,16 @@
 //==============================================================================
 
 #pragma once
-#include <JuceHeader.h>
-#include <cmath>
-#include "../../SpatialParameter.h"
-#include "../Source/Constants.h"
+#include "SpatialParameter.h"
 
-class VspanCube : public SpatialParameter
+class ZCube : public SpatialParameter
 {
 public:
-	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
-		parameterName = juce::String("Z Span");
-		paramID = ParameterID::elevationspan;
+		parameterName = juce::String("Z");
+		paramID = ParameterID::z;
 		setParametersState();
 	}
 
@@ -80,13 +77,11 @@ public:
 		}
 
 		double clipMax = 0.999999;
-		int multiplier = 100;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
 		res = clip * inputRange;
-		res = res * multiplier ;
-		res -= offset * 100;
+		res -= offset;
 
 		if (std::isnan(res)) {
 			res = 0.0;
@@ -95,5 +90,5 @@ public:
 
 private:
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(VspanCube)
+	JUCE_LEAK_DETECTOR(ZCube)
 };

@@ -21,10 +21,7 @@
 //==============================================================================
 
 #pragma once
-#include <JuceHeader.h>
-#include <cmath>
-#include "../../SpatialParameter.h"
-#include "../Source/Constants.h"
+#include "SpatialParameter.h"
 
 class HspanCube : public SpatialParameter
 {

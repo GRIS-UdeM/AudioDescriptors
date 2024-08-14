@@ -19,43 +19,33 @@
       <FILE id="iMvafm" name="StatsD.hpp" compile="0" resource="0" file="Source/Descriptors/StatsD.hpp"/>
     </GROUP>
     <GROUP id="{9A9777FC-9875-8829-230D-A5E1F4D1C1C7}" name="Parameters">
-      <FILE id="dDQVpx" name="ParameterFunctions.h" compile="0" resource="0"
-            file="Source/ParameterFunctions.h"/>
-      <FILE id="DJQ2ky" name="SpatialParameter.h" compile="0" resource="0"
-            file="Source/SpatialParameter.h"/>
-      <FILE id="GUli4U" name="SpatialParameter.cpp" compile="1" resource="0"
-            file="Source/SpatialParameter.cpp"/>
-      <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
-      <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
-      <GROUP id="{688B671C-E3DE-2F6F-52A4-0EC5A70926D1}" name="Cube">
-        <GROUP id="{C29E186A-6AEF-69C1-36E4-0149F955BA88}" name="src">
-          <FILE id="rtvPPI" name="HspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/HspanCube.hpp"/>
-          <FILE id="MwvUUb" name="VspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/VspanCube.hpp"/>
-          <FILE id="nYxZrO" name="XCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/XCube.hpp"/>
-          <FILE id="HJXGgX" name="YCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/YCube.hpp"/>
-          <FILE id="xBJOrn" name="ZCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/ZCube.hpp"/>
-        </GROUP>
-        <GROUP id="{052B5023-2877-4A0F-BA82-371CEFCCF530}" name="View">
-          <FILE id="ODCBOS" name="CubeView.cpp" compile="1" resource="0" file="Source/Parameters/Cube/View/CubeView.cpp"/>
-          <FILE id="Ouhq6B" name="CubeView.h" compile="0" resource="0" file="Source/Parameters/Cube/View/CubeView.h"/>
-        </GROUP>
+      <GROUP id="{A978A92D-39D2-91C8-0C02-B7DFC15CA635}" name="View">
+        <FILE id="f2rPPa" name="CubeView.cpp" compile="1" resource="0" file="Source/Parameters/View/CubeView.cpp"/>
+        <FILE id="YeDtFU" name="CubeView.h" compile="0" resource="0" file="Source/Parameters/View/CubeView.h"/>
+        <FILE id="P20CX4" name="DomeView.cpp" compile="1" resource="0" file="Source/Parameters/View/DomeView.cpp"/>
+        <FILE id="M76s4g" name="DomeView.h" compile="0" resource="0" file="Source/Parameters/View/DomeView.h"/>
       </GROUP>
-      <GROUP id="{DCD79291-6E57-746B-81A9-4A2941D32978}" name="Dome">
-        <GROUP id="{6F36A96E-0787-AD56-D0DE-862D8D0DCE7D}" name="src">
-          <FILE id="Gr1Hab" name="AzimuthDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/AzimuthDome.hpp"/>
-          <FILE id="OEtMNf" name="ElevationDome.hpp" compile="0" resource="0"
-                file="Source/Parameters/Dome/src/ElevationDome.hpp"/>
-          <FILE id="ruDykT" name="HspanDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/HspanDome.hpp"/>
-          <FILE id="rY7kUM" name="VspanDome.hpp" compile="0" resource="0" file="Source/Parameters/Dome/src/VspanDome.hpp"/>
-        </GROUP>
-        <GROUP id="{176A31CA-D14F-CBF3-4A79-FE62B914C160}" name="View">
-          <FILE id="nc9inJ" name="DomeView.cpp" compile="1" resource="0" file="Source/Parameters/Dome/View/DomeView.cpp"/>
-          <FILE id="EeBaAq" name="DomeView.h" compile="0" resource="0" file="Source/Parameters/Dome/View/DomeView.h"/>
-        </GROUP>
-      </GROUP>
-      <FILE id="AusRG7" name="Smooth.hpp" compile="0" resource="0" file="Source/Parameters/Smooth.hpp"/>
+      <FILE id="VDI70e" name="AzimuthDome.hpp" compile="0" resource="0" file="Source/Parameters/AzimuthDome.hpp"/>
+      <FILE id="AjsN1K" name="ElevationDome.hpp" compile="0" resource="0"
+            file="Source/Parameters/ElevationDome.hpp"/>
+      <FILE id="qSfhym" name="HspanCube.hpp" compile="0" resource="0" file="Source/Parameters/HspanCube.hpp"/>
+      <FILE id="XrwgF0" name="HspanDome.hpp" compile="0" resource="0" file="Source/Parameters/HspanDome.hpp"/>
+      <FILE id="PGiP2M" name="ParameterFunctions.h" compile="0" resource="0"
+            file="Source/Parameters/ParameterFunctions.h"/>
+      <FILE id="iL692D" name="Smooth.hpp" compile="0" resource="0" file="Source/Parameters/Smooth.hpp"/>
+      <FILE id="DoGdWx" name="SpatialParameter.cpp" compile="1" resource="0"
+            file="Source/Parameters/SpatialParameter.cpp"/>
+      <FILE id="BlnvP8" name="SpatialParameter.h" compile="0" resource="0"
+            file="Source/Parameters/SpatialParameter.h"/>
+      <FILE id="MRAMpl" name="VspanCube.hpp" compile="0" resource="0" file="Source/Parameters/VspanCube.hpp"/>
+      <FILE id="JeTOKm" name="VspanDome.hpp" compile="0" resource="0" file="Source/Parameters/VspanDome.hpp"/>
+      <FILE id="xKFSbS" name="XCube.hpp" compile="0" resource="0" file="Source/Parameters/XCube.hpp"/>
+      <FILE id="qStfTB" name="YCube.hpp" compile="0" resource="0" file="Source/Parameters/YCube.hpp"/>
+      <FILE id="VHl9T5" name="ZCube.hpp" compile="0" resource="0" file="Source/Parameters/ZCube.hpp"/>
     </GROUP>
     <GROUP id="{29F41BE7-848D-EDE9-766F-23D6C0F9C7B2}" name="Source">
+      <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
+      <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
       <FILE id="oGragP" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
       <FILE id="aPHWDa" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

@@ -22,17 +22,16 @@
 
 #pragma once
 
-#include <cmath>
-#include "../../SpatialParameter.h"
+#include "SpatialParameter.h"
 
-class ElevationDome : public SpatialParameter
+class VspanDome : public SpatialParameter
 {
 public:
-	ElevationDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	VspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
-		parameterName = juce::String("Elevation");
-		paramID = ParameterID::elevation;
+		parameterName = juce::String("Elevation Span");
+		paramID = ParameterID::elevationspan;
 		setParametersState();
 	}
 
@@ -77,14 +76,14 @@ public:
 		default:
 			break;
 		}
-
+		
 		double clipMax = 0.999999;
-		int multiplier = 90;
+		int multiplier = 100;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
 		res = clip * inputRange * multiplier;
-		res -= offset;
+		res -= offset * 100;
 
 		if (std::isnan(res)) {
 			res = 0.0;
@@ -93,5 +92,5 @@ public:
 
 private:
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(ElevationDome)
+	JUCE_LEAK_DETECTOR(VspanDome)
 };

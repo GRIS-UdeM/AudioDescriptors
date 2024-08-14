@@ -21,18 +21,17 @@
 //==============================================================================
 
 #pragma once
-#include <JuceHeader.h>
-#include <cmath>
-#include "../../SpatialParameter.h"
 
-class YCube : public SpatialParameter
+#include "SpatialParameter.h"
+
+class HspanDome : public SpatialParameter
 {
 public:
-	YCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	HspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
-		parameterName = juce::String("Y");
-		paramID = ParameterID::y;
+		parameterName = juce::String("Azimuth Span");
+		paramID = ParameterID::azimuthspan;
 		setParametersState();
 	}
 
@@ -72,12 +71,11 @@ public:
 		}
 
 		double clipMax = 0.999999;
+		int multiplier = 100;
 
 		double clip = juce::jlimit(0.0, clipMax, smooth);
 		double inputRange = range * 0.01;
-		res = clip * inputRange;
-		res = juce::jlimit(-1.0, 1.0, res);
-		res = juce::jmap(res, -1.0, 1.0, -1.66, 1.66);
+		res = clip * inputRange * multiplier;
 
 		if (std::isnan(res)) {
 			res = 0.0;
@@ -86,5 +84,5 @@ public:
 
 private:
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(YCube)
+	JUCE_LEAK_DETECTOR(HspanDome)
 };
