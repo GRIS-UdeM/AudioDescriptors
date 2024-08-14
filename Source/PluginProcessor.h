@@ -38,12 +38,16 @@
 #include "Descriptors/OnsetDetectionD.hpp"
 
 #include "ParameterFunctions.h"
-#include "Parameters/Cube/src/CubeSettings.hpp"
 
 #include "Parameters/Dome/src/AzimuthDome.hpp"
 #include "Parameters/Dome/src/ElevationDome.hpp"
 #include "Parameters/Dome/src/HspanDome.hpp"
 #include "Parameters/Dome/src/VspanDome.hpp"
+#include "Parameters/Cube/src/XCube.hpp"
+#include "Parameters/Cube/src/YCube.hpp"
+#include "Parameters/Cube/src/ZCube.hpp"
+#include "Parameters/Cube/src/HspanCube.hpp"
+#include "Parameters/Cube/src/VspanCube.hpp"
 
 //==============================================================================
 /*Clean version code reference
@@ -53,7 +57,6 @@ class AudioDescriptorsAudioProcessorEditor;
 enum class SpatMode{ dome, cube };
 
 class AudioDescriptorsAudioProcessor : public juce::AudioProcessor
-    , private juce::Timer
 {
 public:
     //==============================================================================
@@ -94,9 +97,6 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
     //==============================================================================
-    void timerCallback() override;
-
-    //==============================================================================
     [[nodiscard]] bool createOscConnection(juce::String const& address, int oscPort);
     [[nodiscard]] bool disconnectOsc();
     [[nodiscard]] bool isOscConnected() const { return mOscConnected; }
@@ -124,8 +124,6 @@ public:
     void setOnsetDetectionMaxTime(ParameterID paramID, const double maxTime);
     void setOnsetDetectionFromClick(ParameterID paramID, const double timeValue);
 
-    CubeSettings& getCubeSettings();
-
     juce::String& getCurrentOscAddress();
     void setCurrentOscAddress(juce::String& address);
     int getCurrentOscPort();
@@ -141,6 +139,11 @@ public:
     ElevationDome& getElevationDome();
     HspanDome& getHSpanDome();
     VspanDome& getVSpanDome();
+    XCube& getXCube();
+    YCube& getYCube();
+    ZCube& getZCube();
+    HspanCube& getHSpanCube();
+    VspanCube& getVSpanCube();
 
     bool shouldProcessDomeSpectralAnalysis();
     bool shouldProcessDomeLoudnessAnalysis();
@@ -149,6 +152,13 @@ public:
     bool shouldProcessDomeSpreadAnalysis();
     bool shouldProcessDomeNoiseAnalysis();
     bool shouldProcessDomeOnsetDetectionAnalysis();
+    bool shouldProcessCubeSpectralAnalysis();
+    bool shouldProcessCubeLoudnessAnalysis();
+    bool shouldProcessCubePitchAnalysis();
+    bool shouldProcessCubeCentroidAnalysis();
+    bool shouldProcessCubeSpreadAnalysis();
+    bool shouldProcessCubeNoiseAnalysis();
+    bool shouldProcessCubeOnsetDetectionAnalysis();
 
 private:
     //==============================================================================
@@ -185,6 +195,7 @@ private:
     double mVspanCubeValue{};
 
     std::array<double*, 4> mSpatParametersDomeValueRefs; // just an array of references to dome spatial parameters values
+    std::array<double*, 5> mSpatParametersCubeValueRefs; // just an array of references to cube spatial parameters values
 
     StatsD mStats;
     ShapeD mShape;
@@ -201,7 +212,10 @@ private:
     OnsetDetectionD mOnsetDetectionY;
     OnsetDetectionD mOnsetDetectionZ;
 
-    std::array<OnsetDetectionD*, 4> mDomeOnsetDetectionRefs; // just an array of references to OnsetDetection objs
+    // Just an arrays of references to OnsetDetection objs. We use the same span OnsetDetection
+    // objs in both dome and cube modes
+    std::array<OnsetDetectionD*, 4> mDomeOnsetDetectionRefs;
+    std::array<OnsetDetectionD*, 5> mCubeOnsetDetectionRefs;
 
     ParameterFunctions mParamFunctions;
 
@@ -210,8 +224,12 @@ private:
     HspanDome mHSpanDome;
     VspanDome mVSpanDome;
     std::array<SpatialParameter*, 4> mSpatParametersDomeRefs; // just an array of references to dome spatial parameters
-
-    CubeSettings cubeSettings;
+    XCube mXCube;
+    YCube mYCube;
+    ZCube mZCube;
+    HspanCube mHSpanCube;
+    VspanCube mVSpanCube;
+    std::array<SpatialParameter*, 5> mSpatParametersCubeRefs; // just an array of references to cube spatial parameters
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDescriptorsAudioProcessor)

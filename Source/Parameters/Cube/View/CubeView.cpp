@@ -25,11 +25,11 @@
 
 CubeView::CubeView(AudioDescriptorsAudioProcessor& processor)
     : mAudioProcessor(processor)
-    , mXPanel(processor, processor.getCubeSettings().getXCube())
-    , mYPanel(processor, processor.getCubeSettings().getYCube())
-    , mZPanel(processor, processor.getCubeSettings().getZCube())
-    , mHSpanPanel(processor, processor.getCubeSettings().getHSpanCube())
-    , mVSpanPanel(processor, processor.getCubeSettings().getVSpanCube())
+    , mXPanel(processor, processor.getXCube())
+    , mYPanel(processor, processor.getYCube())
+    , mZPanel(processor, processor.getZCube())
+    , mHSpanPanel(processor, processor.getHSpanCube())
+    , mVSpanPanel(processor, processor.getVSpanCube())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.

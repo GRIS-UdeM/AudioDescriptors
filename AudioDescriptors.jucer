@@ -28,8 +28,6 @@
       <FILE id="lAFPPN" name="PanelView.cpp" compile="1" resource="0" file="Source/PanelView.cpp"/>
       <FILE id="spLoaF" name="PanelView.h" compile="0" resource="0" file="Source/PanelView.h"/>
       <GROUP id="{688B671C-E3DE-2F6F-52A4-0EC5A70926D1}" name="Cube">
-        <FILE id="sU9KQR" name="CubeSettings.hpp" compile="0" resource="0"
-              file="Source/Parameters/Cube/src/CubeSettings.hpp"/>
         <GROUP id="{C29E186A-6AEF-69C1-36E4-0149F955BA88}" name="src">
           <FILE id="rtvPPI" name="HspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/HspanCube.hpp"/>
           <FILE id="MwvUUb" name="VspanCube.hpp" compile="0" resource="0" file="Source/Parameters/Cube/src/VspanCube.hpp"/>

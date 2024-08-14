@@ -40,14 +40,21 @@ AudioDescriptorsAudioProcessor::AudioDescriptorsAudioProcessor()
 	)
 #endif
 	, mAudioProcessorValueTreeState(*this, nullptr, juce::Identifier(JucePlugin_Name), {})
-	, cubeSettings(mAudioProcessorValueTreeState, mParamFunctions)
 	, mAzimuthDome(mAudioProcessorValueTreeState, mParamFunctions)
 	, mElevationDome(mAudioProcessorValueTreeState, mParamFunctions)
 	, mHSpanDome(mAudioProcessorValueTreeState, mParamFunctions)
 	, mVSpanDome(mAudioProcessorValueTreeState, mParamFunctions)
+	, mXCube(mAudioProcessorValueTreeState, mParamFunctions)
+	, mYCube(mAudioProcessorValueTreeState, mParamFunctions)
+	, mZCube(mAudioProcessorValueTreeState, mParamFunctions)
+	, mHSpanCube(mAudioProcessorValueTreeState, mParamFunctions)
+	, mVSpanCube(mAudioProcessorValueTreeState, mParamFunctions)
 	, mSpatParametersDomeRefs{ &mAzimuthDome, &mElevationDome, &mHSpanDome, &mVSpanDome }
+	, mSpatParametersCubeRefs{ &mXCube, &mYCube, &mZCube, &mHSpanCube, &mVSpanCube }
 	, mSpatParametersDomeValueRefs{ &mAzimuthDomeValue, &mElevationDomeValue, &mHspanDomeValue, &mVspanDomeValue }
+	, mSpatParametersCubeValueRefs{ &mXCubeValue, &mYCubeValue, &mZCubeValue, &mHspanCubeValue, &mVspanCubeValue }
 	, mDomeOnsetDetectionRefs{ &mOnsetDetectionAzimuth , &mOnsetDetectionElevation, &mOnsetDetectionHSpan, &mOnsetDetectionVSpan }
+	, mCubeOnsetDetectionRefs{ &mOnsetDetectionX , &mOnsetDetectionY, &mOnsetDetectionZ, &mOnsetDetectionHSpan, &mOnsetDetectionVSpan }
 {
 	//startTimerHz(50);
 	DBG("Fluid v" << fluid::client::fluidVersion());
@@ -266,7 +273,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 	paddedSpectral(mShape.paddedValueSpectral(inSpectral)) <<= inSpectral;
 	RealVector  shapeStats;
 
-	if (shouldProcessDomeLoudnessAnalysis() || cubeSettings.checkConditionForLoudnessAnalyse()) {
+	if (shouldProcessDomeLoudnessAnalysis() || shouldProcessCubeLoudnessAnalysis()) {
 		for (int i = 0; i < nFramesLoudness; i++) {
 			RealVector loudnessDesc(2);
 			RealVectorView windowLoudness = mLoudness.calculateWindowLoudness(paddedLoudness, i);
@@ -286,34 +293,15 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 		else {
 			loudnessValue = mParamFunctions.DbToGain(loudnessValue);
-			if (cubeSettings.checkConditionLoudnessX()) {
-				//DBG("--------------X Loudness -------------------");
-				processCubeParameter(cubeSettings.getXCube(), mLoudness.getID(), loudnessValue);
-				mXCubeValue = cubeSettings.getXCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionLoudnessY()) {
-				//DBG("--------------Y Loudness -------------------");
-				processCubeParameter(cubeSettings.getYCube(), mLoudness.getID(), loudnessValue);
-				mYCubeValue = cubeSettings.getYCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionLoudnessZ()) {
-				//DBG("--------------Z Loudness -------------------");
-				processCubeParameter(cubeSettings.getZCube(), mLoudness.getID(), loudnessValue);
-				mZCubeValue = cubeSettings.getZCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionLoudnessHSpan()) {
-				//DBG("--------------HSpan Loudness -------------------");
-				processCubeParameter(cubeSettings.getHSpanCube(), mLoudness.getID(), loudnessValue);
-				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionLoudnessVSpan()) {
-				//DBG("--------------VSpan Loudness -------------------");
-				processCubeParameter(cubeSettings.getVSpanCube(), mLoudness.getID(), loudnessValue);
-				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+				if (mSpatParametersCubeRefs[i]->shouldProcessLoudnessAnalysis()) {
+					mSpatParametersCubeRefs[i]->process(mLoudness.getID(), loudnessValue);
+					*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+				}
 			}
 		}
 	}
-	if (shouldProcessDomePitchAnalysis() || cubeSettings.checkConditionForPitchAnalyse()) {
+	if (shouldProcessDomePitchAnalysis() || shouldProcessCubePitchAnalysis()) {
 		ComplexVector framePitch;
 		RealVector magnitudePitch;
 		RealVector melsPitch;
@@ -341,35 +329,16 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 		else {
 			pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
-			if (cubeSettings.checkConditionPitchX()) {
-				//DBG("--------------X Pitch -------------------");
-				processCubeParameter(cubeSettings.getXCube(), mPitch.getID(), pitchValue);
-				mXCubeValue = cubeSettings.getXCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionPitchY()) {
-				//DBG("--------------Y Pitch -------------------");
-				processCubeParameter(cubeSettings.getYCube(), mPitch.getID(), pitchValue);
-				mYCubeValue = cubeSettings.getYCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionPitchZ()) {
-				//DBG("--------------Z Pitch -------------------");
-				processCubeParameter(cubeSettings.getZCube(), mPitch.getID(), pitchValue);
-				mZCubeValue = cubeSettings.getZCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionPitchHSpan()) {
-				//DBG("--------------HSpan Pitch -------------------");
-				processCubeParameter(cubeSettings.getHSpanCube(), mPitch.getID(), pitchValue);
-				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionPitchVSpan()) {
-				//DBG("--------------VSpan Pitch -------------------");
-				processCubeParameter(cubeSettings.getVSpanCube(), mPitch.getID(), pitchValue);
-				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+				if (mSpatParametersCubeRefs[i]->shouldProcessPitchAnalysis()) {
+					mSpatParametersCubeRefs[i]->process(mPitch.getID(), pitchValue);
+					*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+				}
 			}
 		}
 	}
 	if ((mSpatMode == SpatMode::dome && shouldProcessDomeSpectralAnalysis()) ||
-		(mSpatMode == SpatMode::cube && cubeSettings.checkConditionNeedSpectralAnalyse())) {
+		(mSpatMode == SpatMode::cube && shouldProcessCubeSpectralAnalysis())) {
 		ComplexVector  frameSpectral;
 		RealVector     magnitudeSpectral;
 		for (int y = 0; y < nFramesSpectral; y++) {
@@ -436,90 +405,33 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			flatnessValue = mParamFunctions.DbToGain(flatnessValue);
 			flatnessValue = mParamFunctions.zmap(flatnessValue, 0.0, 0.5);
 			flatnessValue = mParamFunctions.power(flatnessValue);
-			if (cubeSettings.checkConditionForCentroidAnalyse()) {
-				if (cubeSettings.checkConditionCentroidX()) {
-					//DBG("--------------X Centroid -------------------");
-					processCubeParameter(cubeSettings.getXCube(), mCentroid.getID(), centroidValue);
-					mXCubeValue = cubeSettings.getXCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionCentroidY()) {
-					//DBG("--------------Y Centroid -------------------");
-					processCubeParameter(cubeSettings.getYCube(), mCentroid.getID(), centroidValue);
-					mYCubeValue = cubeSettings.getYCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionCentroidZ()) {
-					//DBG("--------------Z Centroid -------------------");
-					processCubeParameter(cubeSettings.getZCube(), mCentroid.getID(), centroidValue);
-					mZCubeValue = cubeSettings.getZCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionCentroidHSpan()) {
-					//DBG("--------------HSpan Centroid -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), mCentroid.getID(), centroidValue);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionCentroidVSpan()) {
-					//DBG("--------------VSpan Centroid -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), mCentroid.getID(), centroidValue);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			if (shouldProcessCubeCentroidAnalysis()) {
+				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+					if (mSpatParametersCubeRefs[i]->shouldProcessCentroidAnalysis()) {
+						mSpatParametersCubeRefs[i]->process(mCentroid.getID(), centroidValue);
+						*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+					}
 				}
 			}
-			if (cubeSettings.checkConditionForSpreadAnalyse()) {
-				if (cubeSettings.checkConditionSpreadX()) {
-					//DBG("--------------X Spread -------------------");
-					processCubeParameter(cubeSettings.getXCube(), mSpread.getID(), zmap);
-					mXCubeValue = cubeSettings.getXCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionSpreadY()) {
-					//DBG("--------------Y Spread -------------------");
-					processCubeParameter(cubeSettings.getYCube(), mSpread.getID(), zmap);
-					mYCubeValue = cubeSettings.getYCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionSpreadZ()) {
-					//DBG("--------------Z Spread -------------------");
-					processCubeParameter(cubeSettings.getZCube(), mSpread.getID(), zmap);
-					mZCubeValue = cubeSettings.getZCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionSpreadHSpan()) {
-					//DBG("--------------HSpan Spread -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), mSpread.getID(), zmap);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionSpreadVSpan()) {
-					//DBG("--------------VSpan Spread -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), mSpread.getID(), zmap);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			if (shouldProcessCubeSpreadAnalysis()) {
+				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+					if (mSpatParametersCubeRefs[i]->shouldProcessSpreadAnalysis()) {
+						mSpatParametersCubeRefs[i]->process(mSpread.getID(), zmap);
+						*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+					}
 				}
 			}
-			if (cubeSettings.checkConditionForNoiseAnalyse()) {
-				if (cubeSettings.checkConditionNoiseX()) {
-					//DBG("--------------X Noise -------------------");
-					processCubeParameter(cubeSettings.getXCube(), mFlatness.getID(), flatnessValue);
-					mXCubeValue = cubeSettings.getXCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionNoiseY()) {
-					//DBG("--------------Y Noise -------------------");
-					processCubeParameter(cubeSettings.getYCube(), mFlatness.getID(), flatnessValue);
-					mYCubeValue = cubeSettings.getYCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionNoiseZ()) {
-					//DBG("--------------Z Noise -------------------");
-					processCubeParameter(cubeSettings.getZCube(), mFlatness.getID(), flatnessValue);
-					mZCubeValue = cubeSettings.getZCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionNoiseHSpan()) {
-					//DBG("--------------HSpan Noise -------------------");
-					processCubeParameter(cubeSettings.getHSpanCube(), mFlatness.getID(), flatnessValue);
-					mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-				}
-				if (cubeSettings.checkConditionNoiseVSpan()) {
-					//DBG("--------------VSpan Noise -------------------");
-					processCubeParameter(cubeSettings.getVSpanCube(), mFlatness.getID(), flatnessValue);
-					mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			if (shouldProcessCubeNoiseAnalysis()) {
+				for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+					if (mSpatParametersCubeRefs[i]->shouldProcessNoiseAnalysis()) {
+						mSpatParametersCubeRefs[i]->process(mFlatness.getID(), flatnessValue);
+						*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+					}
 				}
 			}
 		}
 	}
-	if (shouldProcessDomeOnsetDetectionAnalysis() || cubeSettings.checkConditionOnsetDetectionAnalyse()) {
+	if (shouldProcessDomeOnsetDetectionAnalysis() || shouldProcessCubeOnsetDetectionAnalysis()) {
 		if (getModeState() == SpatMode::dome) {
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 				if (mSpatParametersDomeRefs[i]->shouldProcessOnsetDetectionAnalysis()) {
@@ -530,40 +442,12 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			}
 		}
 		else {
-			if (cubeSettings.checkConditionOnsetDetectionX()) {
-				//DBG("--------------X Iterations Speed-----------------");
-				mOnsetDetectionX.process(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionX.getValue() };
-				processCubeParameter(cubeSettings.getXCube(), mOnsetDetectionX.getID(), onsetDetectionValue);
-				mXCubeValue = cubeSettings.getXCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionOnsetDetectionY()) {
-				//DBG("--------------Y Iterations Speed-----------------");
-				mOnsetDetectionY.process(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionY.getValue() };
-				processCubeParameter(cubeSettings.getYCube(), mOnsetDetectionY.getID(), onsetDetectionValue);
-				mYCubeValue = cubeSettings.getYCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionOnsetDetectionZ()) {
-				//DBG("--------------Z Iterations Speed-----------------");
-				mOnsetDetectionZ.process(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionZ.getValue() };
-				processCubeParameter(cubeSettings.getZCube(), mOnsetDetectionZ.getID(), onsetDetectionValue);
-				mZCubeValue = cubeSettings.getZCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionOnsetDetectionHSpan()) {
-				//DBG("--------------HSpan Iterations Speed-----------------");
-				mOnsetDetectionHSpan.process(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionHSpan.getValue() };
-				processCubeParameter(cubeSettings.getHSpanCube(), mOnsetDetectionHSpan.getID(), onsetDetectionValue);
-				mHspanCubeValue = cubeSettings.getHSpanCube().getDiffValue();
-			}
-			if (cubeSettings.checkConditionOnsetDetectionVSpan()) {
-				//DBG("--------------VSpan Iterations Speed-----------------");
-				mOnsetDetectionVSpan.process(mDescriptorsBuffer, mSampleRate, mBlockSize);
-				auto const onsetDetectionValue{ mOnsetDetectionVSpan.getValue() };
-				processCubeParameter(cubeSettings.getVSpanCube(), mOnsetDetectionVSpan.getID(), onsetDetectionValue);
-				mVspanCubeValue = cubeSettings.getVSpanCube().getDiffValue();
+			for (int i{}; i < mSpatParametersCubeRefs.size(); ++i) {
+				if (mSpatParametersCubeRefs[i]->shouldProcessOnsetDetectionAnalysis()) {
+					mCubeOnsetDetectionRefs[i]->process(mDescriptorsBuffer, mSampleRate, mBlockSize);
+					mSpatParametersCubeRefs[i]->process(mCubeOnsetDetectionRefs[i]->getID(), mCubeOnsetDetectionRefs[i]->getValue());
+					*mSpatParametersCubeValueRefs[i] = mSpatParametersCubeRefs[i]->getDiffValue();
+				}
 			}
 		}
 	}
@@ -623,7 +507,9 @@ void AudioDescriptorsAudioProcessor::setStateInformation(const void* data, int s
 			for (const auto& spatParam : mSpatParametersDomeRefs) {
 				spatParam->updateParameterState();
 			}
-			cubeSettings.updateCubeParametersState();
+			for (const auto& spatParam : mSpatParametersCubeRefs) {
+				spatParam->updateParameterState();
+			}
 
 			// global properties
 			juce::String spatMode{};
@@ -638,10 +524,6 @@ void AudioDescriptorsAudioProcessor::setStateInformation(const void* data, int s
 			mCurrentOscAddress = mAudioProcessorValueTreeState.state.getProperty({ juce::String("OSCAddress") }).toString();
 			mCurrentOscOutputPort = mAudioProcessorValueTreeState.state.getProperty({ juce::String("OSCPort") }).toString().getIntValue();
 		}
-}
-
-void AudioDescriptorsAudioProcessor::timerCallback()
-{
 }
 
 bool AudioDescriptorsAudioProcessor::createOscConnection(juce::String const& address, int oscPort)
@@ -937,11 +819,6 @@ void AudioDescriptorsAudioProcessor::processCubeParameter(SpatialParameter& para
 	parameter.process(descId, value);
 }
 
-///////////Get DomeSettings et getcubesettings////////////////
-CubeSettings& AudioDescriptorsAudioProcessor::getCubeSettings() {
-	return cubeSettings;
-}
-
 juce::String& AudioDescriptorsAudioProcessor::getCurrentOscAddress()
 {
 	return mCurrentOscAddress;
@@ -1002,49 +879,169 @@ VspanDome& AudioDescriptorsAudioProcessor::getVSpanDome()
 	return mVSpanDome;
 }
 
+XCube& AudioDescriptorsAudioProcessor::getXCube()
+{
+	return mXCube;
+}
+
+YCube& AudioDescriptorsAudioProcessor::getYCube()
+{
+	return mYCube;
+}
+
+ZCube& AudioDescriptorsAudioProcessor::getZCube()
+{
+	return mZCube;
+}
+
+HspanCube& AudioDescriptorsAudioProcessor::getHSpanCube()
+{
+	return mHSpanCube;
+}
+
+VspanCube& AudioDescriptorsAudioProcessor::getVSpanCube()
+{
+	return mVSpanCube;
+}
+
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpectralAnalysis()
 {
-	if (mAzimuthDome.needsSpectralAnalysis() || mElevationDome.needsSpectralAnalysis() || mHSpanDome.needsSpectralAnalysis()
-		|| mVSpanDome.needsSpectralAnalysis()) {
-		return true;
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->needsSpectralAnalysis()) {
+			return true;
+		}
 	}
 	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeLoudnessAnalysis()
 {
-	return mAzimuthDome.shouldProcessLoudnessAnalysis() || mElevationDome.shouldProcessLoudnessAnalysis()
-		|| mHSpanDome.shouldProcessLoudnessAnalysis() || mVSpanDome.shouldProcessLoudnessAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessLoudnessAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomePitchAnalysis()
 {
-	return mAzimuthDome.shouldProcessPitchAnalysis() || mElevationDome.shouldProcessPitchAnalysis()
-		|| mHSpanDome.shouldProcessPitchAnalysis() || mVSpanDome.shouldProcessPitchAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessPitchAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeCentroidAnalysis()
 {
-	return mAzimuthDome.shouldProcessCentroidAnalysis() || mElevationDome.shouldProcessCentroidAnalysis()
-		|| mHSpanDome.shouldProcessCentroidAnalysis() || mVSpanDome.shouldProcessCentroidAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessCentroidAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpreadAnalysis()
 {
-	return mAzimuthDome.shouldProcessSpreadAnalysis() || mElevationDome.shouldProcessSpreadAnalysis()
-		|| mHSpanDome.shouldProcessSpreadAnalysis() || mVSpanDome.shouldProcessSpreadAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessSpreadAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeNoiseAnalysis()
 {
-	return mAzimuthDome.shouldProcessNoiseAnalysis() || mElevationDome.shouldProcessNoiseAnalysis()
-		|| mHSpanDome.shouldProcessNoiseAnalysis() || mVSpanDome.shouldProcessNoiseAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessNoiseAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeOnsetDetectionAnalysis()
 {
-	return mAzimuthDome.shouldProcessOnsetDetectionAnalysis() || mElevationDome.shouldProcessOnsetDetectionAnalysis()
-		|| mHSpanDome.shouldProcessOnsetDetectionAnalysis() || mVSpanDome.shouldProcessOnsetDetectionAnalysis();
+	for (const auto& spatParam : mSpatParametersDomeRefs) {
+		if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpectralAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->needsSpectralAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeLoudnessAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessLoudnessAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubePitchAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessPitchAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeCentroidAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessCentroidAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpreadAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessSpreadAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeNoiseAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessNoiseAnalysis()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AudioDescriptorsAudioProcessor::shouldProcessCubeOnsetDetectionAnalysis()
+{
+	for (const auto& spatParam : mSpatParametersCubeRefs) {
+		if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 juce::String AudioDescriptorsAudioProcessor::getSpatModeToString()
