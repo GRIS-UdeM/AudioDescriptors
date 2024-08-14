@@ -22,6 +22,10 @@
 
 #pragma once
 
+#if JUCE_LINUX
+#include "../PCH.h"
+#endif
+
 #include <JuceHeader.h>
 #include <cmath>
 
