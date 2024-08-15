@@ -34,8 +34,8 @@ public:
 		mStft.reset(new fluid::algorithm::STFT{ mWindowSizeSpectral, mFftSizeSpectral, mHopSizeSpectral });
 	}
 
-	void mShapeProcess(fluid::RealVector& magnitude, fluid::RealVector& shapeDesc, double mSampleRate) {
-		mShape->processFrame(magnitude, shapeDesc, mSampleRate, static_cast<double>(mMinFreqSpectral), static_cast<double>(mMaxFreqSpectral), 0.95, true, true, fluid::FluidDefaultAllocator());
+	void shapeProcess(fluid::RealVector& magnitude, fluid::RealVector& shapeDesc, double sampleRate) {
+		mShape->processFrame(magnitude, shapeDesc, sampleRate, static_cast<double>(mMinFreqSpectral), static_cast<double>(mMaxFreqSpectral), 0.95, true, true, fluid::FluidDefaultAllocator());
 	}
 
 	fluid::algorithm::SpectralShape* getShape() const{
@@ -47,27 +47,27 @@ public:
 	}
 
 	//FONCTION POUR Spectral
-	fluid::RealVectorView calculateWindowSpectral(fluid::RealVector& padded, int& i) {
+	fluid::RealVectorView calculateWindow(fluid::RealVector& padded, int& i) {
 		return padded(fluid::Slice(i * mHopSizeSpectral, mWindowSizeSpectral));
 	}
 
-	fluid::RealVector calculatePaddedSpectral(fluid::RealVector in) {
+	fluid::RealVector calculatePadded(fluid::RealVector in) {
 		return in.size() + mWindowSizeSpectral + mHopSizeSpectral;
 	}
 
-	fluid::index calculateFramesSpectral(fluid::RealVector padded) {
+	fluid::index calculateFrames(fluid::RealVector padded) {
 		return static_cast<fluid::index>(floor((padded.size() - mWindowSizeSpectral) / mHopSizeSpectral));
 	}
 
-	fluid::Slice paddedValueSpectral(fluid::RealVector in) {
+	fluid::Slice paddedValue(fluid::RealVector in) {
 		return fluid::Slice(mHalfWindowSpectral, in.size());
 	}
 
-	void setFrameSpectral(fluid::ComplexVector& frame) {
+	void setFrame(fluid::ComplexVector& frame) {
 		frame.resize(mNBinsSpectral);
 	}
 
-	void setMagnitudeSpectral(fluid::RealVector& magnitude) {
+	void setMagnitude(fluid::RealVector& magnitude) {
 		magnitude.resize(mNBinsSpectral);
 	}
 
@@ -79,7 +79,7 @@ public:
 	}
 
 	// Second argument is output
-	void stftMagntiude(fluid::ComplexVector& frame, fluid::RealVector& magnitude) {
+	void stftMagnitude(fluid::ComplexVector& frame, fluid::RealVector& magnitude) {
 		mStft->magnitude(frame, magnitude);
 	}
 

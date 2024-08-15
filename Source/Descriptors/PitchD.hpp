@@ -76,38 +76,38 @@ public:
 	//	return mDescPitchConfidence;
 	//}
 
-	void mYinProcess(fluid::RealVector& magnitude, fluid::RealVector& pitch, double mSampleRate) {
+	void yinProcess(fluid::RealVector& magnitude, fluid::RealVector& pitch, double mSampleRate) {
 		mYin->processFrame(magnitude, pitch, static_cast<double>(mMinFreqPitch), static_cast<double>(mMaxFreqPitch), mSampleRate, fluid::FluidDefaultAllocator());
 	}
 
 	//FONCTION POUR LE PITCH
-	fluid::RealVectorView calculateWindowPitch(fluid::RealVector& padded, int& i) {
+	fluid::RealVectorView calculateWindow(fluid::RealVector& padded, int& i) {
 		return padded(fluid::Slice(i * mHopSizePitch, mWindowSizePitch));
 	}
 
-	fluid::RealVector calculatePaddedPitch(fluid::RealVector in) {
+	fluid::RealVector calculatePadded(fluid::RealVector in) {
 		return in.size() + mWindowSizePitch + mHopSizePitch;
 	}
 
-	fluid::index calculateFramesPitch(fluid::RealVector padded) {
+	fluid::index calculateFrames(fluid::RealVector padded) {
 		return static_cast<fluid::index>(floor((padded.size() - mWindowSizePitch) / mHopSizePitch));
 	}
 
-	fluid::Slice paddedValuePitch(fluid::RealVector in) {
+	fluid::Slice paddedValue(fluid::RealVector in) {
 		return fluid::Slice(mHalfWindowPitch, in.size());
 	}
 
-	void setFramePitch(fluid::ComplexVector& frame) {
+	void setFrame(fluid::ComplexVector& frame) {
 		frame.resize(mNBinsPitch);
 	}
 
-	void setMagnitudePitch(fluid::RealVector& magnitude) {
+	void setMagnitude(fluid::RealVector& magnitude) {
 		magnitude.resize(mNBinsPitch);
 	}
 
-	void setMelsPitch(fluid::RealVector& mels) {
-		mels.resize(mNBandsPitch);
-	}
+	//void setMels(fluid::RealVector& mels) {
+	//	mels.resize(mNBandsPitch);
+	//}
 
 	//==============================================================================
 	// Stft stuff
@@ -117,7 +117,7 @@ public:
 	}
 
 	// Second argument is output
-	void stftMagntiude(fluid::ComplexVector& frame, fluid::RealVector& magnitude) {
+	void stftMagnitude(fluid::ComplexVector& frame, fluid::RealVector& magnitude) {
 		mStft->magnitude(frame, magnitude);
 	}
 

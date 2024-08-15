@@ -244,45 +244,30 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 	auto* channelData = mDescriptorsBuffer.getReadPointer(0);
 
 	// FLUCOMA
-	RealVector inSpectral(mBlockSize);
-	RealVector inLoudness(mBlockSize);
-	RealVector inPitch(mBlockSize);
-
-	for (auto i = 0; i < mDescriptorsBuffer.getNumSamples(); ++i) {
-		inSpectral[i] = channelData[i];
-		inLoudness[i] = channelData[i];
-		inPitch[i] = channelData[i];
-	}
-
-	RealVector paddedLoudness = mLoudness.calculatePaddedLoudness(inLoudness);
-	fluid::index nFramesLoudness = mLoudness.calculateFramesLoudness(paddedLoudness);
-	RealMatrix loudnessMat(nFramesLoudness, 2);
-	std::fill(paddedLoudness.begin(), paddedLoudness.end(), 0);
-	paddedLoudness(mLoudness.paddedValueLoudness(inLoudness)) <<= inLoudness;
-
-	RealVector paddedPitch = mPitch.calculatePaddedPitch(inPitch);
-    fluid::index nFramesPitch = mPitch.calculateFramesPitch(paddedPitch);
-	RealMatrix pitchMat(nFramesPitch, 2);
-	std::fill(paddedPitch.begin(), paddedPitch.end(), 0);
-	paddedPitch(mPitch.paddedValuePitch(inPitch)) <<= inPitch;
-
-	RealVector paddedSpectral = mShape.calculatePaddedSpectral(inSpectral);
-    fluid::index nFramesSpectral = mShape.calculateFramesSpectral(paddedSpectral);
-	RealMatrix shapeMat(nFramesSpectral, 7);
-	std::fill(paddedSpectral.begin(), paddedSpectral.end(), 0);
-	paddedSpectral(mShape.paddedValueSpectral(inSpectral)) <<= inSpectral;
-	RealVector  shapeStats;
-
 	if (shouldProcessDomeLoudnessAnalysis() || shouldProcessCubeLoudnessAnalysis()) {
-		for (int i = 0; i < nFramesLoudness; i++) {
+		RealVector inLoudness(mBlockSize);
+
+		for (int i{}; i < mDescriptorsBuffer.getNumSamples(); ++i) {
+			inLoudness[i] = channelData[i];
+		}
+
+		RealVector paddedLoudness = mLoudness.calculatePadded(inLoudness);
+		fluid::index nFramesLoudness = mLoudness.calculateFrames(paddedLoudness);
+		RealMatrix loudnessMat(nFramesLoudness, 2);
+		std::fill(paddedLoudness.begin(), paddedLoudness.end(), 0);
+		paddedLoudness(mLoudness.paddedValue(inLoudness)) <<= inLoudness;
+
+		for (int i{}; i < nFramesLoudness; i++) {
 			RealVector loudnessDesc(2);
-			RealVectorView windowLoudness = mLoudness.calculateWindowLoudness(paddedLoudness, i);
-			mLoudness.mLoudnessProcess(windowLoudness, loudnessDesc);
+			RealVectorView windowLoudness = mLoudness.calculateWindow(paddedLoudness, i);
+			mLoudness.loudnessProcess(windowLoudness, loudnessDesc);
 			loudnessMat.row(i) <<= loudnessDesc;
 		}
+
 		mLoudness.calculate(loudnessMat, *mStats.getStats());
 		double loudnessValue = mLoudness.getValue();
 		loudnessValue = juce::Decibels::decibelsToGain(loudnessValue);
+
 		if (getModeState() == SpatMode::dome) {
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 				if (mSpatParametersDomeRefs[i]->shouldProcessLoudnessAnalysis()) {
@@ -302,23 +287,36 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 	}
 
 	if (shouldProcessDomePitchAnalysis() || shouldProcessCubePitchAnalysis()) {
+		RealVector inPitch(mBlockSize);
+
+		for (int i{}; i < mDescriptorsBuffer.getNumSamples(); ++i) {
+			inPitch[i] = channelData[i];
+		}
+
+		RealVector paddedPitch = mPitch.calculatePadded(inPitch);
+		fluid::index nFramesPitch = mPitch.calculateFrames(paddedPitch);
+		RealMatrix pitchMat(nFramesPitch, 2);
+		std::fill(paddedPitch.begin(), paddedPitch.end(), 0);
+		paddedPitch(mPitch.paddedValue(inPitch)) <<= inPitch;
+
 		ComplexVector framePitch;
 		RealVector magnitudePitch;
-		RealVector melsPitch;
-		for (int j = 0; j < nFramesPitch; j++) {
-			mPitch.setFramePitch(framePitch);
-			mPitch.setMagnitudePitch(magnitudePitch);
+		for (int i{}; i < nFramesPitch; i++) {
+			mPitch.setFrame(framePitch);
+			mPitch.setMagnitude(magnitudePitch);
 			RealVector     pitch(2);
-			RealVectorView windowPitch = mPitch.calculateWindowPitch(paddedPitch, j);
+			RealVectorView windowPitch = mPitch.calculateWindow(paddedPitch, i);
 
 			mPitch.stftProcess(windowPitch, framePitch);
-			mPitch.stftMagntiude(framePitch, magnitudePitch);
-			mPitch.mYinProcess(magnitudePitch, pitch, mSampleRate);
-			pitchMat.row(j) <<= pitch;
+			mPitch.stftMagnitude(framePitch, magnitudePitch);
+			mPitch.yinProcess(magnitudePitch, pitch, mSampleRate);
+			pitchMat.row(i) <<= pitch;
 		}
+
 		mPitch.calculate(pitchMat, *mStats.getStats());
 		double pitchValue = mPitch.getValue();
 		pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
+
 		if (getModeState() == SpatMode::dome) {
 			for (int i{}; i < mSpatParametersDomeRefs.size(); ++i) {
 				if (mSpatParametersDomeRefs[i]->shouldProcessPitchAnalysis()) {
@@ -337,19 +335,31 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 	}
 
-	if ((mSpatMode == SpatMode::dome && shouldProcessDomeSpectralAnalysis()) ||
-		(mSpatMode == SpatMode::cube && shouldProcessCubeSpectralAnalysis())) {
+	if (shouldProcessDomeSpectralAnalysis() || shouldProcessCubeSpectralAnalysis()) {
+		RealVector inSpectral(mBlockSize);
+
+		for (int i{}; i < mDescriptorsBuffer.getNumSamples(); ++i) {
+			inSpectral[i] = channelData[i];
+		}
+
+		RealVector paddedSpectral = mShape.calculatePadded(inSpectral);
+		fluid::index nFramesSpectral = mShape.calculateFrames(paddedSpectral);
+		RealMatrix shapeMat(nFramesSpectral, 7);
+		std::fill(paddedSpectral.begin(), paddedSpectral.end(), 0);
+		paddedSpectral(mShape.paddedValue(inSpectral)) <<= inSpectral;
+		RealVector  shapeStats;
+
 		ComplexVector  frameSpectral;
 		RealVector     magnitudeSpectral;
-		for (int y = 0; y < nFramesSpectral; y++) {
-			mShape.setFrameSpectral(frameSpectral);
-			mShape.setMagnitudeSpectral(magnitudeSpectral);
+		for (int i{}; i < nFramesSpectral; i++) {
+			mShape.setFrame(frameSpectral);
+			mShape.setMagnitude(magnitudeSpectral);
 			RealVector     shapeDesc(7);
-			RealVectorView windowSpectral = mShape.calculateWindowSpectral(paddedSpectral, y);
+			RealVectorView windowSpectral = mShape.calculateWindow(paddedSpectral, i);
 			mShape.stftProcess(windowSpectral, frameSpectral);
-			mShape.stftMagntiude(frameSpectral, magnitudeSpectral);
-			mShape.mShapeProcess(magnitudeSpectral, shapeDesc, mSampleRate);
-			shapeMat.row(y) <<= shapeDesc;
+			mShape.stftMagnitude(frameSpectral, magnitudeSpectral);
+			mShape.shapeProcess(magnitudeSpectral, shapeDesc, mSampleRate);
+			shapeMat.row(i) <<= shapeDesc;
 		}
 
 		shapeStats = mShape.shapeCalculate(shapeMat, *mStats.getStats());
@@ -908,9 +918,11 @@ VspanCube& AudioDescriptorsAudioProcessor::getVSpanCube()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpectralAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->needsSpectralAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->needsSpectralAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -918,9 +930,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpectralAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeLoudnessAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessLoudnessAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessLoudnessAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -928,9 +942,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeLoudnessAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomePitchAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessPitchAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessPitchAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -938,9 +954,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomePitchAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeCentroidAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessCentroidAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessCentroidAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -948,9 +966,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeCentroidAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpreadAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessSpreadAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessSpreadAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -958,9 +978,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeSpreadAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeNoiseAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessNoiseAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessNoiseAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -968,9 +990,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeNoiseAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessDomeOnsetDetectionAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersDomeRefs) {
-		if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::dome) {
+		for (const auto& spatParam : mSpatParametersDomeRefs) {
+			if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -978,9 +1002,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessDomeOnsetDetectionAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpectralAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->needsSpectralAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->needsSpectralAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -988,9 +1014,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpectralAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeLoudnessAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessLoudnessAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessLoudnessAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -998,9 +1026,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubeLoudnessAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubePitchAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessPitchAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessPitchAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1008,9 +1038,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubePitchAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeCentroidAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessCentroidAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessCentroidAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1018,9 +1050,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubeCentroidAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpreadAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessSpreadAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessSpreadAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1028,9 +1062,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubeSpreadAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeNoiseAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessNoiseAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessNoiseAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1038,9 +1074,11 @@ bool AudioDescriptorsAudioProcessor::shouldProcessCubeNoiseAnalysis()
 
 bool AudioDescriptorsAudioProcessor::shouldProcessCubeOnsetDetectionAnalysis()
 {
-	for (const auto& spatParam : mSpatParametersCubeRefs) {
-		if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
-			return true;
+	if (mSpatMode == SpatMode::cube) {
+		for (const auto& spatParam : mSpatParametersCubeRefs) {
+			if (spatParam->shouldProcessOnsetDetectionAnalysis()) {
+				return true;
+			}
 		}
 	}
 	return false;

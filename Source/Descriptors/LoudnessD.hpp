@@ -76,25 +76,25 @@ public:
 		//mDescTruePeak = truePeakMeanOut[0];
 	}
 
-	void mLoudnessProcess(fluid::RealVectorView& window,fluid::RealVector& loudnessDesc) {
+	void loudnessProcess(fluid::RealVectorView& window,fluid::RealVector& loudnessDesc) {
 		mLoudness->processFrame(window, loudnessDesc, true, true);
 	}
 
 	//FONCTION POUR LA LOUDNESS
 
-	fluid::RealVectorView calculateWindowLoudness(fluid::RealVector& padded, int& i) {
+	fluid::RealVectorView calculateWindow(fluid::RealVector& padded, int& i) {
 		return padded(fluid::Slice(i * mHopSizeLoudness, mWindowSizeLoudness));
 	}
 
-	fluid::RealVector calculatePaddedLoudness(fluid::RealVector in) {
+	fluid::RealVector calculatePadded(fluid::RealVector in) {
 		return in.size() + mWindowSizeLoudness + mHopSizeLoudness;
 	}
 
-	fluid::index calculateFramesLoudness(fluid::RealVector padded) {
+	fluid::index calculateFrames(fluid::RealVector padded) {
 		return static_cast<fluid::index>(floor((padded.size() - mWindowSizeLoudness) / mHopSizeLoudness));
 	}
 
-	fluid::Slice paddedValueLoudness(fluid::RealVector in) {
+	fluid::Slice paddedValue(fluid::RealVector in) {
 		return fluid::Slice(mHalfWindowLoudness, in.size());
 	}
 
