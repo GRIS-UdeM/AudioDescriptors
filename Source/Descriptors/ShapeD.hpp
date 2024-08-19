@@ -42,7 +42,7 @@ public:
 		return mShape.get();
 	}
 
-	fluid::RealVector shapeCalculate(fluid::RealMatrix& matrix, fluid::algorithm::MultiStats& stats) {
+	fluid::RealVector process(fluid::RealMatrix& matrix, fluid::algorithm::MultiStats& stats) {
 		return computeStats(matrix, stats);
 	}
 

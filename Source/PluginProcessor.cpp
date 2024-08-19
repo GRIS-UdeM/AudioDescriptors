@@ -264,7 +264,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			loudnessMat.row(i) <<= loudnessDesc;
 		}
 
-		mLoudness.calculate(loudnessMat, *mStats.getStats());
+		mLoudness.process(loudnessMat, *mStats.getStats());
 		double loudnessValue = mLoudness.getValue();
 		loudnessValue = juce::Decibels::decibelsToGain(loudnessValue);
 
@@ -313,7 +313,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			pitchMat.row(i) <<= pitch;
 		}
 
-		mPitch.calculate(pitchMat, *mStats.getStats());
+		mPitch.process(pitchMat, *mStats.getStats());
 		double pitchValue = mPitch.getValue();
 		pitchValue = mParamFunctions.frequencyToMidiNoteNumber(pitchValue);
 
@@ -362,10 +362,10 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 			shapeMat.row(i) <<= shapeDesc;
 		}
 
-		shapeStats = mShape.shapeCalculate(shapeMat, *mStats.getStats());
+		shapeStats = mShape.process(shapeMat, *mStats.getStats());
 
 		if (shouldProcessDomeCentroidAnalysis() || shouldProcessCubeCentroidAnalysis()) {
-			mCentroid.calculate(shapeStats);
+			mCentroid.process(shapeStats);
 			double centroidValue = mCentroid.getValue(); // centroidValue when silence = 118.02870609942256
 			if (bufferMagnitude == 0.0f) {
 				centroidValue = 0.0;
@@ -389,7 +389,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 
 		if (shouldProcessDomeSpreadAnalysis() || shouldProcessCubeSpreadAnalysis()) {
-			mSpread.calculate(shapeStats);
+			mSpread.process(shapeStats);
 			double spreadValue = mSpread.getValue(); // spreadValue when silence  = 16.520351353896057
 			if (bufferMagnitude == 0.0f) {
 				spreadValue = 0.0;
@@ -415,7 +415,7 @@ void AudioDescriptorsAudioProcessor::processBlock(juce::AudioBuffer<float>& buff
 		}
 
 		if (shouldProcessDomeNoiseAnalysis() || shouldProcessCubeNoiseAnalysis()) {
-			mFlatness.calculate(shapeStats);
+			mFlatness.process(shapeStats);
 			double flatnessValue = mFlatness.getValue(); // flatnessValue when silence = -6.9624443085150120e-13
 			if (bufferMagnitude == 0.0f) {
 				flatnessValue = -160.0;

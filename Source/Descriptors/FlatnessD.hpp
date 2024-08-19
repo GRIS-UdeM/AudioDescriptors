@@ -43,7 +43,7 @@ public:
 		return mDescFlatness;
 	}
 
-	void calculate(fluid::RealVector& shapeStats)
+	void process(fluid::RealVector& shapeStats)
 	{
 		fluid::RealVector flatnessMeanRes = fluid::RealVector(1);
 		fluid::RealVector flatnessStdDevRes = fluid::RealVector(1);

@@ -54,7 +54,7 @@ public:
 	//	return mDescTruePeak;
 	//}
 
-	void calculate(fluid::RealMatrix& loudnessMat, fluid::algorithm::MultiStats& stats) {
+	void process(fluid::RealMatrix& loudnessMat, fluid::algorithm::MultiStats& stats) {
 		fluid::RealVector loudnessStats = computeStats(loudnessMat, stats);
 
 		fluid::RealVector loudnessMeanRes = fluid::RealVector(1);

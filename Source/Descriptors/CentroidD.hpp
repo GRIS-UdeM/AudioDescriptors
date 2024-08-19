@@ -44,7 +44,7 @@ public:
 		return mDescCentroid;
 	}
 
-	void calculate(fluid::RealVector& shapeStats)
+	void process(fluid::RealVector& shapeStats)
 	{
 		fluid::RealVector centroidMeanRes = fluid::RealVector(1);
 		fluid::RealVector centroidStdDevRes = fluid::RealVector(1);

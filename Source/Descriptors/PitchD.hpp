@@ -50,7 +50,7 @@ public:
 		return mDescPitch;
 	}
 
-	void calculate(fluid::RealMatrix& pitchMat, fluid::algorithm::MultiStats& stats) {
+	void process(fluid::RealMatrix& pitchMat, fluid::algorithm::MultiStats& stats) {
 		fluid::RealVector pitchStats = computeStats(pitchMat, stats);
 
 		fluid::RealVector pitchMeanRes(1);
