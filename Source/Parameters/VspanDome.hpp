@@ -27,7 +27,7 @@
 class VspanDome : public SpatialParameter
 {
 public:
-	VspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	VspanDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Elevation Span");

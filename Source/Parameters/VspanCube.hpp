@@ -26,7 +26,7 @@
 class VspanCube : public SpatialParameter
 {
 public:
-	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	VspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Z Span");

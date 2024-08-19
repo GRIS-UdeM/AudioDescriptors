@@ -41,7 +41,7 @@ class SpatialParameter
 {
 public:
 	SpatialParameter() = delete;
-	explicit SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions);
+	explicit SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions);
 	virtual ~SpatialParameter() = default;
 
 	virtual void process(const DescriptorID& descID, double valueToProcess) = 0;
@@ -582,7 +582,7 @@ public:
 
 protected:
 	juce::AudioProcessorValueTreeState& mAPVTS;
-	ParameterFunctions& mFunctions;
+	SpatParamHelperFunctions& mFunctions;
 	ParameterID paramID = ParameterID::invalid;
 	double res{};
 	double lastRes{};

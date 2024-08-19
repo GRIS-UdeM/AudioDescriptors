@@ -25,7 +25,7 @@
 #include <JuceHeader.h>
 #include <cmath>
 
-class ParameterFunctions
+class SpatParamHelperFunctions
 {
 public:
 	double frequencyToMidiNoteNumber(double frequency) {
@@ -71,5 +71,5 @@ public:
 
 private:
 	//==============================================================================
-	JUCE_LEAK_DETECTOR(ParameterFunctions)
+	JUCE_LEAK_DETECTOR(SpatParamHelperFunctions)
 };

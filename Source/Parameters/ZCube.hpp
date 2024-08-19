@@ -26,7 +26,7 @@
 class ZCube : public SpatialParameter
 {
 public:
-	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	ZCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Z");

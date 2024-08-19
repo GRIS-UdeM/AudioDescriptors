@@ -26,7 +26,7 @@
 class HspanCube : public SpatialParameter
 {
 public:
-	HspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	HspanCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("X-Y Span");

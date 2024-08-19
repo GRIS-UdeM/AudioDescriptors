@@ -26,7 +26,7 @@
 class XCube : public SpatialParameter
 {
 public:
-	XCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	XCube(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("X");

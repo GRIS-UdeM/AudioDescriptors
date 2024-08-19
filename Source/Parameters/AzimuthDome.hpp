@@ -27,7 +27,7 @@
 class AzimuthDome : public SpatialParameter
 {
 public:
-	AzimuthDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+	AzimuthDome(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 		: SpatialParameter(audioProcessorValueTreeState, functions)
 	{
 		parameterName = juce::String("Azimuth");

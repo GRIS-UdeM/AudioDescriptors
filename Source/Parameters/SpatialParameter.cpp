@@ -23,7 +23,7 @@
 #include "SpatialParameter.h"
 #include "../PanelView.h"
 
-SpatialParameter::SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, ParameterFunctions& functions)
+SpatialParameter::SpatialParameter(juce::AudioProcessorValueTreeState& audioProcessorValueTreeState, SpatParamHelperFunctions& functions)
 	: mAPVTS(audioProcessorValueTreeState)
 	, mFunctions(functions)
 	, mDescriptorToUse(DescriptorID::invalid)

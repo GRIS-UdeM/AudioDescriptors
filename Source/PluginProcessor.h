@@ -207,7 +207,7 @@ private:
     OnsetDetectionD mOnsetDetectionY;
     OnsetDetectionD mOnsetDetectionZ;
 
-    ParameterFunctions mParamFunctions;
+    SpatParamHelperFunctions mParamFunctions;
 
     AzimuthDome mAzimuthDome;
     ElevationDome mElevationDome;
